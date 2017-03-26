@@ -127,4 +127,9 @@ public class MainActivity extends AppCompatActivity
     public void showContent(Fragment fragment) {
         showContentFragment(fragment);
     }
+
+    @Override
+    public void showInDiary() {
+        showContentFragment(inDiaryViewFragment);
+    }
 }

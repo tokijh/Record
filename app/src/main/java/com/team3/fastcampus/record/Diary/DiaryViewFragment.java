@@ -31,7 +31,6 @@ public class DiaryViewFragment extends Fragment {
     // Fragment
     private DiaryListViewFragment diaryListViewFragment;
     private DiaryMapViewFragment diaryMapViewFragment;
-    private InDiaryViewFragment inDiaryViewFragment;
 
     // Adaper
     private DiaryViewPagerAdapter diaryViewPagerAdapter;
@@ -59,7 +58,7 @@ public class DiaryViewFragment extends Fragment {
         initFragment();
 
         // #3 테스트용 소스 View가 로드되면 바로 InDiaryViewFragment 를 실행한다.
-        diaryViewInterface.showContent(inDiaryViewFragment);
+        diaryViewInterface.showInDiary();
 
         return view;
     }
@@ -84,7 +83,6 @@ public class DiaryViewFragment extends Fragment {
     private void initFragment() {
         diaryListViewFragment = new DiaryListViewFragment();
         diaryMapViewFragment = new DiaryMapViewFragment();
-        inDiaryViewFragment = new InDiaryViewFragment();
     }
 
     @Override
@@ -134,5 +132,6 @@ public class DiaryViewFragment extends Fragment {
 
     public interface DiaryViewInterface {
         void showContent(Fragment fragment);
+        void showInDiary();
     }
 }
