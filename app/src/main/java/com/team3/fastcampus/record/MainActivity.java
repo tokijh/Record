@@ -91,6 +91,16 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * 해당 fragment로 Fragment를 띄움
+     * @param fragment
+     */
+    public void showContentFragment(Fragment fragment) {
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.replace(R.id.contentView, fragment);
+        transaction.commit();
+    }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
