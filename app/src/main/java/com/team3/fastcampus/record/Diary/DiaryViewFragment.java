@@ -4,6 +4,7 @@ package com.team3.fastcampus.record.Diary;
  * Created by yoonjoonghyun on 2017. 3. 25..
  */
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.team3.fastcampus.record.InDiary.InDiaryViewFragment;
 import com.team3.fastcampus.record.R;
 
 /**
@@ -29,9 +31,13 @@ public class DiaryViewFragment extends Fragment {
     // Fragment
     private DiaryListViewFragment diaryListViewFragment;
     private DiaryMapViewFragment diaryMapViewFragment;
+    private InDiaryViewFragment inDiaryViewFragment;
 
     // Adaper
     private DiaryViewPagerAdapter diaryViewPagerAdapter;
+
+    // Connector with Activity
+    private DiaryViewInterface diaryViewInterface;
 
 
     public DiaryViewFragment() {
@@ -51,6 +57,9 @@ public class DiaryViewFragment extends Fragment {
         initListener();
 
         initFragment();
+
+        // #3 테스트용 소스 View가 로드되면 바로 InDiaryViewFragment 를 실행한다.
+        diaryViewInterface.showContent(inDiaryViewFragment);
 
         return view;
     }
@@ -75,6 +84,24 @@ public class DiaryViewFragment extends Fragment {
     private void initFragment() {
         diaryListViewFragment = new DiaryListViewFragment();
         diaryMapViewFragment = new DiaryMapViewFragment();
+        inDiaryViewFragment = new InDiaryViewFragment();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context instanceof DiaryViewInterface) {
+            diaryViewInterface = (DiaryViewInterface) context;
+        } else {
+            throw new RuntimeException(context.toString() + " must implement DiaryViewInterface");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        diaryViewInterface = null;
     }
 
     class DiaryViewPagerAdapter extends FragmentStatePagerAdapter {
@@ -103,5 +130,9 @@ public class DiaryViewFragment extends Fragment {
         public int getCount() {
             return TAB_COUNT;
         }
+    }
+
+    public interface DiaryViewInterface {
+        void showContent(Fragment fragment);
     }
 }
