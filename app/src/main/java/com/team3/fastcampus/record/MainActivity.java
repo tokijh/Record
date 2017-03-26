@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity
         initFragmentSettings();
 
         // 초기 화면 지정
-        showFragmentViewByID(FragmentsID.DiaryViewFragment);
+        showContentFragment(FragmentsID.DiaryViewFragment);
     }
 
     private void initView() {
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity
      * FragmentsID의 id(int)로 해당 id의 Fragment를 띄움
      * @param id FragmentsID의 id(int)
      */
-    public void showFragmentViewByID(int id) {
+    public void showContentFragment(int id) {
         Fragment fragment = null;
 
         switch (id) {
