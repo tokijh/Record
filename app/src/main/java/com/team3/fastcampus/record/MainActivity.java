@@ -16,13 +16,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.team3.fastcampus.record.Diary.DiaryListViewFragment;
 import com.team3.fastcampus.record.Diary.DiaryViewFragment;
-import com.team3.fastcampus.record.InDiary.InDiaryListViewFragment;
 import com.team3.fastcampus.record.InDiary.InDiaryViewFragment;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, DiaryViewFragment.DiaryViewInterface {
 
     FragmentManager manager;
 
@@ -122,5 +120,11 @@ public class MainActivity extends AppCompatActivity
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    // Define Fragment Interfaces
+    @Override
+    public void showContent(Fragment fragment) {
+        showContentFragment(fragment);
     }
 }
