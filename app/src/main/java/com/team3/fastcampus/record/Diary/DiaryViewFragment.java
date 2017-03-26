@@ -5,7 +5,9 @@ package com.team3.fastcampus.record.Diary;
  */
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,11 @@ import com.team3.fastcampus.record.R;
  */
 public class DiaryViewFragment extends Fragment {
 
+    private View view;
+
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+
 
     public DiaryViewFragment() {
         // Required empty public constructor
@@ -26,8 +33,16 @@ public class DiaryViewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_diary_view, container, false);
+        view = inflater.inflate(R.layout.fragment_diary_view, container, false);
+
+        initView();
+
+        return view;
+    }
+
+    private void initView() {
+        tabLayout = (TabLayout) view.findViewById(R.id.tabLayout);
+        viewPager = (ViewPager) view.findViewById(R.id.viewPager);
     }
 
 }
