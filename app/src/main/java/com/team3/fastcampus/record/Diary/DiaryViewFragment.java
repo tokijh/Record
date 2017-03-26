@@ -26,8 +26,12 @@ public class DiaryViewFragment extends Fragment {
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
+    // Fragment
     private DiaryListViewFragment diaryListViewFragment;
     private DiaryMapViewFragment diaryMapViewFragment;
+
+    // Adaper
+    private DiaryViewPagerAdapter diaryViewPagerAdapter;
 
 
     public DiaryViewFragment() {
@@ -42,12 +46,30 @@ public class DiaryViewFragment extends Fragment {
 
         initView();
 
+        initAdapter();
+
+        initListener();
+
+        initFragment();
+
         return view;
     }
 
     private void initView() {
         tabLayout = (TabLayout) view.findViewById(R.id.tabLayout);
         viewPager = (ViewPager) view.findViewById(R.id.viewPager);
+    }
+
+    private void initAdapter() {
+        diaryViewPagerAdapter = new DiaryViewPagerAdapter(getActivity().getSupportFragmentManager());
+        viewPager.setAdapter(diaryViewPagerAdapter);
+    }
+
+    private void initListener() {
+        // 1. Pager가 변경 되었을 때 Tab를 바꿔주는 리스너
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        // 2. Tab이 변경 되었을 때 페이지를 바꿔주는 리스너
+        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
     }
 
     private void initFragment() {
