@@ -68,5 +68,15 @@
         android:text="Sign up"
         android:textAllCaps="false" />
 
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/login_button"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/btn_signup"
+        android:layout_alignLeft="@+id/btn_signup"
+        android:layout_alignStart="@+id/btn_signup"
+     />
+
 
 </RelativeLayout>
