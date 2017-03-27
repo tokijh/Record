@@ -1,4 +1,4 @@
-package com.team3.fastcampus.record.Util;
+package com.team3.fastcampus.record.Util.Permission;
 
 /**
  * Created by yoonjoonghyun on 2017. 3. 25..
