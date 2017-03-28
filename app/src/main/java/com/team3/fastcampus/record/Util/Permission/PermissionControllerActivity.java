@@ -18,8 +18,13 @@ public class PermissionControllerActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+        PermissionController permissionController = PermissionController.getInstance();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permissionController != null) {
             requestPermissions(PermissionController.getInstance().getPermissionArray(), REQ_PERMISSION);
+        } else {
+            finish();
         }
     }
 
