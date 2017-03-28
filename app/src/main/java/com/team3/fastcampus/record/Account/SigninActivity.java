@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.facebook.CallbackManager;
+import com.facebook.login.widget.LoginButton;
 import com.team3.fastcampus.record.R;
 
 /**
@@ -16,18 +18,23 @@ import com.team3.fastcampus.record.R;
  */
 public class SigninActivity extends AppCompatActivity {
 
+    CallbackManager callbackManager;
+    LoginButton loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
 
-
+        loginButton = (LoginButton) findViewById(R.id.login_button);
+        callbackManager = CallbackManager.Factory.create();
 
     }
 
-    public void btnSignup(View view){
-        Intent intent = new Intent(this,SignupActivity.class);
+
+    public void btnSignup(View view) {
+        Intent intent = new Intent(this, SignupActivity.class);
         startActivity(intent);
     }
+
 }
