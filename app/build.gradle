@@ -15,6 +15,10 @@ android {
         }
     }
 
+    repositories {
+        mavenCentral()
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -47,4 +51,5 @@ dependencies {
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
     compile 'com.google.code.gson:gson:2.8.0'
     testCompile 'junit:junit:4.12'
+    compile 'com.facebook.android:facebook-android-sdk:4.20.0'
 }

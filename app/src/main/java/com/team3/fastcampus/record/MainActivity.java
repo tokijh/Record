@@ -4,11 +4,12 @@ package com.team3.fastcampus.record;
  * Created by yoonjoonghyun on 2017. 3. 25..
  */
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -16,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.team3.fastcampus.record.Account.SigninActivity;
 import com.team3.fastcampus.record.Diary.DiaryViewFragment;
 import com.team3.fastcampus.record.InDiary.InDiaryViewFragment;
 
@@ -23,8 +25,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, DiaryViewFragment.DiaryViewInterface {
 
     FragmentManager manager;
-
     DrawerLayout drawer;
+    Intent intent;
 
     // Fragments
     DiaryViewFragment diaryViewFragment;
@@ -35,7 +37,12 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         // TODO SignIn 상태 확인 로직
+
+        // 메인에서 SigninActivity로 넘어가는 intent
+        intent = new Intent(MainActivity.this, SigninActivity.class);
+        startActivity(intent);
 
         initView();
 
