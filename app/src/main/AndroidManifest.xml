@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.team3.fastcampus.record">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -31,7 +31,7 @@
         <activity android:name=".Diary.DiaryManageActivity" />
         <activity android:name=".Util.LocationPickerActivity" />
         <activity android:name=".Account.AccountActivity"></activity>
-
+        <activity android:name=".Util.Permission.PermissionControllerActivity" />
     </application>
 
 </manifest>
