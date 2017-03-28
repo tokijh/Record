@@ -50,6 +50,7 @@ public class SigninActivity extends AppCompatActivity {
                 Log.d("TAG","이거 되고있는거 맞음?");
                 Toast.makeText(SigninActivity.this, "id : " +loginResult.getAccessToken().getUserId(), Toast.LENGTH_SHORT).show();
 
+
                 //loginResult.getAccessToken() 정보를 가지고 유저 정보를 가져올수 있습니다.
                 GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(),
                         new GraphRequest.GraphJSONObjectCallback() {
@@ -82,6 +83,12 @@ public class SigninActivity extends AppCompatActivity {
     public void btnSignup(View view) {
         Intent intent = new Intent(this, SignupActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 }
 
