@@ -119,7 +119,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                 intent = new Intent(this, SignupActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.login_button_google:
+            case R.id.btn_google:
                 intent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
                 startActivityForResult(intent, REQ_GOOGLE_SIGNIN);
                 break;
