@@ -64,26 +64,25 @@
         android:layout_below="@+id/btn_signin"
         android:layout_marginTop="10dp"
         android:background="#3498DB"
-        android:onClick="btnSignup"
         android:text="Sign up"
         android:textAllCaps="false" />
 
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/login_button_facebook"
-        android:layout_width="300dp"
-        android:layout_height="50dp"
-        android:layout_alignLeft="@+id/login_button_google"
-        android:layout_alignStart="@+id/login_button_google"
-        android:layout_below="@+id/login_button_google"
-        android:layout_marginTop="10dp" />
-
     <com.google.android.gms.common.SignInButton
-        android:id="@+id/login_button_google"
+        android:id="@+id/btn_google"
         android:layout_width="300dp"
         android:layout_height="50dp"
         android:layout_alignLeft="@+id/btn_signup"
         android:layout_alignStart="@+id/btn_signup"
         android:layout_below="@+id/btn_signup"
+        android:layout_marginTop="10dp" />
+
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/btn_facebook"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_alignLeft="@+id/btn_google"
+        android:layout_alignStart="@+id/btn_google"
+        android:layout_below="@+id/btn_google"
         android:layout_marginTop="10dp" />
 
 
