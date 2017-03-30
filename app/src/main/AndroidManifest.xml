@@ -9,6 +9,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:name="android.support.multidex.MultiDexApplication"
         android:theme="@style/AppTheme">
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
         <activity
@@ -32,6 +33,7 @@
         <activity android:name=".Util.LocationPickerActivity" />
         <activity android:name=".Account.AccountActivity"></activity>
         <activity android:name=".Util.Permission.PermissionControllerActivity" />
+
     </application>
 
 </manifest>
