@@ -143,7 +143,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
 
         @Override
         public void onError(FacebookException error) {
-            Logger.e(TAG, error.getMessage());
+            Logger.e(TAG, "facebook error : " + error.getMessage());
         }
     };
 
