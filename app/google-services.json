@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "992454923411",
+    "project_id": "record-3dd8f"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:992454923411:android:7161d8fc384a3b33",
+        "android_client_info": {
+          "package_name": "com.team3.fastcampus.record"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "992454923411-gslmfqupcd8h5e8nv0r3o5gmu4f7lr1e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.team3.fastcampus.record",
+            "certificate_hash": "4c20cd44e9d93ae59a22073b5bb794ea6a45d9a1"
+          }
+        },
+        {
+          "client_id": "992454923411-f7l9m11c376das5s59r038ovsv9kh3nc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJnGfg5ZsqBYSRyijMtLYl6eDro_w3HcI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
