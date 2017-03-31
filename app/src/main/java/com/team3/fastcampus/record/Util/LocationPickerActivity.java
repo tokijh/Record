@@ -87,6 +87,18 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location_picker);
 
+        initGoogle();
+
+        initView();
+
+        initListener();
+
+        initAdapter();
+
+        initGoogleMap();
+    }
+
+    private void initGoogle() {
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)
@@ -94,30 +106,36 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
                 .addConnectionCallbacks(googleConnectionCallbacks)
                 .addOnConnectionFailedListener(googleOnConnectionFailedListener)
                 .build();
+    }
 
+    private void initView() {
         ed_search = (AutoCompleteTextView) findViewById(R.id.ed_search);
-        ed_search.addTextChangedListener(search_textWatcher);
-        ed_search.setOnItemClickListener(this);
-
         iv_search_cancel = (ImageView) findViewById(R.id.iv_search_cancel);
         iv_search_cancel.setVisibility(View.GONE);
-        iv_search_cancel.setOnClickListener(this);
+    }
 
+    private void initListener() {
+        ed_search.addTextChangedListener(search_textWatcher);
+        ed_search.setOnItemClickListener(this);
+        iv_search_cancel.setOnClickListener(this);
+    }
+
+    private void initAdapter() {
         placeAutocompleteAdapter = new PlaceAutoCompleteAdapter(this, mGoogleApiClient,  new LatLngBounds(
                 new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362)), null);
         ed_search.setAdapter(placeAutocompleteAdapter);
+    }
 
+    private void initGoogleMap() {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
+
         // Change view's location of My Location Button
         View mapView = mapFragment.getView();
         if (mapView != null && mapView.findViewById(1) != null) {
-            // Get the button view
             View locationButton = ((View) mapView.findViewById(1).getParent()).findViewById(2);
-            // and next place it, on bottom right (as Google Maps app)
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)
                     locationButton.getLayoutParams();
-            // position on right bottom
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
             layoutParams.setMargins(0, 0, 30, 30);
@@ -174,10 +192,10 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
         }
     };
 
-    GoogleMap.OnMapLongClickListener googleMapOnMapLongClickListener = (position) ->
+    private GoogleMap.OnMapLongClickListener googleMapOnMapLongClickListener = (position) ->
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 15));
 
-    GoogleMap.OnMyLocationButtonClickListener googleMapOnMyLocationButtonClickListener = () -> {
+    private GoogleMap.OnMyLocationButtonClickListener googleMapOnMyLocationButtonClickListener = () -> {
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             showGpsSettingDialog();
             return true;
@@ -185,29 +203,28 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
         return false;
     };
 
-    GoogleMap.OnCameraIdleListener googleMapOnCameraIdleListener = () -> {
+    private GoogleMap.OnCameraIdleListener googleMapOnCameraIdleListener = () -> {
         LatLng position = googleMap.getCameraPosition().target;
         placeAutocompleteAdapter.setBounds(new LatLngBounds(new LatLng(position.latitude - 0.1, position.longitude - 0.1), new LatLng(position.latitude + 1, position.longitude + 1)));
         pointMarker.setPosition(position);
     };
 
-    GoogleApiClient.ConnectionCallbacks googleConnectionCallbacks = new GoogleApiClient.ConnectionCallbacks() {
+    private GoogleApiClient.ConnectionCallbacks googleConnectionCallbacks = new GoogleApiClient.ConnectionCallbacks() {
         @Override
         public void onConnected(@Nullable Bundle bundle) {
-
+            Logger.i(TAG, "GoogleApiClient.ConnectionCallbacks : onConnected");
         }
 
         @Override
         public void onConnectionSuspended(int i) {
-
+            Logger.i(TAG, "GoogleApiClient.ConnectionCallbacks : onConnectionSuspended");
         }
     };
 
-    GoogleApiClient.OnConnectionFailedListener googleOnConnectionFailedListener = connectionResult -> {
+    private GoogleApiClient.OnConnectionFailedListener googleOnConnectionFailedListener = connectionResult ->
+            Logger.i(TAG, "GoogleApiClient.OnConnectionFailedListener");
 
-    };
-
-    TextWatcher search_textWatcher = new TextWatcher() {
+    private TextWatcher search_textWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -318,7 +335,7 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
         imm.hideSoftInputFromWindow(ed_search.getWindowToken(), 0);
     }
 
-    class PlaceAutoCompleteAdapter extends ArrayAdapter<AutocompletePrediction> implements Filterable {
+    private class PlaceAutoCompleteAdapter extends ArrayAdapter<AutocompletePrediction> implements Filterable {
 
         private final CharacterStyle STYLE_BOLD = new StyleSpan(Typeface.BOLD);
 
