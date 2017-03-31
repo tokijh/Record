@@ -7,7 +7,6 @@ package com.team3.fastcampus.record.Util;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.location.Address;
@@ -20,9 +19,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.style.CharacterStyle;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -31,19 +31,16 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.common.data.DataBufferUtils;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.AutocompletePredictionBuffer;
@@ -70,7 +67,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * 지도에서 선택한 위치 또는 검색한 장소의 위치를 선택하여 Return해준다.
  */
-public class LocationPickerActivity extends AppCompatActivity implements OnMapReadyCallback, AdapterView.OnItemClickListener {
+public class LocationPickerActivity extends AppCompatActivity implements OnMapReadyCallback, AdapterView.OnItemClickListener, View.OnClickListener {
 
     public static final String TAG = "LocationPickerActivity";
 
@@ -82,7 +79,8 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
 
     private Marker pointMarker;
 
-    private AutoCompleteTextView ed_seach;
+    private AutoCompleteTextView ed_search;
+    private ImageView iv_search_cancel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,12 +95,17 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
                 .addOnConnectionFailedListener(googleOnConnectionFailedListener)
                 .build();
 
-        ed_seach = (AutoCompleteTextView) findViewById(R.id.ed_seach);
-        ed_seach.setOnItemClickListener(this);
+        ed_search = (AutoCompleteTextView) findViewById(R.id.ed_search);
+        ed_search.addTextChangedListener(search_textWatcher);
+        ed_search.setOnItemClickListener(this);
+
+        iv_search_cancel = (ImageView) findViewById(R.id.iv_search_cancel);
+        iv_search_cancel.setVisibility(View.GONE);
+        iv_search_cancel.setOnClickListener(this);
 
         placeAutocompleteAdapter = new PlaceAutoCompleteAdapter(this, mGoogleApiClient,  new LatLngBounds(
                 new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362)), null);
-        ed_seach.setAdapter(placeAutocompleteAdapter);
+        ed_search.setAdapter(placeAutocompleteAdapter);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -120,6 +123,15 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
             layoutParams.setMargins(0, 0, 30, 30);
         }
         mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.iv_search_cancel:
+                cancelSerching();
+                break;
+        }
     }
 
     @Override
@@ -193,6 +205,27 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
 
     GoogleApiClient.OnConnectionFailedListener googleOnConnectionFailedListener = connectionResult -> {
 
+    };
+
+    TextWatcher search_textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (count > 0) {
+                iv_search_cancel.setVisibility(View.VISIBLE);
+            } else {
+                iv_search_cancel.setVisibility(View.GONE);
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
     };
 
     @Override
@@ -275,9 +308,14 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
         return null;
     }
 
+    private void cancelSerching() {
+        ed_search.setText("");
+        hideKeybord();
+    }
+
     private void hideKeybord() {
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(ed_seach.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(ed_search.getWindowToken(), 0);
     }
 
     class PlaceAutoCompleteAdapter extends ArrayAdapter<AutocompletePrediction> implements Filterable {

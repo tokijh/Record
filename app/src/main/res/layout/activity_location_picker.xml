@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_pick_location"
     android:layout_width="match_parent"
@@ -16,12 +17,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <AutoCompleteTextView
-        android:id="@+id/ed_seach"
-        android:hint="search"
-        android:background="@drawable/widget_round"
-        android:drawableLeft="@drawable/places_ic_search"
-        android:lines="1"
+    <RelativeLayout
+        android:id="@+id/search_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -29,7 +26,30 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_margin="10dp"
-        android:padding="5dp" />
+        android:layout_margin="10dp" >
+
+        <AutoCompleteTextView
+            android:id="@+id/ed_search"
+            android:hint="search"
+            android:background="@drawable/widget_round"
+            android:drawableLeft="@drawable/places_ic_search"
+            android:lines="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:padding="5dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@android:drawable/ic_menu_close_clear_cancel"
+            android:id="@+id/iv_search_cancel"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp" />
+    </RelativeLayout>
 
 </RelativeLayout>
