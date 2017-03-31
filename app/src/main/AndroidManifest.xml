@@ -32,7 +32,6 @@
         <activity android:name=".InDiary.InDiaryDetailActivity" />
         <activity android:name=".InDiary.InDiaryManageActivity" />
         <activity android:name=".Diary.DiaryManageActivity" />
-        <activity android:name=".Util.LocationPickerActivity" />
         <activity android:name=".Account.AccountActivity"></activity>
         <activity android:name=".Util.Permission.PermissionControllerActivity" />
 

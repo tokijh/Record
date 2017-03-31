@@ -1,9 +1,5 @@
 package com.team3.fastcampus.record.Util;
 
-/**
- * Created by yoonjoonghyun on 2017. 3. 25..
- */
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -14,17 +10,20 @@ import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.style.CharacterStyle;
 import android.text.style.StyleSpan;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -55,8 +54,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.team3.fastcampus.record.R;
 import com.team3.fastcampus.record.Util.Permission.PermissionController;
+import com.team3.fastcampus.record.R;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -65,27 +64,38 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 지도에서 선택한 위치 또는 검색한 장소의 위치를 선택하여 Return해준다.
+ * Created by tokijh on 2017. 3. 31..
  */
-public class LocationPickerActivity extends AppCompatActivity implements OnMapReadyCallback, AdapterView.OnItemClickListener, View.OnClickListener {
+
+public class LocationPicker implements OnMapReadyCallback, AdapterView.OnItemClickListener, View.OnClickListener {
 
     public static final String TAG = "LocationPickerActivity";
+
+    private static LocationPicker instance = null;
+
+    private Context context;
+
+    private View dialogView;
+    private AlertDialog dialog;
 
     private GoogleMap googleMap;
     private GoogleApiClient mGoogleApiClient;
     private LocationManager locationManager;
 
-    private PlaceAutoCompleteAdapter placeAutocompleteAdapter;
+    private LocationPicker.PlaceAutoCompleteAdapter placeAutocompleteAdapter;
 
     private Marker pointMarker;
 
     private AutoCompleteTextView ed_search;
     private ImageView iv_search_cancel;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_location_picker);
+    private Toolbar toolbar;
+    private TextView tv_select;
+
+    private LocationPickerCallBack locationPickerCallBack;
+
+    public LocationPicker(Context context) {
+        this.context = context;
 
         initGoogle();
 
@@ -98,9 +108,19 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
         initGoogleMap();
     }
 
+    public void show(LocationPickerCallBack locationPickerCallBack) {
+        this.locationPickerCallBack = locationPickerCallBack;
+
+        onStart();
+        dialog = new AlertDialog.Builder(context)
+                .setView(dialogView)
+                .show();
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+    }
+
     private void initGoogle() {
         mGoogleApiClient = new GoogleApiClient
-                .Builder(this)
+                .Builder(context)
                 .addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API)
                 .addConnectionCallbacks(googleConnectionCallbacks)
@@ -109,25 +129,33 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
     }
 
     private void initView() {
-        ed_search = (AutoCompleteTextView) findViewById(R.id.ed_search);
-        iv_search_cancel = (ImageView) findViewById(R.id.iv_search_cancel);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        dialogView = inflater.inflate(R.layout.dialog_location_picker, null);
+        ed_search = (AutoCompleteTextView) dialogView.findViewById(R.id.ed_search);
+        iv_search_cancel = (ImageView) dialogView.findViewById(R.id.iv_search_cancel);
         iv_search_cancel.setVisibility(View.GONE);
+        tv_select = (TextView) dialogView.findViewById(R.id.tv_select);
+        toolbar = (Toolbar) dialogView.findViewById(R.id.toolbar);
     }
 
     private void initListener() {
         ed_search.addTextChangedListener(search_textWatcher);
         ed_search.setOnItemClickListener(this);
         iv_search_cancel.setOnClickListener(this);
+        toolbar.setNavigationOnClickListener((v) -> {
+            onStop();
+        });
+        tv_select.setOnClickListener(this);
     }
 
     private void initAdapter() {
-        placeAutocompleteAdapter = new PlaceAutoCompleteAdapter(this, mGoogleApiClient,  new LatLngBounds(
+        placeAutocompleteAdapter = new LocationPicker.PlaceAutoCompleteAdapter(context, mGoogleApiClient,  new LatLngBounds(
                 new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362)), null);
         ed_search.setAdapter(placeAutocompleteAdapter);
     }
 
     private void initGoogleMap() {
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        SupportMapFragment mapFragment = (SupportMapFragment) ((FragmentActivity) context).getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
         // Change view's location of My Location Button
@@ -145,10 +173,18 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.iv_search_cancel:
-                cancelSerching();
-                break;
+        try {
+            switch (v.getId()) {
+                case R.id.iv_search_cancel:
+                    cancelSerching();
+                    break;
+                case R.id.tv_select:
+                    onStop();
+                    locationPickerCallBack.onResult(getAddressByLatLng(pointMarker.getPosition()), pointMarker.getPosition());
+                    break;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -164,8 +200,7 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
                 .getPlaceById(mGoogleApiClient, placeId);
         placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
 
-        Toast.makeText(getApplicationContext(), "Clicked: " + primaryText,
-                Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Clicked: " + primaryText, Toast.LENGTH_SHORT).show();
     }
 
     private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback
@@ -177,10 +212,9 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
                 places.release();
                 return;
             }
-            // Get the Place object from the buffer.
+
             final Place place = places.get(0);
 
-            // Format details of the place for display and show it in a TextView.
             Logger.d(TAG, "place name : " + place.getName());
             Logger.d(TAG, "place id : " + place.getId());
             Logger.d(TAG, "place address : " + place.getAddress());
@@ -245,16 +279,13 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
         }
     };
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+    private void onStart() {
         mGoogleApiClient.connect();
     }
 
-    @Override
-    protected void onStop() {
+    private void onStop() {
         mGoogleApiClient.disconnect();
-        super.onStop();
+        dialog.dismiss();
     }
 
     @Override
@@ -269,10 +300,10 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
         pointMarker = this.googleMap.addMarker(new MarkerOptions().position(seoul));
         this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(seoul, 15));
 
-        new PermissionController(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}).check(new PermissionController.PermissionCallback() {
+        new PermissionController(context, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}).check(new PermissionController.PermissionCallback() {
             @Override
             public void success() {
-                locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
                 if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                     String provider = locationManager.getBestProvider(new Criteria(), true);
                     Location location = locationManager.getLastKnownLocation(provider);
@@ -286,27 +317,27 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
 
             @Override
             public void error() {
-                Toast.makeText(LocationPickerActivity.this, "권한을 허용 하지 않으면 현재 위치 정보를 사용 할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "권한을 허용 하지 않으면 현재 위치 정보를 사용 할 수 없습니다.", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void showGpsSettingDialog() {
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(context)
                 .setTitle("GPS 가 꺼져있습니다.")
                 .setMessage("GPS 가 켜져있어야 위치 정보를 가져올 수 있습니다.\n설정창으로 가시겠습니까?")
                 .setPositiveButton("확인", (dialog, which) -> {
                     Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivity(intent);
+                    context.startActivity(intent);
                 })
                 .setNegativeButton("취소", (dialog, which) -> dialog.cancel())
                 .show();
     }
 
-    public Address getAddressByLatLng(double lat, double lng) throws IOException {
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+    public Address getAddressByLatLng(LatLng location) throws IOException {
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
 
-        List<Address> list = geocoder.getFromLocation(lat, lng, 1);
+        List<Address> list = geocoder.getFromLocation(location.latitude, location.longitude, 1);
 
         if (list == null) {
             Logger.e(TAG, "Error to get address by location");
@@ -331,7 +362,7 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
     }
 
     private void hideKeybord() {
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(ed_search.getWindowToken(), 0);
     }
 
@@ -450,4 +481,7 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
         }
     }
 
+    public interface LocationPickerCallBack {
+        void onResult(@Nullable Address address, @Nullable LatLng location);
+    }
 }
