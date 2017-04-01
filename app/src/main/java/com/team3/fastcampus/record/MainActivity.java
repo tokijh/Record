@@ -152,12 +152,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    // Define Fragment Interfaces
-    @Override
-    public void showContent(Fragment fragment) {
-        showContentFragment(fragment);
-    }
-
+    // Define Fragment Interface
     @Override
     public void showInDiary() {
         showContentFragment(inDiaryViewFragment);
