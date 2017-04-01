@@ -3,19 +3,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context="com.team3.fastcampus.record.Diary.DiaryListViewFragment">
+    tools:context="com.team3.fastcampus.record.Diary.DiaryViewFragment">
 
 
     <android.support.v7.widget.CardView
         android:id="@+id/diary_card"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        app:cardCornerRadius="3dp">
+        app:cardCornerRadius="10dp"
+        android:layout_margin="10dp"
+        android:layout_height="200dp">
 
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp">
 
             <ImageView
                 android:id="@+id/diary_card_image"
@@ -29,6 +32,7 @@
                 android:id="@+id/diary_card_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="15dp"
                 android:text="Seoul"
@@ -36,27 +40,27 @@
                 android:textSize="30dp" />
 
             <TextView
-                android:id="@+id/diary_card_year"
+                android:id="@+id/diary_card_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/diary_card_title"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="30dp"
                 android:text="2016"
                 android:textColor="#ffffff"
-                android:textSize="12dp" />
+                android:textSize="18sp"
+                android:layout_alignRight="@+id/diary_card_location"
+                android:layout_alignEnd="@+id/diary_card_location" />
 
             <TextView
-                android:id="@+id/diary_card_month"
+                android:id="@+id/diary_card_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:textSize="10dp"
-                android:layout_below="@+id/diary_card_year"
+                android:textSize="14sp"
+                android:layout_below="@+id/diary_card_date"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="30dp"
                 android:textColor="#ffffff"
-                android:text="June"/>
+                android:text="Seoul the namsan tower"/>
 
         </RelativeLayout>
 
