@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity
 
         // 메인에서 SigninActivity로 넘어가는 intent
         intent = new Intent(MainActivity.this, SigninActivity.class);
-        startActivity(intent);
+//        startActivity(intent);
 
         initView();
 
@@ -54,25 +54,25 @@ public class MainActivity extends AppCompatActivity
         // 초기 화면 지정
         showContentFragment(FragmentsID.DiaryViewFragment);
 
-        new LocationPicker(this).show((address, location) -> {
-            Logger.d("MainActivity", "getAddressByLatLng : "
-                    + address.getCountryName() + " "
-                    + address.getPostalCode() + " "
-                    + address.getLocality() + " "
-                    + address.getThoroughfare() + " "
-                    + address.getFeatureName());
-            Logger.d("MainActivity", location.latitude + " " + location.longitude);
-
-            Toast.makeText(this, "Address " + address.getCountryName() + " "
-                            + address.getPostalCode() + " "
-                            + address.getLocality() + " "
-                            + address.getThoroughfare() + " "
-                            + address.getFeatureName() + " : Location : "
-                            + location.latitude + " "
-                            + location.longitude
-                    , Toast.LENGTH_SHORT)
-                    .show();
-        });
+//        new LocationPicker(this).show((address, location) -> {
+//            Logger.d("MainActivity", "getAddressByLatLng : "
+//                    + address.getCountryName() + " "
+//                    + address.getPostalCode() + " "
+//                    + address.getLocality() + " "
+//                    + address.getThoroughfare() + " "
+//                    + address.getFeatureName());
+//            Logger.d("MainActivity", location.latitude + " " + location.longitude);
+//
+//            Toast.makeText(this, "Address " + address.getCountryName() + " "
+//                            + address.getPostalCode() + " "
+//                            + address.getLocality() + " "
+//                            + address.getThoroughfare() + " "
+//                            + address.getFeatureName() + " : Location : "
+//                            + location.latitude + " "
+//                            + location.longitude
+//                    , Toast.LENGTH_SHORT)
+//                    .show();
+//        });
     }
 
     private void initView() {

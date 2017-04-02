@@ -7,8 +7,6 @@ package com.team3.fastcampus.record.Diary;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,16 +16,12 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 
 import com.team3.fastcampus.record.*;
 import com.team3.fastcampus.record.Diary.Adapter.DiaryViewRecyclerAdapter;
 import com.team3.fastcampus.record.Diary.Domain.Diary;
-import com.team3.fastcampus.record.ExtendFunction.RecyclerViewOnItemClickListener;
-import com.team3.fastcampus.record.ExtendFunction.RecyclerViewScrollListener;
 
 /**
  * Diary를 보여주기 위한 메인뷰
@@ -96,20 +90,7 @@ public class DiaryViewFragment extends Fragment {
 
     private void initListener() {
         ed_search.addTextChangedListener(searchWatcher);
-        recyclerView.addOnItemTouchListener(recyclerViewOnItemClickListener);
     }
-
-    private RecyclerViewOnItemClickListener recyclerViewOnItemClickListener = new RecyclerViewOnItemClickListener(getContext(), recyclerView, new RecyclerViewOnItemClickListener.OnItemClickListener() {
-        @Override
-        public void onItemClick(View v, int position) {
-
-        }
-
-        @Override
-        public void onItemLongClick(View v, int position) {
-
-        }
-    });
 
     private TextWatcher searchWatcher = new TextWatcher() {
         @Override

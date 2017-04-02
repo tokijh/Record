@@ -10,11 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.team3.fastcampus.record.Diary.Domain.Diary;
 import com.team3.fastcampus.record.R;
+import com.team3.fastcampus.record.Util.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,6 +113,7 @@ public class DiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
     public class CardDiaryHolder extends RecyclerView.ViewHolder {
 
+        TextView tv_more;
         TextView tv_title;
         TextView tv_date;
         TextView tv_location;
@@ -120,11 +123,46 @@ public class DiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
         public CardDiaryHolder(View itemView) {
             super(itemView);
+            tv_more = (TextView) itemView.findViewById(R.id.diary_card_more);
             tv_title = (TextView) itemView.findViewById(R.id.diary_card_title);
             tv_date = (TextView) itemView.findViewById(R.id.diary_card_date);
             tv_location = (TextView) itemView.findViewById(R.id.diary_card_location);
             iv_image = (ImageView) itemView.findViewById(R.id.diary_card_image);
+
+            itemView.setOnClickListener(cardDiaryHolderOnClickListener);
+            tv_more.setOnClickListener(cardDiaryHolderOnClickListener);
         }
+
+        View.OnClickListener cardDiaryHolderOnClickListener = v -> {
+            Logger.e("TAG", v.getId() + " ididididi");
+            switch (v.getId()) {
+                case -1:
+                    cardDiaryClicked(position);
+                    break;
+                case R.id.diary_card_more:
+                    cardDiaryMenuCreate(v, position);
+                    break;
+            }
+        };
+    }
+
+    private void cardDiaryClicked(int position) {
+
+    }
+
+    private void cardDiaryMenuCreate(View v, int position) {
+        PopupMenu popup = new PopupMenu(v.getContext(), v);
+        popup.inflate(R.menu.diary_list_item_option);
+        popup.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.nav_edit:
+                    break;
+                case R.id.nav_delete:
+                    break;
+            }
+            return false;
+        });
+        popup.show();
     }
 
     public class CardAddHolder extends RecyclerView.ViewHolder {
