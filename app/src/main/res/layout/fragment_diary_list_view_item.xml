@@ -27,7 +27,6 @@
                 android:scaleType="centerCrop"
                 app:srcCompat="@drawable/night" />
 
-
             <TextView
                 android:id="@+id/diary_card_title"
                 android:layout_width="wrap_content"
@@ -61,6 +60,18 @@
                 android:layout_marginRight="30dp"
                 android:textColor="#ffffff"
                 android:text="Seoul the namsan tower"/>
+
+            <TextView
+                android:id="@+id/diary_card_more"
+                android:layout_height="30dp"
+                android:text="&#8942;"
+                android:textAppearance="?android:textAppearanceLarge"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_margin="15dp"
+                android:textColor="#ffffff"
+                android:layout_width="30dp"
+                android:gravity="center" />
 
         </RelativeLayout>
 
