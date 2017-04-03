@@ -1,4 +1,4 @@
-package com.team3.fastcampus.record.Diary.Domain;
+package com.team3.fastcampus.record.Diary;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

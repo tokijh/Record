@@ -4,7 +4,7 @@
     android:id="@+id/activity_diary_write_detail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.team3.fastcampus.record.Diary.Domain.DiaryWriteDetailActivity">
+    tools:context="com.team3.fastcampus.record.Diary.DiaryWriteDetailActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
