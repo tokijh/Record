@@ -243,7 +243,133 @@ public class RealmDatabaseManager {
      * @param primaryKeyValue PrimaryKey의 Default 키(직접 입력)
      * @param <E> 지정 클래스
      */
+    public <E extends RealmObject> void delete(Class<E> clazz, String fieldName, boolean primaryKeyValue) {
+        realm.executeTransaction(_realm -> {
+            _realm.where(clazz).equalTo(fieldName, primaryKeyValue).findAll().deleteAllFromRealm();
+        });
+    }
+
+    /**
+     * 해당 클래스의 해당 키를 가진 내용을 삭제 한다.
+     *
+     * @param clazz 저장할 클래스(테이블)
+     * @param fieldName PrimaryKey인 필드명(id)
+     * @param primaryKeyValue PrimaryKey의 Default 키(직접 입력)
+     * @param <E> 지정 클래스
+     */
+    public <E extends RealmObject> void delete(Class<E> clazz, String fieldName, short primaryKeyValue) {
+        realm.executeTransaction(_realm -> {
+            _realm.where(clazz).equalTo(fieldName, primaryKeyValue).findAll().deleteAllFromRealm();
+        });
+    }
+
+    /**
+     * 해당 클래스의 해당 키를 가진 내용을 삭제 한다.
+     *
+     * @param clazz 저장할 클래스(테이블)
+     * @param fieldName PrimaryKey인 필드명(id)
+     * @param primaryKeyValue PrimaryKey의 Default 키(직접 입력)
+     * @param <E> 지정 클래스
+     */
+    public <E extends RealmObject> void delete(Class<E> clazz, String fieldName, byte primaryKeyValue) {
+        realm.executeTransaction(_realm -> {
+            _realm.where(clazz).equalTo(fieldName, primaryKeyValue).findAll().deleteAllFromRealm();
+        });
+    }
+
+    /**
+     * 해당 클래스의 해당 키를 가진 내용을 삭제 한다.
+     *
+     * @param clazz 저장할 클래스(테이블)
+     * @param fieldName PrimaryKey인 필드명(id)
+     * @param primaryKeyValue PrimaryKey의 Default 키(직접 입력)
+     * @param <E> 지정 클래스
+     */
+    public <E extends RealmObject> void delete(Class<E> clazz, String fieldName, Short primaryKeyValue) {
+        realm.executeTransaction(_realm -> {
+            _realm.where(clazz).equalTo(fieldName, primaryKeyValue).findAll().deleteAllFromRealm();
+        });
+    }
+
+    /**
+     * 해당 클래스의 해당 키를 가진 내용을 삭제 한다.
+     *
+     * @param clazz 저장할 클래스(테이블)
+     * @param fieldName PrimaryKey인 필드명(id)
+     * @param primaryKeyValue PrimaryKey의 Default 키(직접 입력)
+     * @param <E> 지정 클래스
+     */
+    public <E extends RealmObject> void delete(Class<E> clazz, String fieldName, int primaryKeyValue) {
+        realm.executeTransaction(_realm -> {
+            _realm.where(clazz).equalTo(fieldName, primaryKeyValue).findAll().deleteAllFromRealm();
+        });
+    }
+
+    /**
+     * 해당 클래스의 해당 키를 가진 내용을 삭제 한다.
+     *
+     * @param clazz 저장할 클래스(테이블)
+     * @param fieldName PrimaryKey인 필드명(id)
+     * @param primaryKeyValue PrimaryKey의 Default 키(직접 입력)
+     * @param <E> 지정 클래스
+     */
     public <E extends RealmObject> void delete(Class<E> clazz, String fieldName, long primaryKeyValue) {
+        realm.executeTransaction(_realm -> {
+            _realm.where(clazz).equalTo(fieldName, primaryKeyValue).findAll().deleteAllFromRealm();
+        });
+    }
+
+    /**
+     * 해당 클래스의 해당 키를 가진 내용을 삭제 한다.
+     *
+     * @param clazz 저장할 클래스(테이블)
+     * @param fieldName PrimaryKey인 필드명(id)
+     * @param primaryKeyValue PrimaryKey의 Default 키(직접 입력)
+     * @param <E> 지정 클래스
+     */
+    public <E extends RealmObject> void delete(Class<E> clazz, String fieldName, float primaryKeyValue) {
+        realm.executeTransaction(_realm -> {
+            _realm.where(clazz).equalTo(fieldName, primaryKeyValue).findAll().deleteAllFromRealm();
+        });
+    }
+
+    /**
+     * 해당 클래스의 해당 키를 가진 내용을 삭제 한다.
+     *
+     * @param clazz 저장할 클래스(테이블)
+     * @param fieldName PrimaryKey인 필드명(id)
+     * @param primaryKeyValue PrimaryKey의 Default 키(직접 입력)
+     * @param <E> 지정 클래스
+     */
+    public <E extends RealmObject> void delete(Class<E> clazz, String fieldName, double primaryKeyValue) {
+        realm.executeTransaction(_realm -> {
+            _realm.where(clazz).equalTo(fieldName, primaryKeyValue).findAll().deleteAllFromRealm();
+        });
+    }
+
+    /**
+     * 해당 클래스의 해당 키를 가진 내용을 삭제 한다.
+     *
+     * @param clazz 저장할 클래스(테이블)
+     * @param fieldName PrimaryKey인 필드명(id)
+     * @param primaryKeyValue PrimaryKey의 Default 키(직접 입력)
+     * @param <E> 지정 클래스
+     */
+    public <E extends RealmObject> void delete(Class<E> clazz, String fieldName, byte[] primaryKeyValue) {
+        realm.executeTransaction(_realm -> {
+            _realm.where(clazz).equalTo(fieldName, primaryKeyValue).findAll().deleteAllFromRealm();
+        });
+    }
+
+    /**
+     * 해당 클래스의 해당 키를 가진 내용을 삭제 한다.
+     *
+     * @param clazz 저장할 클래스(테이블)
+     * @param fieldName PrimaryKey인 필드명(id)
+     * @param primaryKeyValue PrimaryKey의 Default 키(직접 입력)
+     * @param <E> 지정 클래스
+     */
+    public <E extends RealmObject> void delete(Class<E> clazz, String fieldName, String primaryKeyValue) {
         realm.executeTransaction(_realm -> {
             _realm.where(clazz).equalTo(fieldName, primaryKeyValue).findAll().deleteAllFromRealm();
         });
