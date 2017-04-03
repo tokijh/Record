@@ -1,13 +1,14 @@
 package com.team3.fastcampus.record.Util;
 
+/**
+ * Created by yoonjoonghyun on 2017. 4. 3..
+ */
+
 import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
-/**
- * Created by tokijh on 2017. 4. 3..
- */
 
 /**
  * Realm Manager
