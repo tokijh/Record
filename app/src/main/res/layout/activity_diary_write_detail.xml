@@ -75,6 +75,10 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginRight="10dp"
                 android:background="#2ECC71"
+<<<<<<< HEAD:app/src/main/res/layout/activity_diary_write_detail.xml
+=======
+                android:shadowRadius="3"
+>>>>>>> master:app/src/main/res/layout/fragment_diary_list_view_item_wirte_detail.xml
                 android:text="Add Photo"
                 android:textColor="#ffffff"
                 android:shadowRadius="3" />
