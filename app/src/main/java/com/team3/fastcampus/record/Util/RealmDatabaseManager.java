@@ -32,7 +32,7 @@ public class RealmDatabaseManager {
         }
     }
 
-    public <E extends RealmObject> long getNextLongID(Class<E> clazz, String fieldName) {
+    public <E extends RealmObject> long getNextID(Class<E> clazz, String fieldName) {
         try {
             return realm.where(clazz).max(fieldName).longValue() + 1;
         } catch (Exception e) {
@@ -40,35 +40,33 @@ public class RealmDatabaseManager {
         }
     }
 
-    public <E extends RealmObject> long getNextIntegerID(Class<E> clazz, String fieldName) {
-        try {
-            return realm.where(clazz).max(fieldName).intValue() + 1;
-        } catch (Exception e) {
-            return 0;
-        }
+    public <E extends RealmObject> E create(Realm realm, Class<E> clazz) {
+        return realm.createObject(clazz);
+    }
+
+    public <E extends RealmObject> E create(Realm realm, Class<E> clazz, Object primaryKeyValue) {
+        return realm.createObject(clazz, primaryKeyValue);
     }
 
     public <E extends RealmObject> void create(Class<E> clazz, RealmCreate<E> realmCreate) {
         realm.executeTransaction(_realm -> {
-            realmCreate.create(_realm.createObject(clazz));
+            realmCreate.create(_realm, _realm.createObject(clazz));
         });
     }
 
     public <E extends RealmObject> void create(Class<E> clazz, Object primaryKeyValue, RealmCreate<E> realmCreate) {
         realm.executeTransaction(_realm -> {
-            realmCreate.create(_realm.createObject(clazz, primaryKeyValue));
+            realmCreate.create(_realm, _realm.createObject(clazz, primaryKeyValue));
         });
     }
 
-    public <E extends RealmObject> void createLongAI(Class<E> clazz, String fieldName, RealmCreate<E> realmCreate) {
-        realm.executeTransaction(_realm -> {
-            realmCreate.create(_realm.createObject(clazz, getNextLongID(clazz, fieldName)));
-        });
+    public <E extends RealmObject> E createAI(Realm realm, Class<E> clazz, String fieldName) {
+        return realm.createObject(clazz, getNextID(clazz, fieldName));
     }
 
-    public <E extends RealmObject> void createIntegerAI(Class<E> clazz, String fieldName, RealmCreate<E> realmCreate) {
+    public <E extends RealmObject> void createAI(Class<E> clazz, String fieldName, RealmCreate<E> realmCreate) {
         realm.executeTransaction(_realm -> {
-            realmCreate.create(_realm.createObject(clazz, getNextIntegerID(clazz, fieldName)));
+            realmCreate.create(_realm, _realm.createObject(clazz, getNextID(clazz, fieldName)));
         });
     }
 
@@ -127,7 +125,7 @@ public class RealmDatabaseManager {
     }
 
     public interface RealmCreate<E> {
-        void create(E realmObject);
+        void create(Realm realm, E realmObject);
     }
 
     public interface RealmUpdate {
