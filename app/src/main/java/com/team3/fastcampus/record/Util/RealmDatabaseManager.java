@@ -82,6 +82,10 @@ public class RealmDatabaseManager {
         return realm.where(clazz);
     }
 
+    public <E extends RealmObject> E get(Class<E> clazz, int poisition) {
+        return realm.where(clazz).findAll().get(poisition);
+    }
+
     public <E extends RealmObject> void update(Class<E> clazz, RealmUpdate realmUpdate) {
         realm.executeTransaction(_realm -> {
             realmUpdate.update();
