@@ -65,6 +65,12 @@ public class RealmDatabaseManager {
         });
     }
 
+    public <E extends RealmObject> void createIntegerAI(Class<E> clazz, String fieldName, RealmCreate<E> realmCreate) {
+        realm.executeTransaction(_realm -> {
+            realmCreate.create(_realm.createObject(clazz, getNextIntegerID(clazz, fieldName)));
+        });
+    }
+
     public <E extends RealmObject> E getFirst(Class<E> clazz) {
         return realm.where(clazz).findFirst();
     }
