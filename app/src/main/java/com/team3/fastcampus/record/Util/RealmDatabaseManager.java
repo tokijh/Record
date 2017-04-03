@@ -73,7 +73,17 @@ public class RealmDatabaseManager {
         return realm.where(clazz).findAll();
     }
 
+    public <E extends RealmObject> void update(Class<E> clazz, RealmUpdate realmUpdate) {
+        realm.executeTransaction(_realm -> {
+            realmUpdate.update();
+        });
+    }
+
     public interface RealmCreate<E> {
         void create(E realmObject);
+    }
+
+    public interface RealmUpdate {
+        void update();
     }
 }
