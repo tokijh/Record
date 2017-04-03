@@ -16,10 +16,13 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.team3.fastcampus.record.Account.SigninActivity;
 import com.team3.fastcampus.record.Diary.DiaryViewFragment;
 import com.team3.fastcampus.record.InDiary.InDiaryViewFragment;
+import com.team3.fastcampus.record.Util.LocationPicker;
+import com.team3.fastcampus.record.Util.Logger;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, DiaryViewFragment.DiaryViewInterface {
@@ -42,7 +45,7 @@ public class MainActivity extends AppCompatActivity
 
         // 메인에서 SigninActivity로 넘어가는 intent
         intent = new Intent(MainActivity.this, SigninActivity.class);
-        startActivity(intent);
+//        startActivity(intent);
 
         initView();
 
@@ -50,6 +53,26 @@ public class MainActivity extends AppCompatActivity
 
         // 초기 화면 지정
         showContentFragment(FragmentsID.DiaryViewFragment);
+
+//        new LocationPicker(this).show((address, location) -> {
+//            Logger.d("MainActivity", "getAddressByLatLng : "
+//                    + address.getCountryName() + " "
+//                    + address.getPostalCode() + " "
+//                    + address.getLocality() + " "
+//                    + address.getThoroughfare() + " "
+//                    + address.getFeatureName());
+//            Logger.d("MainActivity", location.latitude + " " + location.longitude);
+//
+//            Toast.makeText(this, "Address " + address.getCountryName() + " "
+//                            + address.getPostalCode() + " "
+//                            + address.getLocality() + " "
+//                            + address.getThoroughfare() + " "
+//                            + address.getFeatureName() + " : Location : "
+//                            + location.latitude + " "
+//                            + location.longitude
+//                    , Toast.LENGTH_SHORT)
+//                    .show();
+//        });
     }
 
     private void initView() {
@@ -129,12 +152,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    // Define Fragment Interfaces
-    @Override
-    public void showContent(Fragment fragment) {
-        showContentFragment(fragment);
-    }
-
+    // Define Fragment Interface
     @Override
     public void showInDiary() {
         showContentFragment(inDiaryViewFragment);
