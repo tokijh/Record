@@ -2,6 +2,7 @@ package com.team3.fastcampus.record.Util;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 /**
@@ -77,6 +78,10 @@ public class RealmDatabaseManager {
 
     public <E extends RealmObject> RealmResults<E> getAll(Class<E> clazz) {
         return realm.where(clazz).findAll();
+    }
+
+    public <E extends RealmObject> RealmQuery<E> get(Class<E> clazz) {
+        return realm.where(clazz);
     }
 
     public <E extends RealmObject> void update(Class<E> clazz, RealmUpdate realmUpdate) {
