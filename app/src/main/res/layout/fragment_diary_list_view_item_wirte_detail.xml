@@ -71,7 +71,7 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginRight="10dp"
                 android:background="#2ECC71"
-                android:shadowRadius="3dp"
+                android:shadowRadius="3"
                 android:text="Add Photo"
                 android:textColor="#ffffff" />
 
