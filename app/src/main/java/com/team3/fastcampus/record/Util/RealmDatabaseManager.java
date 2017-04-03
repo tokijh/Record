@@ -90,11 +90,51 @@ public class RealmDatabaseManager {
         });
     }
 
+    public <E extends RealmObject> void deleteAll() {
+        realm.executeTransaction(_realm -> {
+            _realm.deleteAll();
+        });
+    }
+
+    public <E extends RealmObject> void deleteAll(Class<E> clazz) {
+        realm.executeTransaction(_realm -> {
+            _realm.delete(clazz);
+        });
+    }
+
+    public <E extends RealmObject> void delete(E object) {
+        realm.executeTransaction(_realm -> {
+            object.deleteFromRealm();
+        });
+    }
+
+    public <E extends RealmObject> void delete(Class<E> clazz, String fieldName, long primaryKey) {
+        realm.executeTransaction(_realm -> {
+            _realm.where(clazz).equalTo(fieldName, primaryKey).findAll().deleteAllFromRealm();
+        });
+    }
+
+    public <E extends RealmObject> void delete(Class<E> clazz, RealmDeleteResults<E> realmDeleteResults) {
+        realm.executeTransaction(_realm -> {
+            realmDeleteResults.deleteResults(_realm.where(clazz)).deleteAllFromRealm();
+        });
+    }
+
+    public <E extends RealmObject> void delete(Class<E> clazz, RealmDeleteResults<E> realmDeleteResults, int position) {
+        realm.executeTransaction(_realm -> {
+            realmDeleteResults.deleteResults(_realm.where(clazz)).deleteFromRealm(position);
+        });
+    }
+
     public interface RealmCreate<E> {
         void create(E realmObject);
     }
 
     public interface RealmUpdate {
         void update();
+    }
+
+    public interface RealmDeleteResults<E extends RealmObject> {
+        RealmResults deleteResults(RealmQuery<E> realmResults);
     }
 }
