@@ -48,18 +48,22 @@ public class InDiaryListViewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_diary_view, container, false);
+        view = inflater.inflate(R.layout.fragment_in_diary_list_view, container, false);
 
         initView();
 
         initAdapter();
 
+        // TestDatas
+
+        // To get byte[] data from R.drawable.night
         Drawable d = getResources().getDrawable(R.drawable.night);
         Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         byte[] bitmapdata = stream.toByteArray();
 
+        // To get byte[] data from R.drawable.logo
         Drawable d1 = getResources().getDrawable(R.drawable.logo);
         Bitmap bitmap1 = ((BitmapDrawable)d1).getBitmap();
         ByteArrayOutputStream stream1 = new ByteArrayOutputStream();
@@ -85,7 +89,7 @@ public class InDiaryListViewFragment extends Fragment {
 
 
     private void initView() {
-        recyclerView = (RecyclerView) view.findViewById(R.id.fragment_diary_view_recyclerview);
+        recyclerView = (RecyclerView) view.findViewById(R.id.fragment_in_diary_view_recyclerview);
     }
 
     private void initAdapter() {
