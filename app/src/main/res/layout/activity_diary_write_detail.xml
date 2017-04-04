@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_diary_write_detail"
     android:layout_width="match_parent"
@@ -18,31 +19,20 @@
         android:textColor="#3498DB"
         android:textSize="20dp" />
 
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:background="#3498DB"
-        android:text="Submit"
-        android:textColor="#FFFFFF" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:layout_below="@+id/diary_list_detail_tv_diary_title"
-        android:orientation="vertical"
-        android:layout_above="@+id/button2">
+        android:orientation="vertical">
 
 
         <EditText
+            android:id="@+id/diary_list_detail_et_diary_title"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_gravity="left"
             android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:hint="Title" />
 
 
@@ -54,6 +44,7 @@
 
 
             <EditText
+                android:id="@+id/diary_list_detail_et_diary_locataion"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_gravity="left"
@@ -71,31 +62,63 @@
 
         </LinearLayout>
 
-
         <EditText
+            android:id="@+id/diary_list_detail_et_diary_date"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_gravity="left"
             android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:hint="Date" />
 
-
         <EditText
+            android:id="@+id/diary_list_detail_et_diary_content"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="200dp"
             android:layout_gravity="left"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:gravity="top"
-            android:hint="    Content" />
+            android:hint="Content" />
+    </LinearLayout>
 
-        <Button
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/fab_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="15dp"
+        fab:menu_colorNormal="#1565C0"
+        fab:menu_colorPressed="#2272CD"
+        fab:menu_colorRipple="#62B2FF"
+        fab:menu_fab_size="mini">
+
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_delete"
+            style="@style/MenuButtonsSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="10dp"
-            android:background="#3498DB"
-            android:text="Add Photo"
-            android:textColor="#FFFFFF" />
-    </LinearLayout>
+            android:src="@android:drawable/ic_menu_delete" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_update"
+            style="@style/MenuButtonsSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_edit" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_add"
+            style="@style/MenuButtonsSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_collapse_00008" />
+
+
+    </com.github.clans.fab.FloatingActionMenu>
+
 
 </RelativeLayout>
