@@ -36,7 +36,7 @@ tools:context="com.team3.fastcampus.record.Diary.DiaryViewFragment">
             android:layout_marginTop="20dp"
             android:textSize="8dp"
             android:textColor="#666666"
-            android:id="@+id/in_diary_list_view_day"
+            android:id="@+id/in_diary_list_view_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -46,7 +46,7 @@ tools:context="com.team3.fastcampus.record.Diary.DiaryViewFragment">
         <TextView
             android:id="@+id/in_diary_list_view_content"
             android:layout_width="match_parent"
-            android:layout_below="@+id/in_diary_list_view_day"
+            android:layout_below="@+id/in_diary_list_view_date"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
@@ -54,15 +54,27 @@ tools:context="com.team3.fastcampus.record.Diary.DiaryViewFragment">
             android:text="proin libero nunc consequat interdum varius sit amet mattis vulputate enim nulla aliquet porttitor lacus luctus accumsan tortor posuere ac ut consequat semper viverra nam libero justo laoreet sit amet cursus sit"
             />
 
+
+        <TextView
+            android:id="@+id/in_diary_list_view_more"
+            android:layout_height="30dp"
+            android:text="&#8942;"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="15dp"
+            android:layout_width="30dp"
+            android:gravity="center" />
+
         <android.support.v4.view.ViewPager
             android:id="@+id/in_diary_list_view_imageViewPager"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
             android:minHeight="200dp"
             android:layout_below="@+id/in_diary_list_view_title"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="10dp"
+            android:layout_height="200dp" />
 
     </RelativeLayout>
 

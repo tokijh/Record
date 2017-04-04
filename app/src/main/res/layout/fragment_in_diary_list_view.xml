@@ -1,8 +1,15 @@
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#bababa"
     tools:context="com.team3.fastcampus.record.InDiary.InDiaryListViewFragment">
 
-</FrameLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/fragment_in_diary_view_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/fragment_in_diary_list_view_item" />
+
+</RelativeLayout>
