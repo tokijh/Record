@@ -1,38 +1,74 @@
 package com.team3.fastcampus.record.Diary;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.team3.fastcampus.record.R;
 
-public class DiaryWriteDetailActivity extends AppCompatActivity {
+public class DiaryWriteDetailActivity extends AppCompatActivity implements View.OnClickListener {
+
+    EditText et_location;
+    FloatingActionButton btn_add_photo, btn_add, btn_update, btn_delete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diary_write_detail);
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
+
+
+        et_location = (EditText) findViewById(R.id.diary_list_detail_et_diary_locataion);
+
+        et_location.setOnClickListener(this);
+        btn_add = (FloatingActionButton) findViewById(R.id.fab_add);
+        btn_add_photo = (FloatingActionButton) findViewById(R.id.fab_photo);
+        btn_update = (FloatingActionButton) findViewById(R.id.fab_update);
+        btn_delete = (FloatingActionButton) findViewById(R.id.fab_delete);
+
+
     }
 
-    public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.list_view_item_write_detail_menu, menu);
-        return true;
-    }
+    @Override
+    public void onClick(View v) {
 
-    public boolean onOptionsItemSelected(MenuItem item){
+        switch (v.getId()) {
+            case R.id.diary_list_detail_et_diary_locataion:
 
-        switch (item.getItemId()){
-            case R.id.done :
-                Toast.makeText(this, "Hit Done!", Toast.LENGTH_SHORT).show();
+                //DatePicker 부분을 Dialog로 띄워서 표현해야함
+
                 break;
+
+            case R.id.fab_add:
+                Toast.makeText(this, "add", Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.fab_photo:
+                Toast.makeText(this, "photo", Toast.LENGTH_SHORT).show();
+
+                break;
+
+            case R.id.fab_update:
+                Toast.makeText(this, "update", Toast.LENGTH_SHORT).show();
+
+                break;
+
+            case R.id.fab_delete:
+                Toast.makeText(this, "delete", Toast.LENGTH_SHORT).show();
+
+                break;
+
+
         }
-        return true;
+
     }
+
+
+
+
+
+
 }
