@@ -1,12 +1,12 @@
 package com.team3.fastcampus.record.Diary;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.team3.fastcampus.record.R;
 
 public class DiaryWriteDetailActivity extends AppCompatActivity implements View.OnClickListener {
@@ -22,13 +22,16 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
 
 
         et_location = (EditText) findViewById(R.id.diary_list_detail_et_diary_locataion);
-
-        et_location.setOnClickListener(this);
         btn_add = (FloatingActionButton) findViewById(R.id.fab_add);
         btn_add_photo = (FloatingActionButton) findViewById(R.id.fab_photo);
         btn_update = (FloatingActionButton) findViewById(R.id.fab_update);
         btn_delete = (FloatingActionButton) findViewById(R.id.fab_delete);
 
+        et_location.setOnClickListener(this);
+        btn_add.setOnClickListener(this);
+        btn_add_photo.setOnClickListener(this);
+        btn_update.setOnClickListener(this);
+        btn_delete.setOnClickListener(this);
 
     }
 
