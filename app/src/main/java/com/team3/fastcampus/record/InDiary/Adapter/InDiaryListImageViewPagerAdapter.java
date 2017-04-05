@@ -56,13 +56,13 @@ public class InDiaryListImageViewPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        View view = inflater.inflate(R.layout.fragment_in_diary_list_view_item_image, null);
+        ImageView imageView = new ImageView(context);
         Glide.with(context)
                 .load(images.get(position).imageData)
                 .placeholder(R.drawable.night)
-                .into((ImageView) view.findViewById(R.id.imageView));
-        container.addView(view);
-        return view;
+                .into(imageView);
+        container.addView(imageView);
+        return imageView;
     }
 
     @Override
