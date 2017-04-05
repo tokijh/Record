@@ -11,4 +11,5 @@
 
     <string name="server_url">https://studydev.kr/</string>
     <string name="server_signup">api/users/</string>
+    <string name="server_signin">rest-auth/login/</string>
 </resources>
