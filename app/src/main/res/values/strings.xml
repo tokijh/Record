@@ -8,4 +8,7 @@
 
     <string name="facebook_app_id">118294965375350</string>
     <string name="google_map_api_key">AIzaSyAn1DRkl8pDIpkpQaSr81WnLwFa6at9QyM</string>
+
+    <string name="server_url">https://studydev.kr/</string>
+    <string name="server_signup">api/users/</string>
 </resources>
