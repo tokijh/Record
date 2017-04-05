@@ -22,12 +22,10 @@ public class InDiaryListImageViewPagerAdapter extends PagerAdapter {
 
     private List<Image> images;
     private Context context;
-    private LayoutInflater inflater;
 
     public InDiaryListImageViewPagerAdapter(Context context) {
         images = new ArrayList<>();
         this.context = context;
-        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     public void add(Image image) {
