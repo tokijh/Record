@@ -61,7 +61,7 @@ public class NetworkController {
     public <T> void excuteJsonCon(int method, @Nullable Map<String, String> datas, @Nullable Class<T> clazz, @Nullable NetworkControllerInterface<T> callBack) {
         if (disposable != null && !disposable.isDisposed()) {
             if (callBack != null) {
-                callBack.onError();
+                callBack.onError(new Throwable("disposable is using"));
             }
             return;
         }
@@ -87,7 +87,7 @@ public class NetworkController {
                     destroy();
                 }, error -> {
                     if (callBack != null) {
-                        callBack.onError();
+                        callBack.onError(error);
                     }
                     destroy();
                 });
@@ -135,7 +135,7 @@ public class NetworkController {
      * @param <T> Return 받을 class
      */
     public interface NetworkControllerInterface<T> {
-        void onError();
+        void onError(Throwable error);
 
         void onFinished(T result);
     }
