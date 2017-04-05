@@ -11,8 +11,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentStart="true">
 
         <RelativeLayout
             android:id="@+id/activity_signup"
@@ -41,50 +40,48 @@
                 android:layout_marginTop="30dp">
 
                 <EditText
-                    android:id="@+id/et_email"
+                    android:id="@+id/et_username"
                     android:layout_width="300dp"
                     android:layout_height="50dp"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="30dp"
                     android:ems="10"
-                    android:hint="E-mail or username"
+                    android:hint="E-mail"
                     android:inputType="textEmailAddress"
-                    android:textColorHint="#979797" />
+                    android:textColor="#000000"
+                    android:textColorHint="#979797"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentRight="true" />
 
                 <EditText
                     android:id="@+id/et_password"
                     android:layout_width="300dp"
                     android:layout_height="50dp"
-                    android:layout_below="@+id/et_email"
                     android:layout_centerHorizontal="true"
                     android:ems="10"
-                    android:hint="Password"
+                    android:hint="Password (대소,숫자,특수 문자)"
                     android:inputType="textPassword"
-                    android:textColorHint="#979797" />
-
-                <EditText
-                    android:id="@+id/et_name"
-                    android:layout_width="300dp"
-                    android:layout_height="50dp"
-                    android:layout_alignLeft="@+id/et_password"
-                    android:layout_alignStart="@+id/et_password"
-                    android:layout_below="@+id/et_password"
-                    android:ems="10"
-                    android:hint="Name"
-                    android:inputType="textEmailAddress"
-                    android:textColorHint="#979797" />
+                    android:textColor="#000000"
+                    android:textColorHint="#979797"
+                    android:layout_alignLeft="@+id/et_username"
+                    android:layout_alignRight="@+id/et_username"
+                    android:layout_below="@+id/et_username"
+                    android:layout_marginTop="10dp" />
 
                 <EditText
                     android:id="@+id/et_nickname"
                     android:layout_width="300dp"
-                    android:layout_height="50dp"
-                    android:layout_alignLeft="@+id/et_name"
-                    android:layout_alignStart="@+id/et_name"
-                    android:layout_below="@+id/et_name"
                     android:ems="10"
-                    android:hint="Nick name"
+                    android:hint="Name"
                     android:inputType="textEmailAddress"
-                    android:textColorHint="#979797" />
+                    android:textColor="#000000"
+                    android:textColorHint="#979797"
+                    android:layout_height="50dp"
+                    android:layout_alignLeft="@+id/et_password"
+                    android:layout_alignStart="@+id/et_password"
+                    android:layout_below="@+id/et_password"
+                    android:layout_marginTop="10dp" />
 
             </RelativeLayout>
 
