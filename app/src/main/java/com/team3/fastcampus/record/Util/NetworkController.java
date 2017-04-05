@@ -12,6 +12,7 @@ import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -21,15 +22,30 @@ import okhttp3.Response;
 /**
  * HTTP 통신을 위한 컨트롤러
  */
-public class NetworkController<T> {
+public class NetworkController {
 
     public static final int GET = 0;
     public static final int POST = 1;
 
     private String url;
 
-    public NetworkController(String url) {
+    private Disposable disposable;
+
+    private NetworkController(String url) {
         this.url = url;
+    }
+
+    public static NetworkController newInstance(String url) {
+        return new NetworkController(url);
+    }
+
+    private void destroy() {
+        if (disposable != null && !disposable.isDisposed())
+            disposable.dispose();
+    }
+
+    public boolean isDisposed() {
+        return disposable == null || disposable.isDisposed();
     }
 
     /**
@@ -42,8 +58,14 @@ public class NetworkController<T> {
      * @param clazz 반환받들 객체
      * @param callBack CallBack Interface지정
      */
-    public void excuteJsonCon(int method, @Nullable Map<String, String> datas, @Nullable Class<T> clazz, @Nullable NetworkControllerInterface<T> callBack) {
-        Observable.create((subscriber) -> {
+    public <T> void excuteJsonCon(int method, @Nullable Map<String, String> datas, @Nullable Class<T> clazz, @Nullable NetworkControllerInterface<T> callBack) {
+        if (disposable != null && !disposable.isDisposed()) {
+            if (callBack != null) {
+                callBack.onError();
+            }
+            return;
+        }
+        disposable = Observable.create((subscriber) -> {
             OkHttpClient client = new OkHttpClient();
 
             Response response = client.newCall(buildRequest(method, datas)).execute();
@@ -62,10 +84,12 @@ public class NetworkController<T> {
                         T result = gson.fromJson(jsonString.toString(), clazz);
                         callBack.onFinished(result);
                     }
+                    destroy();
                 }, error -> {
                     if (callBack != null) {
                         callBack.onError();
                     }
+                    destroy();
                 });
     }
 
