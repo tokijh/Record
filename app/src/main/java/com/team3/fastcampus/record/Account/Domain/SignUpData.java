@@ -5,15 +5,15 @@ package com.team3.fastcampus.record.Account.Domain;
  */
 
 public class SignUpData {
-    String token;
-    User user;
+    private String key;
+    private User user;
 
-    public String getToken() {
-        return token;
+    public String getKey() {
+        return key;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setKey(String token) {
+        this.key = key;
     }
 
     public User getUser() {
@@ -25,9 +25,9 @@ public class SignUpData {
     }
 
     public class User {
-        String username;
-        String nickname;
-        String user_type;
+        private String username;
+        private String nickname;
+        private String user_type;
 
         public String getUsername() {
             return username;

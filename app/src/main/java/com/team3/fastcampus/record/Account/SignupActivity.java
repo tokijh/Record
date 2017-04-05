@@ -4,6 +4,7 @@ package com.team3.fastcampus.record.Account;
  * Created by yoonjoonghyun on 2017. 3. 25..
  */
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,12 +32,11 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
     private EditText et_email;
     private EditText et_password;
-    private EditText et_name;
     private EditText et_nickname;
 
     private Button btn_signup;
 
-    CompositeDisposable compositeDisposable;
+    private CompositeDisposable compositeDisposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +49,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void initView() {
-        et_email = (EditText) findViewById(R.id.et_email);
+        et_email = (EditText) findViewById(R.id.et_username);
         et_password = (EditText) findViewById(R.id.et_password);
-        et_name = (EditText) findViewById(R.id.et_name);
         et_nickname = (EditText) findViewById(R.id.et_nickname);
         btn_signup = (Button) findViewById(R.id.btn_signup);
     }
@@ -65,7 +64,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     private void initCheckValid() {
         compositeDisposable = new CompositeDisposable();
 
-        Observable<Boolean> nameValid = RxTextView.textChanges(et_name)
+        Observable<Boolean> nameValid = RxTextView.textChanges(et_nickname)
                 .map(t -> t.length() > 0);
 
         Observable<Boolean> emailValid = RxTextView.textChanges(et_email)
@@ -76,7 +75,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
         compositeDisposable.add(nameValid.distinctUntilChanged()
                 .map(b -> b ? Color.BLACK : Color.RED)
-                .subscribe(color -> et_name.setTextColor(color)));
+                .subscribe(color -> et_nickname.setTextColor(color)));
 
         compositeDisposable.add(emailValid.distinctUntilChanged()
                 .map(b -> b ? Color.BLACK : Color.RED)
@@ -112,6 +111,9 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onFinished(SignUpData result) {
                 Toast.makeText(SignupActivity.this, "회원 가입 성공", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent();
+                intent.putExtra("token", result.getKey());
+                setResult(RESULT_OK, intent);
                 finish();
             }
         });
