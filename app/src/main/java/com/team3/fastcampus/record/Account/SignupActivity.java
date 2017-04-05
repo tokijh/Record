@@ -10,10 +10,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.jakewharton.rxbinding2.widget.RxTextView;
+import com.team3.fastcampus.record.Account.Domain.SignUpData;
 import com.team3.fastcampus.record.R;
+import com.team3.fastcampus.record.Util.NetworkController;
 import com.team3.fastcampus.record.Util.TextPatternChecker;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
@@ -89,8 +95,26 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     private void signUp() {
         String email = et_email.getText().toString();
         String password = et_password.getText().toString();
-        String name = et_name.getText().toString();
         String nickname = et_nickname.getText().toString();
+
+        Map<String, String> postData = new HashMap<>();
+        postData.put("username", email);
+        postData.put("password", password);
+        postData.put("nickname", nickname);
+        postData.put("user_type", "NORMAL");
+        NetworkController networkController = NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_signup));
+        networkController.excuteJsonCon(NetworkController.POST, postData, SignUpData.class, new NetworkController.NetworkControllerInterface<SignUpData>() {
+            @Override
+            public void onError() {
+                Toast.makeText(SignupActivity.this, "회원 가입을 할 수 없습니다.\n잠시 후 다시 시도 해 주세요.", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFinished(SignUpData result) {
+                Toast.makeText(SignupActivity.this, "회원 가입 성공", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
     }
 
     @Override
