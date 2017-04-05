@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -71,6 +72,8 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_signin);
 
         init();
+
+        signinCheck();
     }
 
     private void init() {
@@ -138,6 +141,27 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                 .enableAutoManage(this, google_callbackManager)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+    }
+
+    private void signinCheck() {
+        googleSignInCheck();
+        faceBookSiginInCheck();
+    }
+
+    private void googleSignInCheck() {
+        // Google로그인 체크
+//        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) { // 로그인 되어 있음
+//            mGoogleApiClient.reconnect();
+//        }
+    }
+
+    private void faceBookSiginInCheck() {
+        // FaceBook로그인 체크
+        AccessToken faceBookaccessToken = AccessToken.getCurrentAccessToken();
+        if (faceBookaccessToken != null) { // 로그인 되어 있음
+            Logger.e(TAG, faceBookaccessToken.getToken());
+            successSignIn(new SignInData(faceBookaccessToken.getToken()));
+        }
     }
 
     private void successFacebook(LoginResult loginResult) {
