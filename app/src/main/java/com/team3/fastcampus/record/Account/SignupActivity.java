@@ -105,7 +105,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         NetworkController networkController = NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_signup));
         networkController.excuteJsonCon(NetworkController.POST, postData, SignUpData.class, new NetworkController.NetworkControllerInterface<SignUpData>() {
             @Override
-            public void onError() {
+            public void onError(Throwable error) {
                 Toast.makeText(SignupActivity.this, "회원 가입을 할 수 없습니다.\n잠시 후 다시 시도 해 주세요.", Toast.LENGTH_SHORT).show();
             }
 
