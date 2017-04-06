@@ -97,9 +97,15 @@
         android:layout_marginRight="15dp"
         fab:menu_colorNormal="#1565C0"
         fab:menu_colorPressed="#2272CD"
-        fab:menu_colorRipple="#62B2FF"
-        fab:menu_fab_size="mini">
+        fab:menu_colorRipple="#62B2FF">
 
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_gallery"
+            style="@style/MenuButtonsSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:src="@android:drawable/ic_menu_gallery" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_photo"
