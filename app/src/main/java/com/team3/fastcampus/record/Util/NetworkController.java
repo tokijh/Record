@@ -9,6 +9,9 @@ import android.support.annotation.Nullable;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Map;
 
 import io.reactivex.Observable;
@@ -93,6 +96,17 @@ public class NetworkController {
      */
     public <T> T decode(Class<T> clazz, String json) throws JsonSyntaxException {
         return new Gson().fromJson(json, clazz);
+    }
+
+    /**
+     * Decoding by JSONObject
+     *
+     * @param json
+     * @return JSONObject
+     * @throws JSONException
+     */
+    public JSONObject decode(String json) throws JSONException {
+        return new JSONObject(json);
     }
 
     /**
