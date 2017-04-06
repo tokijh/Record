@@ -48,6 +48,39 @@ public class NetworkController {
         return disposable == null || disposable.isDisposed();
     }
 
+    public void excute(int method, @Nullable Map<String, String> datas, @Nullable StatusCallback statusCallback) {
+        if (disposable != null && !disposable.isDisposed()) {
+            if (statusCallback != null) {
+                statusCallback.onError(new Throwable("disposable is using"));
+            }
+            return;
+        }
+
+        disposable = Observable.create(subscriber -> {
+            OkHttpClient client = new OkHttpClient();
+
+            Response response = client.newCall(buildRequest(method, datas)).execute();
+
+            String result = response.body().string();
+
+            response.close();
+
+            subscriber.onNext(result);
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    if (statusCallback != null) {
+                        statusCallback.onSuccess(response.toString());
+                    }
+                    destroy();
+                }, error -> {
+                    if (statusCallback != null) {
+                        statusCallback.onError(error);
+                    }
+                    destroy();
+                });
+    }
+
     /**
      * Network Connection By JSON (GET, POST) using OKHttp3
      *
@@ -138,5 +171,14 @@ public class NetworkController {
         void onError(Throwable error);
 
         void onFinished(T result);
+    }
+
+    /**
+     * 통신 상태 결과 Callback
+     */
+    public interface StatusCallback {
+        void onError(Throwable error);
+
+        void onSuccess(String response);
     }
 }
