@@ -151,51 +151,6 @@ public class NetworkController {
     }
 
     /**
-     * Network Connection By JSON (GET, POST) using OKHttp3
-     *
-     * Response 는 callBack의 onFinished()에
-     *
-     * @param method GET OR POST
-     * @param datas Params key, value
-     * @param clazz 반환받들 객체
-     * @param callBack CallBack Interface지정
-     */
-    public <T> void excuteJsonCon(int method, @Nullable Map<String, Object> datas, @Nullable Class<T> clazz, @Nullable NetworkControllerInterface<T> callBack) {
-        if (disposable != null && !disposable.isDisposed()) {
-            if (callBack != null) {
-                callBack.onError(new Throwable("disposable is using"));
-            }
-            return;
-        }
-        disposable = Observable.create((subscriber) -> {
-            OkHttpClient client = new OkHttpClient();
-
-            Response response = client.newCall(buildRequest(method, datas)).execute();
-
-            String result = response.body().string();
-            response.close();
-
-            subscriber.onNext(result);
-
-            subscriber.onComplete();
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(jsonString -> {
-                    if (callBack != null && clazz != null) {
-                        Gson gson = new Gson();
-                        T result = gson.fromJson(jsonString.toString(), clazz);
-                        callBack.onFinished(result);
-                    }
-                    destroy();
-                }, error -> {
-                    if (callBack != null) {
-                        callBack.onError(error);
-                    }
-                    destroy();
-                });
-    }
-
-    /**
      * 서버에 보낼 Request만들기
      *
      * @param method 전송 방식 GET OR POST
@@ -230,16 +185,6 @@ public class NetworkController {
         requestBuilder.url(url);
 
         return requestBuilder.build();
-    }
-
-    /**
-     * 통신 완료, 실패의 Callback Interface
-     * @param <T> Return 받을 class
-     */
-    public interface NetworkControllerInterface<T> {
-        void onError(Throwable error);
-
-        void onFinished(T result);
     }
 
     /**
