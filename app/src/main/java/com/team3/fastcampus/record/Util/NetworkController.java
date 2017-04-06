@@ -12,6 +12,8 @@ import com.google.gson.JsonSyntaxException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import io.reactivex.Observable;
@@ -107,6 +109,45 @@ public class NetworkController {
      */
     public JSONObject decode(String json) throws JSONException {
         return new JSONObject(json);
+    }
+
+    /**
+     * Encoding by JSONObject
+     *
+     * @param jsonObject
+     * @return
+     * @throws JSONException
+     */
+    public Map<String, Object> encode(JSONObject jsonObject) throws JSONException {
+        Map<String, Object> data = new HashMap<>();
+        Iterator<String> keys = jsonObject.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            data.put(key, jsonObject.get(key));
+        }
+        return data;
+    }
+
+    /**
+     * Encoding from object class by Gson
+     * @param object
+     * @param <T>
+     * @return
+     * @throws JSONException
+     */
+    public <T> Map<String, Object> encode(T object) throws JSONException {
+        return encode(new Gson().toJson(object));
+    }
+
+    /**
+     * Encoding from String
+     *
+     * @param json
+     * @return
+     * @throws JSONException
+     */
+    public Map<String, Object> encode(String json) throws JSONException {
+        return encode(new JSONObject(json));
     }
 
     /**
