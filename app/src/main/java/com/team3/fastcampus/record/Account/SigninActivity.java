@@ -159,7 +159,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
     private void faceBookSiginInCheck() {
         // FaceBook로그인 체크
         AccessToken faceBookaccessToken = AccessToken.getCurrentAccessToken();
-        if (faceBookaccessToken != null) { // 로그인 되어 있음
+        if (faceBookaccessToken.isExpired()) { // 로그인 되어 있음
             Logger.e(TAG, faceBookaccessToken.getToken());
             successSignIn(new SignInData(faceBookaccessToken.getToken()));
         }
