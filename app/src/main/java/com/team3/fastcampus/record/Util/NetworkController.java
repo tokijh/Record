@@ -39,6 +39,9 @@ public class NetworkController {
     private Disposable disposable;
 
     private NetworkController(String url) {
+        if(!url.startsWith("http")){
+            url = "http://" + url;
+        }
         this.url = url;
     }
 
