@@ -24,6 +24,7 @@ import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
+import okhttp3.Response;
 
 /**
  * 회원 가입 Activity
@@ -96,23 +97,24 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         String password = et_password.getText().toString();
         String nickname = et_nickname.getText().toString();
 
-        Map<String, String> postData = new HashMap<>();
+        Map<String, Object> postData = new HashMap<>();
         postData.put("username", email);
         postData.put("password", password);
         postData.put("nickname", nickname);
         postData.put("user_type", "NORMAL");
-        NetworkController networkController = NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_signup));
-        networkController.excuteJsonCon(NetworkController.POST, postData, SignUpData.class, new NetworkController.NetworkControllerInterface<SignUpData>() {
+        NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_signup)).excute(NetworkController.POST, postData, new NetworkController.StatusCallback() {
             @Override
             public void onError(Throwable error) {
                 Toast.makeText(SignupActivity.this, "회원 가입을 할 수 없습니다.\n잠시 후 다시 시도 해 주세요.", Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onFinished(SignUpData result) {
+            public void onSuccess(Response response) {
+                SignUpData signUpData = NetworkController.decode(SignUpData.class, response.body().toString());
+                response.close();
                 Toast.makeText(SignupActivity.this, "회원 가입 성공", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent();
-                intent.putExtra("token", result.getKey());
+                intent.putExtra("token", signUpData.getKey());
                 setResult(RESULT_OK, intent);
                 finish();
             }

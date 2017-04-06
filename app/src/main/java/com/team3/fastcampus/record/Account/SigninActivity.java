@@ -40,6 +40,7 @@ import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
+import okhttp3.Response;
 
 /**
  * 회원 로그인 Activity
@@ -147,7 +148,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                         String name = object.getString("name");
                         String uuid = object.getString("id");
                         Logger.e("UUID", uuid);
-                        Map<String, String> postData = new HashMap<>();
+                        Map<String, Object> postData = new HashMap<>();
                         postData.put("username", uuid);
                         postData.put("nickname", name);
                         postData.put("password", "");
@@ -162,7 +163,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void successGoogle(GoogleSignInAccount result) {
-        Map<String, String> postData = new HashMap<>();
+        Map<String, Object> postData = new HashMap<>();
         postData.put("username", result.getEmail());
         postData.put("nickname", result.getDisplayName());
         postData.put("password", "");
@@ -177,35 +178,37 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         finish();
     }
 
-    private void signup(Map<String, String> postData) {
-        NetworkController networkController = NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_signup));
-        networkController.excuteJsonCon(NetworkController.POST, postData, SignUpData.class, new NetworkController.NetworkControllerInterface<SignUpData>() {
+    private void signup(Map<String, Object> postData) {
+        NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_signup)).excute(NetworkController.POST, postData, new NetworkController.StatusCallback() {
             @Override
             public void onError(Throwable error) {
                 Toast.makeText(SigninActivity.this, "로그인을 할 수 없습니다.\n로그아웃 후 다시 시도 해 주세요.", Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onFinished(SignUpData result) {
-                successSignIn(new SignInData(result.getKey()));
+            public void onSuccess(Response response) {
+                SignUpData signUpData = NetworkController.decode(SignUpData.class, response.body().toString());
+                successSignIn(new SignInData(signUpData.getKey()));
+                response.close();
             }
         });
     }
 
     private void signin() {
-        Map<String, String> postData = new HashMap<>();
+        Map<String, Object> postData = new HashMap<>();
         postData.put("username", et_email.getText().toString());
         postData.put("password", et_password.getText().toString());
-        NetworkController networkController = NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_signin));
-        networkController.excuteJsonCon(NetworkController.POST, postData, SignInData.class, new NetworkController.NetworkControllerInterface<SignInData>() {
+        NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_signin)).excute(NetworkController.POST, postData, new NetworkController.StatusCallback() {
             @Override
             public void onError(Throwable error) {
                 Toast.makeText(SigninActivity.this, "로그인을 할 수 없습니다.\n잠시 후 다시 시도 해 주세요.", Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onFinished(SignInData result) {
-                successSignIn(result);
+            public void onSuccess(Response response) {
+                SignInData signInData = NetworkController.decode(SignInData.class, response.body().toString());
+                successSignIn(signInData);
+                response.close();
             }
         });
     }
