@@ -34,6 +34,7 @@
         <activity android:name=".Diary.DiaryManageActivity" />
         <activity android:name=".Account.AccountActivity"></activity>
         <activity android:name=".Util.Permission.PermissionControllerActivity" />
+        <activity android:name=".Diary.DiaryWriteDetailActivity"/>
 
     </application>
 
