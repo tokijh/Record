@@ -1,6 +1,5 @@
 package com.team3.fastcampus.record.Diary;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.os.Build;
 import android.os.Bundle;
@@ -98,16 +97,11 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
 
     }
 
-
     private void UpdateCal() {
         tv_date.setText(String.format("%d/%d/%d", mYear, mMonth + 1, mDay));
     }
 }
 
 
-class PickerDialogSet extends Activity {
-    int mYear, MMonth, mDay, mHour, mMinute;
-
-}
 
 
