@@ -12,6 +12,7 @@ import com.google.gson.JsonSyntaxException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -63,20 +64,23 @@ public class NetworkController {
         }
 
         disposable = Observable.create(subscriber -> {
-            OkHttpClient client = new OkHttpClient();
+            try {
+                OkHttpClient client = new OkHttpClient();
 
-            Response response = client.newCall(buildRequest(method, datas)).execute();
+                Response response = client.newCall(buildRequest(method, datas)).execute();
+                response.close();
 
-            String result = response.body().string();
-
-            response.close();
-
-            subscriber.onNext(result);
+                subscriber.onNext(response);
+            } catch (IOException e) {
+                if (statusCallback != null) {
+                    statusCallback.onError(e);
+                }
+            }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
                     if (statusCallback != null) {
-                        statusCallback.onSuccess(response.toString());
+                        statusCallback.onSuccess((Response) response);
                     }
                     destroy();
                 }, error -> {
@@ -193,6 +197,6 @@ public class NetworkController {
     public interface StatusCallback {
         void onError(Throwable error);
 
-        void onSuccess(String response);
+        void onSuccess(Response response);
     }
 }
