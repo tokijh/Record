@@ -129,17 +129,6 @@ public class NetworkController {
     }
 
     /**
-     * Encoding from object class by Gson
-     * @param object
-     * @param <T>
-     * @return
-     * @throws JSONException
-     */
-    public static <T> Map<String, Object> encode(T object) throws JSONException {
-        return encode(new Gson().toJson(object));
-    }
-
-    /**
      * Encoding from String
      *
      * @param json
@@ -148,6 +137,17 @@ public class NetworkController {
      */
     public static Map<String, Object> encode(String json) throws JSONException {
         return encode(new JSONObject(json));
+    }
+
+    /**
+     * Encoding from object class by Gson
+     * @param object
+     * @param <T>
+     * @return
+     * @throws JSONException
+     */
+    public static <T> Map<String, Object> encode(T object) throws JSONException {
+        return encode(new Gson().toJson(object));
     }
 
     /**
