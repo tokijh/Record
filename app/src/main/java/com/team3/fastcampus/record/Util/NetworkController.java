@@ -52,7 +52,7 @@ public class NetworkController {
         return disposable == null || disposable.isDisposed();
     }
 
-    public void excute(int method, @Nullable Map<String, String> datas, @Nullable StatusCallback statusCallback) {
+    public void excute(int method, @Nullable Map<String, Object> datas, @Nullable StatusCallback statusCallback) {
         if (disposable != null && !disposable.isDisposed()) {
             if (statusCallback != null) {
                 statusCallback.onError(new Throwable("disposable is using"));
@@ -119,7 +119,7 @@ public class NetworkController {
      * @param clazz 반환받들 객체
      * @param callBack CallBack Interface지정
      */
-    public <T> void excuteJsonCon(int method, @Nullable Map<String, String> datas, @Nullable Class<T> clazz, @Nullable NetworkControllerInterface<T> callBack) {
+    public <T> void excuteJsonCon(int method, @Nullable Map<String, Object> datas, @Nullable Class<T> clazz, @Nullable NetworkControllerInterface<T> callBack) {
         if (disposable != null && !disposable.isDisposed()) {
             if (callBack != null) {
                 callBack.onError(new Throwable("disposable is using"));
@@ -161,7 +161,7 @@ public class NetworkController {
      * @param datas 함께 전송할 params
      * @return OKHttp3의 Request
      */
-    private Request buildRequest(int method, Map<String, String> datas) {
+    private Request buildRequest(int method, Map<String, Object> datas) {
         Request.Builder requestBuilder = new Request.Builder();
 
         if (method == GET) {
@@ -178,7 +178,7 @@ public class NetworkController {
             FormBody.Builder formBuilder = new FormBody.Builder();
             if (datas != null) {
                 for (String key : datas.keySet()) {
-                    formBuilder.addEncoded(key, datas.get(key));
+                    formBuilder.addEncoded(key, datas.get(key).toString());
                 }
             }
             requestBuilder.post(formBuilder.build());
