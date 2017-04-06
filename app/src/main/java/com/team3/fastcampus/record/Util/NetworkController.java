@@ -96,7 +96,7 @@ public class NetworkController {
      * @return ClassData
      * @throws JsonSyntaxException
      */
-    public <T> T decode(Class<T> clazz, String json) throws JsonSyntaxException {
+    public static <T> T decode(Class<T> clazz, String json) throws JsonSyntaxException {
         return new Gson().fromJson(json, clazz);
     }
 
@@ -107,7 +107,7 @@ public class NetworkController {
      * @return JSONObject
      * @throws JSONException
      */
-    public JSONObject decode(String json) throws JSONException {
+    public static JSONObject decode(String json) throws JSONException {
         return new JSONObject(json);
     }
 
@@ -118,7 +118,7 @@ public class NetworkController {
      * @return
      * @throws JSONException
      */
-    public Map<String, Object> encode(JSONObject jsonObject) throws JSONException {
+    public static Map<String, Object> encode(JSONObject jsonObject) throws JSONException {
         Map<String, Object> data = new HashMap<>();
         Iterator<String> keys = jsonObject.keys();
         while (keys.hasNext()) {
@@ -129,25 +129,25 @@ public class NetworkController {
     }
 
     /**
-     * Encoding from object class by Gson
-     * @param object
-     * @param <T>
-     * @return
-     * @throws JSONException
-     */
-    public <T> Map<String, Object> encode(T object) throws JSONException {
-        return encode(new Gson().toJson(object));
-    }
-
-    /**
      * Encoding from String
      *
      * @param json
      * @return
      * @throws JSONException
      */
-    public Map<String, Object> encode(String json) throws JSONException {
+    public static Map<String, Object> encode(String json) throws JSONException {
         return encode(new JSONObject(json));
+    }
+
+    /**
+     * Encoding from object class by Gson
+     * @param object
+     * @param <T>
+     * @return
+     * @throws JSONException
+     */
+    public static <T> Map<String, Object> encode(T object) throws JSONException {
+        return encode(new Gson().toJson(object));
     }
 
     /**
