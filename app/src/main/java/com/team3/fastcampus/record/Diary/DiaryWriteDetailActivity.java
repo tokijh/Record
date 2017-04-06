@@ -65,18 +65,13 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
 
     }
 
-    private void UpdateCal() {
-        tv_date.setText(String.format("%d / %d / %d",mYear,mMonth +1, mDay));
-    }
-
     @Override
     public void onClick(View v) {
 
         switch (v.getId()) {
             case R.id.diary_list_detail_tv_diary_date:
 
-                new DatePickerDialog(this , mDateSetListener, mYear, mMonth, mDay).show();
-
+                new DatePickerDialog(this, mDateSetListener, mYear, mMonth, mDay).show();
                 break;
 
             case R.id.fab_add:
@@ -103,6 +98,10 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
 
     }
 
+
+    private void UpdateCal() {
+        tv_date.setText(String.format("%d/%d/%d", mYear, mMonth + 1, mDay));
+    }
 }
 
 
@@ -110,3 +109,5 @@ class PickerDialogSet extends Activity {
     int mYear, MMonth, mDay, mHour, mMinute;
 
 }
+
+
