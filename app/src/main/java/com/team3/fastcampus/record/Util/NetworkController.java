@@ -68,7 +68,6 @@ public class NetworkController {
                 OkHttpClient client = new OkHttpClient();
 
                 Response response = client.newCall(buildRequest(method, datas)).execute();
-                response.close();
 
                 subscriber.onNext(response);
             } catch (IOException e) {
