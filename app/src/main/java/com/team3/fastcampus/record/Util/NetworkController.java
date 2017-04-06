@@ -7,6 +7,7 @@ package com.team3.fastcampus.record.Util;
 import android.support.annotation.Nullable;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import java.util.Map;
 
@@ -79,6 +80,19 @@ public class NetworkController {
                     }
                     destroy();
                 });
+    }
+
+    /**
+     * Decoding by Gson
+     *
+     * @param clazz
+     * @param json
+     * @param <T>
+     * @return ClassData
+     * @throws JsonSyntaxException
+     */
+    public <T> T decode(Class<T> clazz, String json) throws JsonSyntaxException {
+        return new Gson().fromJson(json, clazz);
     }
 
     /**
