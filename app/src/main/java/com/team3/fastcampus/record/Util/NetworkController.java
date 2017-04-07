@@ -62,6 +62,17 @@ public class NetworkController {
             disposable.dispose();
     }
 
+    /**
+     * 인터넷 연결 상태를 가져온다.
+     *
+     * ENABLE 연결인 경우에는 (networkStatus & NETWORK_ENABLE > 0) 가 true인 경우
+     *
+     * WIFI 연결인 경우에는 (networkStatus & NETWORK_WIFI > 0) 가 true인 경우
+     * MOBILE 연결인 경우에는 (networkStatus & NETWORK_MOBILE > 0) 가 true인 경우
+     *
+     * @param context
+     * @return
+     */
     public static int checkNetworkStatus(Context context) {
         int networkStatus = NETWORK_DISABLE;
 
@@ -83,10 +94,35 @@ public class NetworkController {
         return networkStatus;
     }
 
+    /**
+     * ENABLE인지 아닌지 판단
+     *
+     * @param networkStatus
+     * @return
+     */
+    public static boolean isNetworkStatusENABLE(int networkStatus) {
+        if ((networkStatus & NETWORK_ENABLE) > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * disposable이 Disposed인지 확인
+     *
+     * @return
+     */
     public boolean isDisposed() {
         return disposable == null || disposable.isDisposed();
     }
 
+    /**
+     * Http통신 시작
+     *
+     * @param method
+     * @param datas null시 전송 파라미터 없음.
+     * @param statusCallback null시 callback없음.
+     */
     public void excute(int method, @Nullable Map<String, Object> datas, @Nullable StatusCallback statusCallback) {
         if (disposable != null && !disposable.isDisposed()) {
             if (statusCallback != null) {
