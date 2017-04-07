@@ -13,12 +13,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.gson.JsonSyntaxException;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.team3.fastcampus.record.Account.Domain.SignUpData;
 import com.team3.fastcampus.record.R;
+import com.team3.fastcampus.record.Util.Logger;
 import com.team3.fastcampus.record.Util.NetworkController;
 import com.team3.fastcampus.record.Util.TextPatternChecker;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +33,8 @@ import okhttp3.Response;
  * 회원 가입 Activity
  */
 public class SignupActivity extends AppCompatActivity implements View.OnClickListener {
+
+    public static final String TAG = "SignupActivity";
 
     private EditText et_email;
     private EditText et_password;
@@ -92,7 +97,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                 .subscribe( enabled -> btn_signup.setEnabled(enabled)));
     }
 
-    private void signUp() {
+    private void signup() {
         String email = et_email.getText().toString();
         String password = et_password.getText().toString();
         String nickname = et_nickname.getText().toString();
@@ -110,13 +115,23 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
             @Override
             public void onSuccess(Response response) {
-                SignUpData signUpData = NetworkController.decode(SignUpData.class, response.body().toString());
-                response.close();
-                Toast.makeText(SignupActivity.this, "회원 가입 성공", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent();
-                intent.putExtra("token", signUpData.getKey());
-                setResult(RESULT_OK, intent);
-                finish();
+                try {
+                    if (response.code() == 201) {
+                        SignUpData signUpData = NetworkController.decode(SignUpData.class, response.body().string());
+                        Toast.makeText(SignupActivity.this, "회원 가입 성공", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent();
+                        intent.putExtra("token", signUpData.getToken());
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+                } catch (IOException e) {
+                    Logger.e(TAG, "signup - NetworkController - excute - onSuccess - IOException : " + e.getMessage());
+                } catch (JsonSyntaxException e) {
+                    Logger.e(TAG, "signup - NetworkController - excute - onSuccess - JsonSyntaxException : " + e.getMessage());
+                } finally {
+                    response.close();
+                }
+                Toast.makeText(SignupActivity.this, "회원 가입을 할 수 없습니다.\n잠시 후 다시 시도 해 주세요.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -125,7 +140,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_signup:
-                signUp();
+                signup();
                 break;
         }
     }

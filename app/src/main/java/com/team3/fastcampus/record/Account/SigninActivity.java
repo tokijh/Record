@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -25,6 +26,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.gson.JsonSyntaxException;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.team3.fastcampus.record.Account.Domain.SignInData;
 import com.team3.fastcampus.record.Account.Domain.SignUpData;
@@ -35,6 +37,7 @@ import com.team3.fastcampus.record.Util.TextPatternChecker;
 
 import org.json.JSONException;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,6 +75,8 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_signin);
 
         init();
+
+        signinCheck();
     }
 
     private void init() {
@@ -141,6 +146,27 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                 .build();
     }
 
+    private void signinCheck() {
+        googleSignInCheck();
+        faceBookSiginInCheck();
+    }
+
+    private void googleSignInCheck() {
+        // Google로그인 체크
+//        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) { // 로그인 되어 있음
+//            mGoogleApiClient.reconnect();
+//        }
+    }
+
+    private void faceBookSiginInCheck() {
+        // FaceBook로그인 체크
+        AccessToken faceBookaccessToken = AccessToken.getCurrentAccessToken();
+        if (faceBookaccessToken != null && !faceBookaccessToken.isExpired()) { // 로그인 되어 있음
+            Logger.e(TAG, faceBookaccessToken.getToken());
+            successSignIn(new SignInData(faceBookaccessToken.getToken()));
+        }
+    }
+
     private void successFacebook(LoginResult loginResult) {
         GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(),
                 (object, response) -> {
@@ -182,14 +208,26 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_signup)).excute(NetworkController.POST, postData, new NetworkController.StatusCallback() {
             @Override
             public void onError(Throwable error) {
+                Logger.e(TAG, "signup - NetworkController - excute - onError : " + error.getMessage());
                 Toast.makeText(SigninActivity.this, "로그인을 할 수 없습니다.\n로그아웃 후 다시 시도 해 주세요.", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onSuccess(Response response) {
-                SignUpData signUpData = NetworkController.decode(SignUpData.class, response.body().toString());
-                successSignIn(new SignInData(signUpData.getKey()));
-                response.close();
+                try {
+                    if (response.code() == 201) {
+                        SignUpData signUpData = NetworkController.decode(SignUpData.class, response.body().string());
+                        successSignIn(new SignInData(signUpData.getToken()));
+                        return;
+                    }
+                } catch (IOException e) {
+                    Logger.e(TAG, "signup - NetworkController - excute - onSuccess - IOException : " + e.getMessage());
+                } catch (JsonSyntaxException e) {
+                    Logger.e(TAG, "signup - NetworkController - excute - onSuccess - JsonSyntaxException : " + e.getMessage());
+                } finally {
+                    response.close();
+                }
+                Toast.makeText(SigninActivity.this, "로그인을 할 수 없습니다.\n로그아웃 후 다시 시도 해 주세요.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -201,14 +239,26 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_signin)).excute(NetworkController.POST, postData, new NetworkController.StatusCallback() {
             @Override
             public void onError(Throwable error) {
+                Logger.e(TAG, "signin - NetworkController - excute - onError : " + error.getMessage());
                 Toast.makeText(SigninActivity.this, "로그인을 할 수 없습니다.\n잠시 후 다시 시도 해 주세요.", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onSuccess(Response response) {
-                SignInData signInData = NetworkController.decode(SignInData.class, response.body().toString());
-                successSignIn(signInData);
-                response.close();
+                try {
+                    if (response.code() == 201) {
+                        SignInData signInData = NetworkController.decode(SignInData.class, response.body().string());
+                        successSignIn(signInData);
+                        return;
+                    }
+                } catch (IOException e) {
+                    Logger.e(TAG, "signin - NetworkController - excute - onSuccess - IOException : " + e.getMessage());
+                } catch (JsonSyntaxException e) {
+                    Logger.e(TAG, "signin - NetworkController - excute - onSuccess - JsonSyntaxException : " + e.getMessage());
+                } finally {
+                    response.close();
+                }
+                Toast.makeText(SigninActivity.this, "로그인을 할 수 없습니다.\n잠시 후 다시 시도 해 주세요.", Toast.LENGTH_SHORT).show();
             }
         });
     }
