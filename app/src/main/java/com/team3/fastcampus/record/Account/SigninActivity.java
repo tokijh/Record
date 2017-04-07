@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -64,6 +65,8 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
     private LoginButton btn_Facebook;
     private SignInButton btn_Google;
 
+    private ProgressBar progress;
+
     private GoogleApiClient mGoogleApiClient;
 
     private CompositeDisposable compositeDisposable;
@@ -93,6 +96,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         btn_SignUp = (Button) findViewById(R.id.btn_signup);
         btn_Google = (SignInButton) findViewById(R.id.btn_google);
         btn_Facebook = (LoginButton) findViewById(R.id.btn_facebook);
+        progress = (ProgressBar) findViewById(R.id.progress);
     }
 
     private void initListener() {
@@ -205,11 +209,13 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void signup(Map<String, Object> postData) {
+        progressEnable();
         NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_signup)).excute(NetworkController.POST, postData, new NetworkController.StatusCallback() {
             @Override
             public void onError(Throwable error) {
                 Logger.e(TAG, "signup - NetworkController - excute - onError : " + error.getMessage());
                 Toast.makeText(SigninActivity.this, "로그인을 할 수 없습니다.\n로그아웃 후 다시 시도 해 주세요.", Toast.LENGTH_SHORT).show();
+                progressDisable();
             }
 
             @Override
@@ -226,6 +232,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                     Logger.e(TAG, "signup - NetworkController - excute - onSuccess - JsonSyntaxException : " + e.getMessage());
                 } finally {
                     response.close();
+                    progressDisable();
                 }
                 Toast.makeText(SigninActivity.this, "로그인을 할 수 없습니다.\n로그아웃 후 다시 시도 해 주세요.", Toast.LENGTH_SHORT).show();
             }
@@ -233,6 +240,8 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void signin() {
+        progressEnable();
+
         Map<String, Object> postData = new HashMap<>();
         postData.put("username", et_email.getText().toString());
         postData.put("password", et_password.getText().toString());
@@ -241,6 +250,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
             public void onError(Throwable error) {
                 Logger.e(TAG, "signin - NetworkController - excute - onError : " + error.getMessage());
                 Toast.makeText(SigninActivity.this, "로그인을 할 수 없습니다.\n잠시 후 다시 시도 해 주세요.", Toast.LENGTH_SHORT).show();
+                progressDisable();
             }
 
             @Override
@@ -257,10 +267,19 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                     Logger.e(TAG, "signin - NetworkController - excute - onSuccess - JsonSyntaxException : " + e.getMessage());
                 } finally {
                     response.close();
+                    progressDisable();
                 }
                 Toast.makeText(SigninActivity.this, "로그인을 할 수 없습니다.\n아이디, 비밀번호를 확인해 주세요.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void progressEnable() {
+        progress.setVisibility(View.VISIBLE);
+    }
+
+    private void progressDisable() {
+        progress.setVisibility(View.GONE);
     }
 
     @Override

@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.gson.JsonSyntaxException;
@@ -42,6 +43,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
     private Button btn_signup;
 
+    private ProgressBar progress;
+
     private CompositeDisposable compositeDisposable;
 
     @Override
@@ -59,6 +62,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         et_password = (EditText) findViewById(R.id.et_password);
         et_nickname = (EditText) findViewById(R.id.et_nickname);
         btn_signup = (Button) findViewById(R.id.btn_signup);
+        progress = (ProgressBar) findViewById(R.id.progress);
     }
 
     private void initListener() {
@@ -98,6 +102,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void signup() {
+        progressEnable();
         String email = et_email.getText().toString();
         String password = et_password.getText().toString();
         String nickname = et_nickname.getText().toString();
@@ -111,6 +116,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onError(Throwable error) {
                 Toast.makeText(SignupActivity.this, "회원 가입을 할 수 없습니다.\n잠시 후 다시 시도 해 주세요.", Toast.LENGTH_SHORT).show();
+                progressDisable();
             }
 
             @Override
@@ -130,10 +136,19 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                     Logger.e(TAG, "signup - NetworkController - excute - onSuccess - JsonSyntaxException : " + e.getMessage());
                 } finally {
                     response.close();
+                    progressDisable();
                 }
                 Toast.makeText(SignupActivity.this, "회원 가입을 할 수 없습니다.\n계정을 다시 확인해 주세요.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void progressEnable() {
+        progress.setVisibility(View.VISIBLE);
+    }
+
+    private void progressDisable() {
+        progress.setVisibility(View.GONE);
     }
 
     @Override
