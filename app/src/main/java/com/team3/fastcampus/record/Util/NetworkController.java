@@ -4,6 +4,9 @@ package com.team3.fastcampus.record.Util;
  * Created by yoonjoonghyun on 2017. 3. 25..
  */
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.Nullable;
 
 import com.google.gson.Gson;
@@ -34,6 +37,11 @@ public class NetworkController {
     public static final int GET = 0;
     public static final int POST = 1;
 
+    public static final int NETWORK_DISABLE = 0x00;
+    public static final int NETWORK_ENABLE = 0x08;
+    public static final int NETWORK_WIFI = 0x01;
+    public static final int NETWORK_MOBILE = 0x02;
+
     private String url;
 
     private Disposable disposable;
@@ -52,6 +60,27 @@ public class NetworkController {
     private void destroy() {
         if (disposable != null && !disposable.isDisposed())
             disposable.dispose();
+    }
+
+    public static int checkNetworkStatus(Context context) {
+        int networkStatus = NETWORK_DISABLE;
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        switch (networkInfo.getType()) {
+            case ConnectivityManager.TYPE_WIFI:
+                networkStatus |= NETWORK_WIFI;
+                break;
+            case ConnectivityManager.TYPE_MOBILE:
+                networkStatus |= NETWORK_MOBILE;
+        }
+        if (networkInfo.getState() == NetworkInfo.State.CONNECTED || networkInfo.getState() == NetworkInfo.State.CONNECTING) {
+            networkStatus |= NETWORK_ENABLE;
+        }
+
+        return networkStatus;
     }
 
     public boolean isDisposed() {
