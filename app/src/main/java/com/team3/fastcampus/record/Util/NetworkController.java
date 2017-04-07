@@ -80,15 +80,17 @@ public class NetworkController {
 
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
-        switch (networkInfo.getType()) {
-            case ConnectivityManager.TYPE_WIFI:
-                networkStatus |= NETWORK_WIFI;
-                break;
-            case ConnectivityManager.TYPE_MOBILE:
-                networkStatus |= NETWORK_MOBILE;
-        }
-        if (networkInfo.getState() == NetworkInfo.State.CONNECTED || networkInfo.getState() == NetworkInfo.State.CONNECTING) {
-            networkStatus |= NETWORK_ENABLE;
+        if (networkInfo != null) {
+            switch (networkInfo.getType()) {
+                case ConnectivityManager.TYPE_WIFI:
+                    networkStatus |= NETWORK_WIFI;
+                    break;
+                case ConnectivityManager.TYPE_MOBILE:
+                    networkStatus |= NETWORK_MOBILE;
+            }
+            if (networkInfo.getState() == NetworkInfo.State.CONNECTED || networkInfo.getState() == NetworkInfo.State.CONNECTING) {
+                networkStatus |= NETWORK_ENABLE;
+            }
         }
 
         return networkStatus;
