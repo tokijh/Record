@@ -103,9 +103,7 @@ public class NetworkController {
 
                 subscriber.onNext(response);
             } catch (IOException e) {
-                if (statusCallback != null) {
-                    statusCallback.onError(e);
-                }
+                subscriber.onError(e);
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
