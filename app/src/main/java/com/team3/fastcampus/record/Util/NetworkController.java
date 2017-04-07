@@ -4,6 +4,9 @@ package com.team3.fastcampus.record.Util;
  * Created by yoonjoonghyun on 2017. 3. 25..
  */
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.Nullable;
 
 import com.google.gson.Gson;
@@ -34,6 +37,11 @@ public class NetworkController {
     public static final int GET = 0;
     public static final int POST = 1;
 
+    public static final int NETWORK_DISABLE = 0x00;
+    public static final int NETWORK_ENABLE = 0x08;
+    public static final int NETWORK_WIFI = 0x01;
+    public static final int NETWORK_MOBILE = 0x02;
+
     private String url;
 
     private Disposable disposable;
@@ -54,10 +62,67 @@ public class NetworkController {
             disposable.dispose();
     }
 
+    /**
+     * 인터넷 연결 상태를 가져온다.
+     *
+     * ENABLE 연결인 경우에는 (networkStatus & NETWORK_ENABLE > 0) 가 true인 경우
+     *
+     * WIFI 연결인 경우에는 (networkStatus & NETWORK_WIFI > 0) 가 true인 경우
+     * MOBILE 연결인 경우에는 (networkStatus & NETWORK_MOBILE > 0) 가 true인 경우
+     *
+     * @param context
+     * @return
+     */
+    public static int checkNetworkStatus(Context context) {
+        int networkStatus = NETWORK_DISABLE;
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        switch (networkInfo.getType()) {
+            case ConnectivityManager.TYPE_WIFI:
+                networkStatus |= NETWORK_WIFI;
+                break;
+            case ConnectivityManager.TYPE_MOBILE:
+                networkStatus |= NETWORK_MOBILE;
+        }
+        if (networkInfo.getState() == NetworkInfo.State.CONNECTED || networkInfo.getState() == NetworkInfo.State.CONNECTING) {
+            networkStatus |= NETWORK_ENABLE;
+        }
+
+        return networkStatus;
+    }
+
+    /**
+     * ENABLE인지 아닌지 판단
+     *
+     * @param networkStatus
+     * @return
+     */
+    public static boolean isNetworkStatusENABLE(int networkStatus) {
+        if ((networkStatus & NETWORK_ENABLE) > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * disposable이 Disposed인지 확인
+     *
+     * @return
+     */
     public boolean isDisposed() {
         return disposable == null || disposable.isDisposed();
     }
 
+    /**
+     * Http통신 시작
+     *
+     * @param method
+     * @param datas null시 전송 파라미터 없음.
+     * @param statusCallback null시 callback없음.
+     */
     public void excute(int method, @Nullable Map<String, Object> datas, @Nullable StatusCallback statusCallback) {
         if (disposable != null && !disposable.isDisposed()) {
             if (statusCallback != null) {
@@ -74,9 +139,7 @@ public class NetworkController {
 
                 subscriber.onNext(response);
             } catch (IOException e) {
-                if (statusCallback != null) {
-                    statusCallback.onError(e);
-                }
+                subscriber.onError(e);
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
