@@ -258,7 +258,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                 } finally {
                     response.close();
                 }
-                Toast.makeText(SigninActivity.this, "로그인을 할 수 없습니다.\n잠시 후 다시 시도 해 주세요.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SigninActivity.this, "로그인을 할 수 없습니다.\n아이디, 비밀번호를 확인해 주세요.", Toast.LENGTH_SHORT).show();
             }
         });
     }

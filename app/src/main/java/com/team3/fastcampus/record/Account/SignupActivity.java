@@ -131,7 +131,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                 } finally {
                     response.close();
                 }
-                Toast.makeText(SignupActivity.this, "회원 가입을 할 수 없습니다.\n잠시 후 다시 시도 해 주세요.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignupActivity.this, "회원 가입을 할 수 없습니다.\n계정을 다시 확인해 주세요.", Toast.LENGTH_SHORT).show();
             }
         });
     }
