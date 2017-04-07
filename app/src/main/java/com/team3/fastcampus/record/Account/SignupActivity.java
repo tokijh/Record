@@ -129,6 +129,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                         intent.putExtra("token", signUpData.getToken());
                         setResult(RESULT_OK, intent);
                         finish();
+                        return;
                     }
                 } catch (IOException e) {
                     Logger.e(TAG, "signup - NetworkController - excute - onSuccess - IOException : " + e.getMessage());
