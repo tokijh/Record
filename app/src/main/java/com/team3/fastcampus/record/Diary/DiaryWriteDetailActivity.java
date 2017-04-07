@@ -7,11 +7,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.DatePicker;
-import android.widget.TextView;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -27,7 +28,7 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
     private final int REQ_GALLERY = 102; //갤러리요청코드
     Uri fileUri = null;
 
-    TextView tv_date;
+    EditText tv_date;
     FloatingActionButton btn_add_photo, btn_add, btn_update, btn_delete, btn_gallery;
     int mYear, mMonth, mDay, mHour, mMinute;
     DatePickerDialog.OnDateSetListener mDateSetListener;
@@ -38,7 +39,9 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diary_write_detail);
 
-        tv_date = (TextView) findViewById(R.id.diary_list_detail_tv_diary_date);
+        checkPermission();
+
+        tv_date = (EditText) findViewById(R.id.diary_list_detail_tv_diary_date);
         btn_add = (FloatingActionButton) findViewById(R.id.fab_add);
         btn_add_photo = (FloatingActionButton) findViewById(R.id.fab_photo);
         btn_update = (FloatingActionButton) findViewById(R.id.fab_update);
@@ -132,6 +135,34 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
 
     private void UpdateCal() {
         tv_date.setText(String.format("%d/%d/%d", mYear, mMonth + 1, mDay));
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQ_PERMISSION) {
+            //배열에 넘긴 런타임 권한을 체크해서 승인이 되었으면
+            if (PermissionControl.onCheckResult(grantResults)) {
+
+
+            }
+        } else {
+            Toast.makeText(this, "권한을 허용하지 않으면 프로그램을 실행할 수 없습니다", Toast.LENGTH_SHORT).show();
+
+            finish();
+
+        }
+    }
+
+    private void checkPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (PermissionControl.checkPermission(this, REQ_PERMISSION)) {
+                //프로그램 실행
+            }
+        } else {
+            //프로그램 실행
+        }
     }
 }
 
