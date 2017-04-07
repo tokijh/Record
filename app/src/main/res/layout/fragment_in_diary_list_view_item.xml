@@ -34,7 +34,6 @@ tools:context="com.team3.fastcampus.record.Diary.DiaryViewFragment">
 
         <TextView
             android:layout_marginTop="20dp"
-            android:textSize="8dp"
             android:textColor="#666666"
             android:id="@+id/in_diary_list_view_date"
             android:layout_width="wrap_content"
