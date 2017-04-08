@@ -25,6 +25,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.FormBody;
+import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -45,6 +46,7 @@ public class NetworkController {
     private String url;
     private int method = GET; // Defaul is GET
     private Map<String, Object> bodyParams;
+    private Headers.Builder headersBuilder;
 
     private Disposable disposable;
 
@@ -55,6 +57,7 @@ public class NetworkController {
         this.url = url;
 
         bodyParams = new HashMap<>(); // params 초기화
+        headersBuilder = new Headers.Builder();
     }
 
     public static NetworkController newInstance(String url) {
@@ -161,6 +164,54 @@ public class NetworkController {
      */
     public NetworkController addBodyParam(String key, Object value) {
         bodyParams.put(key, value);
+
+        return this;
+    }
+
+    /**
+     * Header 를 완전 초기화
+     *
+     * @return
+     */
+    public NetworkController headerInit() {
+        headersBuilder = new Headers.Builder();
+
+        return this;
+    }
+
+    /**
+     * Header 를 line단위로 추가
+     *
+     * @param line
+     * @return
+     */
+    public NetworkController headerAdd(String line) {
+        headersBuilder.add(line);
+
+        return this;
+    }
+
+    /**
+     * Header 를 추가
+     *
+     * @param name
+     * @param value
+     * @return
+     */
+    public NetworkController headerAdd(String name, String value) {
+        headersBuilder.add(name, value);
+
+        return this;
+    }
+
+    /**
+     * Header 의 해당 name을 가진 내용 모두 삭제
+     *
+     * @param name
+     * @return
+     */
+    public NetworkController headerRemoveAll(String name) {
+        headersBuilder.removeAll(name);
 
         return this;
     }
