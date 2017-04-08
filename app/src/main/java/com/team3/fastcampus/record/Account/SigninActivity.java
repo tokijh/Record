@@ -263,10 +263,8 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                     @Override
                     public void onSuccess(Response response) {
                         try {
-                            String rspstr = response.body().string();
-                            Logger.e(TAG, "HERE MESSAGE " + rspstr);
                             if (response.code() == 200) {
-                                SignInData signInData = NetworkController.decode(SignInData.class, rspstr);
+                                SignInData signInData = NetworkController.decode(SignInData.class, response.body().string());
                                 successSignIn(signInData);
                                 return;
                             }
