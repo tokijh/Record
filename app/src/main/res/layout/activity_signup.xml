@@ -1,92 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_signup"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.team3.fastcampus.record.Account.SignupActivity">
+    android:background="#ffffff">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <RelativeLayout
+            android:id="@+id/activity_signup"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            tools:context="com.team3.fastcampus.record.Account.SignupActivity">
+
+            <ImageView
+                android:id="@+id/image_logo"
+                android:layout_width="180dp"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="100dp"
+                android:src="@drawable/logo" />
+
+            <RelativeLayout
+                android:id="@+id/layout_signup_field"
+                android:layout_width="302dp"
+                android:layout_height="222dp"
+                android:layout_below="@+id/image_logo"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp">
+
+                <EditText
+                    android:id="@+id/et_username"
+                    android:layout_width="300dp"
+                    android:layout_height="50dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="30dp"
+                    android:ems="10"
+                    android:hint="E-mail"
+                    android:inputType="textEmailAddress"
+                    android:textColor="#000000"
+                    android:textColorHint="#979797"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentRight="true" />
+
+                <EditText
+                    android:id="@+id/et_password"
+                    android:layout_width="300dp"
+                    android:layout_height="50dp"
+                    android:layout_centerHorizontal="true"
+                    android:ems="10"
+                    android:hint="Password (대소,숫자,특수 문자)"
+                    android:inputType="textPassword"
+                    android:textColor="#000000"
+                    android:textColorHint="#979797"
+                    android:layout_alignLeft="@+id/et_username"
+                    android:layout_alignRight="@+id/et_username"
+                    android:layout_below="@+id/et_username"
+                    android:layout_marginTop="10dp" />
+
+                <EditText
+                    android:id="@+id/et_nickname"
+                    android:layout_width="300dp"
+                    android:ems="10"
+                    android:hint="Name"
+                    android:inputType="textEmailAddress"
+                    android:textColor="#000000"
+                    android:textColorHint="#979797"
+                    android:layout_height="50dp"
+                    android:layout_alignLeft="@+id/et_password"
+                    android:layout_alignStart="@+id/et_password"
+                    android:layout_below="@+id/et_password"
+                    android:layout_marginTop="10dp" />
+
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/btn_signup"
+                android:layout_width="300dp"
+                android:layout_height="50dp"
+                android:layout_below="@+id/layout_signup_field"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="12dp"
+                android:background="#3498DB"
+                android:text="Sign up"
+                android:textAllCaps="false" />
+
+        </RelativeLayout>
+    </ScrollView>
 
 
-    <ImageView
-        android:id="@+id/image_logo"
-        android:layout_width="180dp"
-        android:layout_height="50dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp"
-        android:src="@drawable/logo" />
-
-    <RelativeLayout
-        android:id="@+id/layout_signup_field"
-        android:layout_width="302dp"
-        android:layout_height="222dp"
-        android:layout_below="@+id/image_logo"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp">
-
-
-        <EditText
-            android:id="@+id/et_email"
-            android:layout_width="300dp"
-            android:layout_height="50dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:ems="10"
-            android:hint="E-mail or username"
-            android:inputType="textEmailAddress"
-            android:textColorHint="#979797" />
-
-        <EditText
-            android:id="@+id/et_password"
-            android:layout_width="300dp"
-            android:layout_height="50dp"
-            android:layout_below="@+id/et_email"
-            android:layout_centerHorizontal="true"
-            android:ems="10"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:textColorHint="#979797" />
-
-        <EditText
-            android:id="@+id/et_first_name"
-            android:layout_width="300dp"
-            android:layout_height="50dp"
-            android:layout_alignLeft="@+id/et_password"
-            android:layout_alignStart="@+id/et_password"
-            android:layout_below="@+id/et_password"
-            android:ems="10"
-            android:hint="First name"
-            android:inputType="textEmailAddress"
-            android:textColorHint="#979797" />
-
-        <EditText
-            android:id="@+id/et_lastname"
-            android:layout_width="300dp"
-            android:layout_height="50dp"
-            android:layout_alignLeft="@+id/et_first_name"
-            android:layout_alignStart="@+id/et_first_name"
-            android:layout_below="@+id/et_first_name"
-            android:ems="10"
-            android:hint="Last name"
-            android:inputType="textEmailAddress"
-            android:textColorHint="#979797" />
-    </RelativeLayout>
-
-
-    <Button
-        android:id="@+id/btn_signup"
-        android:layout_width="300dp"
-        android:layout_height="50dp"
-        android:layout_below="@+id/layout_signup_field"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="12dp"
-        android:background="#3498DB"
-        android:text="Sign up"
-        android:textAllCaps="false" />
-
-
+    <ProgressBar
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progress"
+        android:visibility="gone"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

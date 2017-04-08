@@ -1,0 +1,52 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="com.team3.fastcampus.record.InDiary.InDiaryViewFragment">
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@android:drawable/ic_menu_add"
+        android:id="@+id/iv_plus"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@+id/tv_addText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="20dp" />
+
+    <ImageView
+        android:id="@+id/line_top"
+        android:background="#8a8a8a"
+        android:layout_height="20dp"
+        android:layout_width="wrap_content"
+        android:layout_alignLeft="@+id/iv_plus"
+        android:layout_alignRight="@+id/iv_plus"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp" />
+
+
+    <ImageView
+        android:id="@+id/line_bottom"
+        android:background="#8a8a8a"
+        android:layout_height="20dp"
+        android:layout_width="wrap_content"
+        android:layout_alignLeft="@+id/iv_plus"
+        android:layout_alignRight="@+id/iv_plus"
+        android:layout_below="@+id/iv_plus"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp" />
+
+    <TextView
+        android:text="Add to InDiary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_addText"
+        android:layout_toRightOf="@+id/iv_plus"
+        android:layout_toEndOf="@+id/iv_plus"
+        android:layout_centerVertical="true" />
+
+</RelativeLayout>

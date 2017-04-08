@@ -4,14 +4,25 @@ package com.team3.fastcampus.record.Util;
  * Created by yoonjoonghyun on 2017. 3. 25..
  */
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.Nullable;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -21,52 +32,193 @@ import okhttp3.Response;
 /**
  * HTTP 통신을 위한 컨트롤러
  */
-public class NetworkController<T> {
+public class NetworkController {
 
     public static final int GET = 0;
     public static final int POST = 1;
 
+    public static final int NETWORK_DISABLE = 0x00;
+    public static final int NETWORK_ENABLE = 0x08;
+    public static final int NETWORK_WIFI = 0x01;
+    public static final int NETWORK_MOBILE = 0x02;
+
     private String url;
 
-    public NetworkController(String url) {
+    private Disposable disposable;
+
+    private NetworkController(String url) {
+        if(!url.startsWith("http")){
+            url = "http://" + url;
+        }
         this.url = url;
     }
 
+    public static NetworkController newInstance(String url) {
+        return new NetworkController(url);
+    }
+
+    private void destroy() {
+        if (disposable != null && !disposable.isDisposed())
+            disposable.dispose();
+    }
+
     /**
-     * Network Connection By JSON (GET, POST) using OKHttp3
+     * 인터넷 연결 상태를 가져온다.
      *
-     * Response 는 callBack의 onFinished()에
+     * ENABLE 연결인 경우에는 (networkStatus & NETWORK_ENABLE > 0) 가 true인 경우
      *
-     * @param method GET OR POST
-     * @param datas Params key, value
-     * @param clazz 반환받들 객체
-     * @param callBack CallBack Interface지정
+     * WIFI 연결인 경우에는 (networkStatus & NETWORK_WIFI > 0) 가 true인 경우
+     * MOBILE 연결인 경우에는 (networkStatus & NETWORK_MOBILE > 0) 가 true인 경우
+     *
+     * @param context
+     * @return
      */
-    public void excuteJsonCon(int method, @Nullable Map<String, String> datas, @Nullable Class<T> clazz, @Nullable NetworkControllerInterface<T> callBack) {
-        Observable.create((subscriber) -> {
-            OkHttpClient client = new OkHttpClient();
+    public static int checkNetworkStatus(Context context) {
+        int networkStatus = NETWORK_DISABLE;
 
-            Response response = client.newCall(buildRequest(method, datas)).execute();
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-            String result = response.body().string();
-            response.close();
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
-            subscriber.onNext(result);
+        if (networkInfo != null) {
+            switch (networkInfo.getType()) {
+                case ConnectivityManager.TYPE_WIFI:
+                    networkStatus |= NETWORK_WIFI;
+                    break;
+                case ConnectivityManager.TYPE_MOBILE:
+                    networkStatus |= NETWORK_MOBILE;
+            }
+            if (networkInfo.getState() == NetworkInfo.State.CONNECTED || networkInfo.getState() == NetworkInfo.State.CONNECTING) {
+                networkStatus |= NETWORK_ENABLE;
+            }
+        }
 
-            subscriber.onComplete();
+        return networkStatus;
+    }
+
+    /**
+     * ENABLE인지 아닌지 판단
+     *
+     * @param networkStatus
+     * @return
+     */
+    public static boolean isNetworkStatusENABLE(int networkStatus) {
+        if ((networkStatus & NETWORK_ENABLE) > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * disposable이 Disposed인지 확인
+     *
+     * @return
+     */
+    public boolean isDisposed() {
+        return disposable == null || disposable.isDisposed();
+    }
+
+    /**
+     * Http통신 시작
+     *
+     * @param method
+     * @param datas null시 전송 파라미터 없음.
+     * @param statusCallback null시 callback없음.
+     */
+    public void excute(int method, @Nullable Map<String, Object> datas, @Nullable StatusCallback statusCallback) {
+        if (disposable != null && !disposable.isDisposed()) {
+            if (statusCallback != null) {
+                statusCallback.onError(new Throwable("disposable is using"));
+            }
+            return;
+        }
+
+        disposable = Observable.create(subscriber -> {
+            try {
+                OkHttpClient client = new OkHttpClient();
+
+                Response response = client.newCall(buildRequest(method, datas)).execute();
+
+                subscriber.onNext(response);
+            } catch (IOException e) {
+                subscriber.onError(e);
+            }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(jsonString -> {
-                    if (callBack != null && clazz != null) {
-                        Gson gson = new Gson();
-                        T result = gson.fromJson(jsonString.toString(), clazz);
-                        callBack.onFinished(result);
+                .subscribe(response -> {
+                    if (statusCallback != null) {
+                        statusCallback.onSuccess((Response) response);
                     }
+                    destroy();
                 }, error -> {
-                    if (callBack != null) {
-                        callBack.onError();
+                    if (statusCallback != null) {
+                        statusCallback.onError(error);
                     }
+                    destroy();
                 });
+    }
+
+    /**
+     * Decoding by Gson
+     *
+     * @param clazz
+     * @param json
+     * @param <T>
+     * @return ClassData
+     * @throws JsonSyntaxException
+     */
+    public static <T> T decode(Class<T> clazz, String json) throws JsonSyntaxException {
+        return new Gson().fromJson(json, clazz);
+    }
+
+    /**
+     * Decoding by JSONObject
+     *
+     * @param json
+     * @return JSONObject
+     * @throws JSONException
+     */
+    public static JSONObject decode(String json) throws JSONException {
+        return new JSONObject(json);
+    }
+
+    /**
+     * Encoding by JSONObject
+     *
+     * @param jsonObject
+     * @return
+     * @throws JSONException
+     */
+    public static Map<String, Object> encode(JSONObject jsonObject) throws JSONException {
+        Map<String, Object> data = new HashMap<>();
+        Iterator<String> keys = jsonObject.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            data.put(key, jsonObject.get(key));
+        }
+        return data;
+    }
+
+    /**
+     * Encoding from String
+     *
+     * @param json
+     * @return
+     * @throws JSONException
+     */
+    public static Map<String, Object> encode(String json) throws JSONException {
+        return encode(new JSONObject(json));
+    }
+
+    /**
+     * Encoding from object class by Gson
+     * @param object
+     * @param <T>
+     * @return
+     * @throws JSONException
+     */
+    public static <T> Map<String, Object> encode(T object) throws JSONException {
+        return encode(new Gson().toJson(object));
     }
 
     /**
@@ -76,7 +228,7 @@ public class NetworkController<T> {
      * @param datas 함께 전송할 params
      * @return OKHttp3의 Request
      */
-    private Request buildRequest(int method, Map<String, String> datas) {
+    private Request buildRequest(int method, Map<String, Object> datas) {
         Request.Builder requestBuilder = new Request.Builder();
 
         if (method == GET) {
@@ -93,7 +245,7 @@ public class NetworkController<T> {
             FormBody.Builder formBuilder = new FormBody.Builder();
             if (datas != null) {
                 for (String key : datas.keySet()) {
-                    formBuilder.addEncoded(key, datas.get(key));
+                    formBuilder.addEncoded(key, datas.get(key).toString());
                 }
             }
             requestBuilder.post(formBuilder.build());
@@ -107,12 +259,11 @@ public class NetworkController<T> {
     }
 
     /**
-     * 통신 완료, 실패의 Callback Interface
-     * @param <T> Return 받을 class
+     * 통신 상태 결과 Callback
      */
-    public interface NetworkControllerInterface<T> {
-        void onError();
+    public interface StatusCallback {
+        void onError(Throwable error);
 
-        void onFinished(T result);
+        void onSuccess(Response response);
     }
 }

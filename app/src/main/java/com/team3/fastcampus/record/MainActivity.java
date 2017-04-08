@@ -143,7 +143,6 @@ public class MainActivity extends AppCompatActivity
 
         switch (id) {
 
-
         }
 
         drawer.closeDrawer(GravityCompat.START);
