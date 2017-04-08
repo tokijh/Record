@@ -192,6 +192,23 @@ public class NetworkController {
     }
 
     /**
+     * Header 를 해당 내용으로 초기화
+     *
+     * @param header
+     * @return
+     */
+    public NetworkController headerSet(Map<String, String> header) {
+        headerInit();
+
+        Set<String> keys = header.keySet();
+        for (String key : keys) {
+            headerAdd(key, header.get(key));
+        }
+
+        return this;
+    }
+
+    /**
      * Header 를 line단위로 추가
      *
      * @param line
