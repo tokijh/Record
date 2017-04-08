@@ -210,33 +210,37 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
 
     private void signup(Map<String, Object> postData) {
         progressEnable();
-        NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_signup)).excute(NetworkController.POST, postData, new NetworkController.StatusCallback() {
-            @Override
-            public void onError(Throwable error) {
-                Logger.e(TAG, "signup - NetworkController - excute - onError : " + error.getMessage());
-                Toast.makeText(SigninActivity.this, "로그인을 할 수 없습니다.\n로그아웃 후 다시 시도 해 주세요.", Toast.LENGTH_SHORT).show();
-                progressDisable();
-            }
-
-            @Override
-            public void onSuccess(Response response) {
-                try {
-                    if (response.code() == 201) {
-                        SignUpData signUpData = NetworkController.decode(SignUpData.class, response.body().string());
-                        successSignIn(new SignInData(signUpData.getToken()));
-                        return;
+        NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_signup))
+                .setMethod(NetworkController.POST)
+                .paramsSet(postData)
+                .addCallback(new NetworkController.StatusCallback() {
+                    @Override
+                    public void onError(Throwable error) {
+                        Logger.e(TAG, "signup - NetworkController - excute - onError : " + error.getMessage());
+                        Toast.makeText(SigninActivity.this, "로그인을 할 수 없습니다.\n로그아웃 후 다시 시도 해 주세요.", Toast.LENGTH_SHORT).show();
+                        progressDisable();
                     }
-                } catch (IOException e) {
-                    Logger.e(TAG, "signup - NetworkController - excute - onSuccess - IOException : " + e.getMessage());
-                } catch (JsonSyntaxException e) {
-                    Logger.e(TAG, "signup - NetworkController - excute - onSuccess - JsonSyntaxException : " + e.getMessage());
-                } finally {
-                    response.close();
-                    progressDisable();
-                }
-                Toast.makeText(SigninActivity.this, "로그인을 할 수 없습니다.\n로그아웃 후 다시 시도 해 주세요.", Toast.LENGTH_SHORT).show();
-            }
-        });
+
+                    @Override
+                    public void onSuccess(Response response) {
+                        try {
+                            if (response.code() == 201) {
+                                SignUpData signUpData = NetworkController.decode(SignUpData.class, response.body().string());
+                                successSignIn(new SignInData(signUpData.getToken()));
+                                return;
+                            }
+                        } catch (IOException e) {
+                            Logger.e(TAG, "signup - NetworkController - excute - onSuccess - IOException : " + e.getMessage());
+                        } catch (JsonSyntaxException e) {
+                            Logger.e(TAG, "signup - NetworkController - excute - onSuccess - JsonSyntaxException : " + e.getMessage());
+                        } finally {
+                            response.close();
+                            progressDisable();
+                        }
+                        Toast.makeText(SigninActivity.this, "로그인을 할 수 없습니다.\n로그아웃 후 다시 시도 해 주세요.", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .excute();
     }
 
     private void signin() {
@@ -245,33 +249,38 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         Map<String, Object> postData = new HashMap<>();
         postData.put("username", et_email.getText().toString());
         postData.put("password", et_password.getText().toString());
-        NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_signin)).excute(NetworkController.POST, postData, new NetworkController.StatusCallback() {
-            @Override
-            public void onError(Throwable error) {
-                Logger.e(TAG, "signin - NetworkController - excute - onError : " + error.getMessage());
-                Toast.makeText(SigninActivity.this, "로그인을 할 수 없습니다.\n잠시 후 다시 시도 해 주세요.", Toast.LENGTH_SHORT).show();
-                progressDisable();
-            }
-
-            @Override
-            public void onSuccess(Response response) {
-                try {
-                    if (response.code() == 201) {
-                        SignInData signInData = NetworkController.decode(SignInData.class, response.body().string());
-                        successSignIn(signInData);
-                        return;
+        NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_signin))
+                .setMethod(NetworkController.POST)
+                .paramsSet(postData)
+                .addCallback(new NetworkController.StatusCallback() {
+                    @Override
+                    public void onError(Throwable error) {
+                        Logger.e(TAG, "signin - NetworkController - excute - onError : " + error.getMessage());
+                        Toast.makeText(SigninActivity.this, "로그인을 할 수 없습니다.\n잠시 후 다시 시도 해 주세요.", Toast.LENGTH_SHORT).show();
+                        progressDisable();
                     }
-                } catch (IOException e) {
-                    Logger.e(TAG, "signin - NetworkController - excute - onSuccess - IOException : " + e.getMessage());
-                } catch (JsonSyntaxException e) {
-                    Logger.e(TAG, "signin - NetworkController - excute - onSuccess - JsonSyntaxException : " + e.getMessage());
-                } finally {
-                    response.close();
-                    progressDisable();
-                }
-                Toast.makeText(SigninActivity.this, "로그인을 할 수 없습니다.\n아이디, 비밀번호를 확인해 주세요.", Toast.LENGTH_SHORT).show();
-            }
-        });
+
+                    @Override
+                    public void onSuccess(Response response) {
+                        try {
+                            String rspstr = response.body().string();
+                            Logger.e(TAG, "HERE MESSAGE " + rspstr);
+                            if (response.code() == 200) {
+                                SignInData signInData = NetworkController.decode(SignInData.class, rspstr);
+                                successSignIn(signInData);
+                                return;
+                            }
+                        } catch (IOException e) {
+                            Logger.e(TAG, "signin - NetworkController - excute - onSuccess - IOException : " + e.getMessage());
+                        } catch (JsonSyntaxException e) {
+                            Logger.e(TAG, "signin - NetworkController - excute - onSuccess - JsonSyntaxException : " + e.getMessage());
+                        } finally {
+                            response.close();
+                            progressDisable();
+                        }
+                        Toast.makeText(SigninActivity.this, "로그인을 할 수 없습니다.\n아이디, 비밀번호를 확인해 주세요.", Toast.LENGTH_SHORT).show();
+                    }
+                }).excute();
     }
 
     private void progressEnable() {
