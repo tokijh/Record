@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -211,6 +212,23 @@ public class NetworkController {
      */
     public NetworkController headerAdd(String name, String value) {
         headersBuilder.add(name, value);
+
+        return this;
+    }
+
+    /**
+     * Header 를 여러개를 한번에 추가
+     *
+     * @param header
+     * @return
+     */
+    public NetworkController headerAdd(Map<String, String> header) {
+        headerInit();
+
+        Set<String> keys = header.keySet();
+        for (String key : keys) {
+            headerAdd(key, header.get(key));
+        }
 
         return this;
     }
