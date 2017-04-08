@@ -43,6 +43,7 @@ public class NetworkController {
     public static final int NETWORK_MOBILE = 0x02;
 
     private String url;
+    private int method = GET; // Defaul is GET
 
     private Disposable disposable;
 
@@ -116,6 +117,25 @@ public class NetworkController {
      */
     public boolean isDisposed() {
         return disposable == null || disposable.isDisposed();
+    }
+
+    /**
+     * Method 설정
+     * @param method
+     * @return
+     */
+    public NetworkController setMethod(int method) {
+        switch (method) {
+            case GET:
+                break;
+            case POST:
+                break;
+            default:
+                throw new RuntimeException("NetworkController is support GET or POST only");
+        }
+        this.method = method;
+
+        return this;
     }
 
     /**
