@@ -223,8 +223,6 @@ public class NetworkController {
      * @return
      */
     public NetworkController headerAdd(Map<String, String> header) {
-        headerInit();
-
         Set<String> keys = header.keySet();
         for (String key : keys) {
             headerAdd(key, header.get(key));
