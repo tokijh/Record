@@ -45,7 +45,7 @@ public class NetworkController {
     public static final int NETWORK_MOBILE = 0x02;
 
     private String url;
-    private int method = GET; // Defaul is GET
+    private int method = GET; // Default is GET
     private Map<String, Object> params;
     private Headers.Builder headersBuilder;
 
