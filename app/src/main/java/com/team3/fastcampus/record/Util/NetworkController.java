@@ -55,14 +55,7 @@ public class NetworkController {
     private Disposable disposable;
 
     private NetworkController(String url) {
-        if(!url.startsWith("http")){
-            url = "http://" + url;
-        }
-        this.url = url;
-
-        params = new HashMap<>(); // params 초기화
-        headersBuilder = new Headers.Builder();
-        statusCallbacks = new ArrayList<>();
+        init(url);
     }
 
     public static NetworkController newInstance(String url) {
@@ -128,6 +121,45 @@ public class NetworkController {
      */
     public boolean isDisposed() {
         return disposable == null || disposable.isDisposed();
+    }
+
+    /**
+     * Http통신을 위한 url 설정
+     * @param url
+     * @return
+     */
+    public String urlSetting(String url) {
+        if(!url.startsWith("http")){
+            url = "http://" + url;
+        }
+        return url;
+    }
+
+    /**
+     * NetworkController 초기화
+     *
+     * @return
+     */
+    public NetworkController init() {
+        return init(url);
+    }
+
+    /**
+     * NetworkController 초기화
+     *
+     * @param url
+     * @return
+     */
+    public NetworkController init(String url) {
+        if (!isDisposed()) {
+            throw new RuntimeException("this NetworkController is using");
+        }
+        this.url = urlSetting(url);
+        params = new HashMap<>(); // params 초기화
+        headersBuilder = new Headers.Builder();
+        statusCallbacks = new ArrayList<>();
+
+        return this;
     }
 
     /**
