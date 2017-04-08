@@ -41,6 +41,10 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
 
         checkPermission();
 
+        init();
+    }
+
+    private void init() {
         tv_date = (EditText) findViewById(R.id.diary_list_detail_tv_diary_date);
         btn_add = (FloatingActionButton) findViewById(R.id.fab_add);
         btn_add_photo = (FloatingActionButton) findViewById(R.id.fab_photo);
@@ -74,7 +78,6 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
                 UpdateCal();
             }
         };
-
     }
 
     @Override
