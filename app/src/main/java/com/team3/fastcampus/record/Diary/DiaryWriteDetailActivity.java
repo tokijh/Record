@@ -96,43 +96,65 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
         tv_date.setText(String.format("%d/%d/%d", mYear, mMonth + 1, mDay));
     }
 
+    private void showDatePicker() {
+        new DatePickerDialog(this, mDateSetListener, mYear, mMonth, mDay).show();
+    }
+
+    private void actionAdd() {
+        Toast.makeText(this, "add", Toast.LENGTH_SHORT).show();
+    }
+
+    private void actionPhoto() {
+        Toast.makeText(this, "photo", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // 누가는 아래 코드를 반영해야 한다.
+        // --- 카메라 촬영 후 미디어 컨텐트 uri 를 생성해서 외부저장소에 저장한다 ---
+//                    if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.N ) {
+        ContentValues values = new ContentValues(1);
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg");
+        fileUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+//                    }
+        // --- 여기 까지 컨텐트 uri 강제세팅 ---
+        startActivityForResult(intent, REQ_CAMERA);
+    }
+
+    private void actionUpdate() {
+        Toast.makeText(this, "update", Toast.LENGTH_SHORT).show();
+    }
+
+    private void actionDelete() {
+        Toast.makeText(this, "delete", Toast.LENGTH_SHORT).show();
+    }
+
+    private void actionGallery() {
+        Toast.makeText(this, "Gallery", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*"); // 외부저장소에있는 이미지만 가져오기위한 필터링
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQ_GALLERY);
+    }
+
     @Override
     public void onClick(View v) {
-        Intent intent = null;
         switch (v.getId()) {
             case R.id.diary_list_detail_tv_diary_date:
-                new DatePickerDialog(this, mDateSetListener, mYear, mMonth, mDay).show();
+                showDatePicker();
                 break;
             case R.id.fab_add:
-                Toast.makeText(this, "add", Toast.LENGTH_SHORT).show();
+                actionAdd();
                 break;
             case R.id.fab_photo:
-                Toast.makeText(this, "photo", Toast.LENGTH_SHORT).show();
-                intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                // 누가는 아래 코드를 반영해야 한다.
-                // --- 카메라 촬영 후 미디어 컨텐트 uri 를 생성해서 외부저장소에 저장한다 ---
-//                    if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.N ) {
-                ContentValues values = new ContentValues(1);
-                values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg");
-                fileUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-//                    }
-                // --- 여기 까지 컨텐트 uri 강제세팅 ---
-                startActivityForResult(intent, REQ_CAMERA);
+                actionPhoto();
                 break;
             case R.id.fab_update:
-                Toast.makeText(this, "update", Toast.LENGTH_SHORT).show();
+                actionUpdate();
                 break;
             case R.id.fab_delete:
-                Toast.makeText(this, "delete", Toast.LENGTH_SHORT).show();
+                actionDelete();
                 break;
             case R.id.fab_gallery:
-                Toast.makeText(this, "Gallery", Toast.LENGTH_SHORT).show();
-
-                intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                intent.setType("image/*"); // 외부저장소에있는 이미지만 가져오기위한 필터링
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQ_GALLERY);
+                actionGallery();
                 break;
         }
     }
