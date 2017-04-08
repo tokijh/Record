@@ -160,8 +160,9 @@
         android:textSize="12dp" />
 
     <ImageView
+        android:id="@+id/diary_list_detail_image"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="250dp"
         android:layout_below="@+id/diary_list_detail_tv_photo"
         android:layout_marginTop="10dp"
         android:scaleType="centerCrop"
