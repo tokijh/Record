@@ -16,13 +16,10 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-import com.team3.fastcampus.record.Account.SigninActivity;
+import com.team3.fastcampus.record.Diary.DiaryManageActivity;
 import com.team3.fastcampus.record.Diary.DiaryViewFragment;
 import com.team3.fastcampus.record.InDiary.InDiaryViewFragment;
-import com.team3.fastcampus.record.Util.LocationPicker;
-import com.team3.fastcampus.record.Util.Logger;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, DiaryViewFragment.DiaryViewInterface {
@@ -44,8 +41,8 @@ public class MainActivity extends AppCompatActivity
         // TODO SignIn 상태 확인 로직
 
         // 메인에서 SigninActivity로 넘어가는 intent
-        intent = new Intent(MainActivity.this, SigninActivity.class);
-//        startActivity(intent);
+        intent = new Intent(MainActivity.this, DiaryManageActivity.class);
+        startActivity(intent);
 
         initView();
 
@@ -145,6 +142,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         switch (id) {
+
 
         }
 
