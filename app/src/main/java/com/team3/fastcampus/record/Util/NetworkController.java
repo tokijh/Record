@@ -45,7 +45,7 @@ public class NetworkController {
 
     private String url;
     private int method = GET; // Defaul is GET
-    private Map<String, Object> bodyParams;
+    private Map<String, Object> params;
     private Headers.Builder headersBuilder;
 
     private Disposable disposable;
@@ -56,7 +56,7 @@ public class NetworkController {
         }
         this.url = url;
 
-        bodyParams = new HashMap<>(); // params 초기화
+        params = new HashMap<>(); // params 초기화
         headersBuilder = new Headers.Builder();
     }
 
@@ -145,13 +145,24 @@ public class NetworkController {
     }
 
     /**
-     * Body Params 설정
+     * Body Param 를 완전 초기화
      *
-     * @param bodyParams
      * @return
      */
-    public NetworkController setBodyParams(Map<String, Object> bodyParams) {
-        this.bodyParams = bodyParams;
+    public NetworkController paramsInit() {
+        params = new HashMap<>();
+
+        return this;
+    }
+
+    /**
+     * Body Params 설정
+     *
+     * @param params
+     * @return
+     */
+    public NetworkController paramsSet(Map<String, Object> params) {
+        this.params = params;
 
         return this;
     }
@@ -162,8 +173,8 @@ public class NetworkController {
      * @param value
      * @return
      */
-    public NetworkController addBodyParam(String key, Object value) {
-        bodyParams.put(key, value);
+    public NetworkController paramsAdd(String key, Object value) {
+        params.put(key, value);
 
         return this;
     }
