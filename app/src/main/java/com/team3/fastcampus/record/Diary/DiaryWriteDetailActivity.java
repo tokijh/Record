@@ -62,7 +62,7 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
         mHour = cal.get(Calendar.HOUR_OF_DAY);
         mMinute = cal.get(Calendar.MINUTE);
 
-        UpdateCal();
+        updateDateText();
 
         mDateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -71,7 +71,7 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
                 mMonth = month;
                 mDay = dayOfMonth;
 
-                UpdateCal();
+                updateDateText();
             }
         };
     }
@@ -141,7 +141,7 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
 
     }
 
-    private void UpdateCal() {
+    private void updateDateText() {
         tv_date.setText(String.format("%d/%d/%d", mYear, mMonth + 1, mDay));
     }
 
