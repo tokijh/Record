@@ -16,13 +16,17 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.Toast;
 
-import com.team3.fastcampus.record.Diary.DiaryManageActivity;
+import com.team3.fastcampus.record.Account.SigninActivity;
 import com.team3.fastcampus.record.Diary.DiaryViewFragment;
 import com.team3.fastcampus.record.InDiary.InDiaryViewFragment;
+import com.team3.fastcampus.record.Util.PreferenceManager;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, DiaryViewFragment.DiaryViewInterface {
+
+    private static final int REQ_LOGIN = 54;
 
     FragmentManager manager;
     DrawerLayout drawer;
@@ -37,12 +41,12 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        PreferenceManager.create(this);
 
-        // TODO SignIn 상태 확인 로직
-
-        // 메인에서 SigninActivity로 넘어가는 intent
-        intent = new Intent(MainActivity.this, DiaryManageActivity.class);
-        startActivity(intent);
+        String token = PreferenceManager.getInstance().getString("token", "");
+        if ("".equals(token)) {
+            toSignUp();
+        }
 
         initView();
 
@@ -50,26 +54,6 @@ public class MainActivity extends AppCompatActivity
 
         // 초기 화면 지정
         showContentFragment(FragmentsID.DiaryViewFragment);
-
-//        new LocationPicker(this).show((address, location) -> {
-//            Logger.d("MainActivity", "getAddressByLatLng : "
-//                    + address.getCountryName() + " "
-//                    + address.getPostalCode() + " "
-//                    + address.getLocality() + " "
-//                    + address.getThoroughfare() + " "
-//                    + address.getFeatureName());
-//            Logger.d("MainActivity", location.latitude + " " + location.longitude);
-//
-//            Toast.makeText(this, "Address " + address.getCountryName() + " "
-//                            + address.getPostalCode() + " "
-//                            + address.getLocality() + " "
-//                            + address.getThoroughfare() + " "
-//                            + address.getFeatureName() + " : Location : "
-//                            + location.latitude + " "
-//                            + location.longitude
-//                    , Toast.LENGTH_SHORT)
-//                    .show();
-//        });
     }
 
     private void initView() {
@@ -91,6 +75,16 @@ public class MainActivity extends AppCompatActivity
 
         diaryViewFragment = new DiaryViewFragment();
         inDiaryViewFragment = new InDiaryViewFragment();
+    }
+
+    private void toSignUp() {
+        Toast.makeText(this, "로그인을 해야 이용 할 수 있습니다.", Toast.LENGTH_SHORT).show();
+        intent = new Intent(MainActivity.this, SigninActivity.class);
+        startActivityForResult(intent, REQ_LOGIN);
+    }
+
+    private void successSignIn(String token) {
+        PreferenceManager.getInstance().putString("token", token);
     }
 
     /**
@@ -153,5 +147,23 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void showInDiary() {
         showContentFragment(inDiaryViewFragment);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQ_LOGIN) {
+            if (resultCode == RESULT_OK) {
+                Bundle bundle = data.getExtras();
+                if (bundle.containsKey("token")) {
+                    String token = bundle.getString("token");
+                    if (token != null)
+                        successSignIn(token);
+                }
+            } else {
+                Toast.makeText(this, "로그인을 해야 이용 할 수 있습니다.", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }
     }
 }
