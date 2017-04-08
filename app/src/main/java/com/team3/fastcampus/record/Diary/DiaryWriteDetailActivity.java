@@ -31,7 +31,6 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
     EditText tv_date;
     FloatingActionButton btn_add_photo, btn_add, btn_update, btn_delete, btn_gallery;
     int mYear, mMonth, mDay, mHour, mMinute;
-    DatePickerDialog.OnDateSetListener mDateSetListener;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -46,6 +45,8 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
 
     private void init() {
         initView();
+
+        initListener();
 
         //날자, 시간 가져오기
         Calendar cal = new GregorianCalendar();
@@ -74,17 +75,6 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
         btn_update.setOnClickListener(this);
         btn_delete.setOnClickListener(this);
         btn_gallery.setOnClickListener(this);
-
-        mDateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                mYear = year;
-                mMonth = month;
-                mDay = dayOfMonth;
-
-                updateDateText();
-            }
-        };
     }
 
     @Override
@@ -146,6 +136,13 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
     private void updateDateText() {
         tv_date.setText(String.format("%d/%d/%d", mYear, mMonth + 1, mDay));
     }
+
+    private DatePickerDialog.OnDateSetListener mDateSetListener = (view, year, month, dayOfMonth) -> {
+        mYear = year;
+        mMonth = month;
+        mDay = dayOfMonth;
+        updateDateText();
+    };
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
