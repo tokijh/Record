@@ -1,14 +1,12 @@
 package com.team3.fastcampus.record.Diary;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
@@ -16,30 +14,43 @@ import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.team3.fastcampus.record.R;
+import com.team3.fastcampus.record.Util.Permission.PermissionController;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class DiaryWriteDetailActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private final int REQ_PERMISSION = 100; //권한요청코드
     private final int REQ_CAMERA = 101; //카메라요청코드
     private final int REQ_GALLERY = 102; //갤러리요청코드
+
     Uri fileUri = null;
 
     EditText tv_date;
     FloatingActionButton btn_add_photo, btn_add, btn_update, btn_delete, btn_gallery;
     int mYear, mMonth, mDay, mHour, mMinute;
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diary_write_detail);
 
-        checkPermission();
+        new PermissionController(this,
+                new String[]{
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.CAMERA})
+                .check(new PermissionController.PermissionCallback() {
+                    @Override
+                    public void success() {
+                        init();
+                    }
 
-        init();
+                    @Override
+                    public void error() {
+                        Toast.makeText(DiaryWriteDetailActivity.this, "권한을 허용하지 않으면 프로그램을 실행할 수 없습니다", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                });
     }
 
     private void init() {
@@ -79,6 +90,10 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
 
         // date TextView 업데이트
         updateDateText();
+    }
+
+    private void updateDateText() {
+        tv_date.setText(String.format("%d/%d/%d", mYear, mMonth + 1, mDay));
     }
 
     @Override
@@ -122,46 +137,10 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
         }
     }
 
-    private void updateDateText() {
-        tv_date.setText(String.format("%d/%d/%d", mYear, mMonth + 1, mDay));
-    }
-
     private DatePickerDialog.OnDateSetListener mDateSetListener = (view, year, month, dayOfMonth) -> {
         mYear = year;
         mMonth = month;
         mDay = dayOfMonth;
         updateDateText();
     };
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == REQ_PERMISSION) {
-            //배열에 넘긴 런타임 권한을 체크해서 승인이 되었으면
-            if (PermissionControl.onCheckResult(grantResults)) {
-
-
-            }
-        } else {
-            Toast.makeText(this, "권한을 허용하지 않으면 프로그램을 실행할 수 없습니다", Toast.LENGTH_SHORT).show();
-
-            finish();
-
-        }
-    }
-
-    private void checkPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (PermissionControl.checkPermission(this, REQ_PERMISSION)) {
-                //프로그램 실행
-            }
-        } else {
-            //프로그램 실행
-        }
-    }
 }
-
-
-
-
