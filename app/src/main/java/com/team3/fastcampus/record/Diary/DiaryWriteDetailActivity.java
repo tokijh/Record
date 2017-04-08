@@ -11,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -87,19 +86,14 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
         Intent intent = null;
         switch (v.getId()) {
             case R.id.diary_list_detail_tv_diary_date:
-
                 new DatePickerDialog(this, mDateSetListener, mYear, mMonth, mDay).show();
                 break;
-
             case R.id.fab_add:
                 Toast.makeText(this, "add", Toast.LENGTH_SHORT).show();
                 break;
-
             case R.id.fab_photo:
                 Toast.makeText(this, "photo", Toast.LENGTH_SHORT).show();
-
                 intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
                 // 누가는 아래 코드를 반영해야 한다.
                 // --- 카메라 촬영 후 미디어 컨텐트 uri 를 생성해서 외부저장소에 저장한다 ---
 //                    if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.N ) {
@@ -110,32 +104,22 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 //                    }
                 // --- 여기 까지 컨텐트 uri 강제세팅 ---
-
                 startActivityForResult(intent, REQ_CAMERA);
-
                 break;
-
             case R.id.fab_update:
                 Toast.makeText(this, "update", Toast.LENGTH_SHORT).show();
-
                 break;
-
             case R.id.fab_delete:
                 Toast.makeText(this, "delete", Toast.LENGTH_SHORT).show();
-
                 break;
-
             case R.id.fab_gallery:
                 Toast.makeText(this, "Gallery", Toast.LENGTH_SHORT).show();
 
                 intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 intent.setType("image/*"); // 외부저장소에있는 이미지만 가져오기위한 필터링
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQ_CAMERA);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQ_GALLERY);
                 break;
-
-
         }
-
     }
 
     private void updateDateText() {
