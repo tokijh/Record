@@ -65,74 +65,8 @@ public class NetworkController {
     private void destroy() {
         if (disposable != null && !disposable.isDisposed())
             disposable.dispose();
-    }
-
-    /**
-     * 인터넷 연결 상태를 가져온다.
-     *
-     * ENABLE 연결인 경우에는 (networkStatus & NETWORK_ENABLE > 0) 가 true인 경우
-     *
-     * WIFI 연결인 경우에는 (networkStatus & NETWORK_WIFI > 0) 가 true인 경우
-     * MOBILE 연결인 경우에는 (networkStatus & NETWORK_MOBILE > 0) 가 true인 경우
-     *
-     * @param context
-     * @return
-     */
-    public static int checkNetworkStatus(Context context) {
-        int networkStatus = NETWORK_DISABLE;
-
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-
-        if (networkInfo != null) {
-            switch (networkInfo.getType()) {
-                case ConnectivityManager.TYPE_WIFI:
-                    networkStatus |= NETWORK_WIFI;
-                    break;
-                case ConnectivityManager.TYPE_MOBILE:
-                    networkStatus |= NETWORK_MOBILE;
-            }
-            if (networkInfo.getState() == NetworkInfo.State.CONNECTED || networkInfo.getState() == NetworkInfo.State.CONNECTING) {
-                networkStatus |= NETWORK_ENABLE;
-            }
-        }
-
-        return networkStatus;
-    }
-
-    /**
-     * ENABLE인지 아닌지 판단
-     *
-     * @param networkStatus
-     * @return
-     */
-    public static boolean isNetworkStatusENABLE(int networkStatus) {
-        if ((networkStatus & NETWORK_ENABLE) > 0) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * disposable이 Disposed인지 확인
-     *
-     * @return
-     */
-    public boolean isDisposed() {
-        return disposable == null || disposable.isDisposed();
-    }
-
-    /**
-     * Http통신을 위한 url 설정
-     * @param url
-     * @return
-     */
-    public String urlSetting(String url) {
-        if(!url.startsWith("http")){
-            url = "http://" + url;
-        }
-        return url;
+        params.clear();
+        statusCallbacks.clear();
     }
 
     /**
@@ -177,57 +111,6 @@ public class NetworkController {
                 throw new RuntimeException("NetworkController is support GET or POST only");
         }
         this.method = method;
-
-        return this;
-    }
-
-    /**
-     * Body Param 를 완전 초기화
-     *
-     * @return
-     */
-    public NetworkController paramsInit() {
-        params = new HashMap<>();
-
-        return this;
-    }
-
-    /**
-     * Body Params 설정
-     *
-     * @param params
-     * @return
-     */
-    public NetworkController paramsSet(Map<String, Object> params) {
-        this.params = params;
-
-        return this;
-    }
-
-    /**
-     * Body Param 추가
-     *
-     * @param key
-     * @param value
-     * @return
-     */
-    public NetworkController paramsAdd(String key, Object value) {
-        params.put(key, value);
-
-        return this;
-    }
-
-    /**
-     * Body Params 여러개 추가하기
-     *
-     * @param params
-     * @return
-     */
-    public NetworkController paramsAdd(Map<String, Object> params) {
-        Set<String> keys = params.keySet();
-        for (String key : keys) {
-            paramsAdd(key, params.get(key));
-        }
 
         return this;
     }
@@ -313,6 +196,57 @@ public class NetworkController {
     }
 
     /**
+     * Body Param 를 완전 초기화
+     *
+     * @return
+     */
+    public NetworkController paramsInit() {
+        params = new HashMap<>();
+
+        return this;
+    }
+
+    /**
+     * Body Params 설정
+     *
+     * @param params
+     * @return
+     */
+    public NetworkController paramsSet(Map<String, Object> params) {
+        this.params = params;
+
+        return this;
+    }
+
+    /**
+     * Body Param 추가
+     *
+     * @param key
+     * @param value
+     * @return
+     */
+    public NetworkController paramsAdd(String key, Object value) {
+        params.put(key, value);
+
+        return this;
+    }
+
+    /**
+     * Body Params 여러개 추가하기
+     *
+     * @param params
+     * @return
+     */
+    public NetworkController paramsAdd(Map<String, Object> params) {
+        Set<String> keys = params.keySet();
+        for (String key : keys) {
+            paramsAdd(key, params.get(key));
+        }
+
+        return this;
+    }
+
+    /**
      * StatusCallback을 초기화
      *
      * @return
@@ -359,6 +293,27 @@ public class NetworkController {
                 statusCallback.onSuccess(response);
             }
         }
+    }
+
+    /**
+     * disposable이 Disposed인지 확인
+     *
+     * @return
+     */
+    public boolean isDisposed() {
+        return disposable == null || disposable.isDisposed();
+    }
+
+    /**
+     * Http통신을 위한 url 설정
+     * @param url
+     * @return
+     */
+    public String urlSetting(String url) {
+        if(!url.startsWith("http")){
+            url = "http://" + url;
+        }
+        return url;
     }
 
     /**
@@ -429,6 +384,44 @@ public class NetworkController {
             default:
                 throw new RuntimeException("NetworkController is support GET or POST only");
         }
+
+        return requestBuilder.build();
+    }
+
+    /**
+     * 서버에 보낼 Request만들기
+     *
+     * @param method 전송 방식 GET OR POST
+     * @param datas 함께 전송할 params
+     * @return OKHttp3의 Request
+     */
+    @Deprecated
+    private Request buildRequest(int method, Map<String, Object> datas) {
+        Request.Builder requestBuilder = new Request.Builder();
+
+        if (method == GET) {
+            if (datas != null) {
+                String params = "?";
+                for (String key : datas.keySet()) {
+                    params += key + "=" + datas.get(key) + '&';
+                }
+                params = params.substring(0, params.length() - 1);
+                url = url + params;
+            }
+            requestBuilder.get();
+        } else if (method == POST) {
+            FormBody.Builder formBuilder = new FormBody.Builder();
+            if (datas != null) {
+                for (String key : datas.keySet()) {
+                    formBuilder.addEncoded(key, datas.get(key).toString());
+                }
+            }
+            requestBuilder.post(formBuilder.build());
+        } else {
+            throw new RuntimeException("NetworkController is support GET or POST only");
+        }
+
+        requestBuilder.url(url);
 
         return requestBuilder.build();
     }
@@ -505,6 +498,53 @@ public class NetworkController {
     }
 
     /**
+     * 인터넷 연결 상태를 가져온다.
+     *
+     * ENABLE 연결인 경우에는 (networkStatus & NETWORK_ENABLE > 0) 가 true인 경우
+     *
+     * WIFI 연결인 경우에는 (networkStatus & NETWORK_WIFI > 0) 가 true인 경우
+     * MOBILE 연결인 경우에는 (networkStatus & NETWORK_MOBILE > 0) 가 true인 경우
+     *
+     * @param context
+     * @return
+     */
+    public static int checkNetworkStatus(Context context) {
+        int networkStatus = NETWORK_DISABLE;
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        if (networkInfo != null) {
+            switch (networkInfo.getType()) {
+                case ConnectivityManager.TYPE_WIFI:
+                    networkStatus |= NETWORK_WIFI;
+                    break;
+                case ConnectivityManager.TYPE_MOBILE:
+                    networkStatus |= NETWORK_MOBILE;
+            }
+            if (networkInfo.getState() == NetworkInfo.State.CONNECTED || networkInfo.getState() == NetworkInfo.State.CONNECTING) {
+                networkStatus |= NETWORK_ENABLE;
+            }
+        }
+
+        return networkStatus;
+    }
+
+    /**
+     * ENABLE인지 아닌지 판단
+     *
+     * @param networkStatus
+     * @return
+     */
+    public static boolean isNetworkStatusENABLE(int networkStatus) {
+        if ((networkStatus & NETWORK_ENABLE) > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Decoding by Gson
      *
      * @param clazz
@@ -565,44 +605,6 @@ public class NetworkController {
      */
     public static <T> Map<String, Object> encode(T object) throws JSONException {
         return encode(new Gson().toJson(object));
-    }
-
-    /**
-     * 서버에 보낼 Request만들기
-     *
-     * @param method 전송 방식 GET OR POST
-     * @param datas 함께 전송할 params
-     * @return OKHttp3의 Request
-     */
-    @Deprecated
-    private Request buildRequest(int method, Map<String, Object> datas) {
-        Request.Builder requestBuilder = new Request.Builder();
-
-        if (method == GET) {
-            if (datas != null) {
-                String params = "?";
-                for (String key : datas.keySet()) {
-                    params += key + "=" + datas.get(key) + '&';
-                }
-                params = params.substring(0, params.length() - 1);
-                url = url + params;
-            }
-            requestBuilder.get();
-        } else if (method == POST) {
-            FormBody.Builder formBuilder = new FormBody.Builder();
-            if (datas != null) {
-                for (String key : datas.keySet()) {
-                    formBuilder.addEncoded(key, datas.get(key).toString());
-                }
-            }
-            requestBuilder.post(formBuilder.build());
-        } else {
-            throw new RuntimeException("NetworkController is support GET or POST only");
-        }
-
-        requestBuilder.url(url);
-
-        return requestBuilder.build();
     }
 
     /**
