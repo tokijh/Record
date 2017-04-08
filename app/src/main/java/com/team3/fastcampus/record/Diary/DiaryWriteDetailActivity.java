@@ -48,15 +48,7 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
 
         initListener();
 
-        //날자, 시간 가져오기
-        Calendar cal = new GregorianCalendar();
-        mYear = cal.get(Calendar.YEAR);
-        mMonth = cal.get(Calendar.MONTH);
-        mDay = cal.get(Calendar.DAY_OF_MONTH);
-        mHour = cal.get(Calendar.HOUR_OF_DAY);
-        mMinute = cal.get(Calendar.MINUTE);
-
-        updateDateText();
+        initDateValue();
     }
 
     private void initView() {
@@ -75,6 +67,19 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
         btn_update.setOnClickListener(this);
         btn_delete.setOnClickListener(this);
         btn_gallery.setOnClickListener(this);
+    }
+
+    private void initDateValue() {
+        // 날자, 시간 가져오기
+        Calendar cal = new GregorianCalendar();
+        mYear = cal.get(Calendar.YEAR);
+        mMonth = cal.get(Calendar.MONTH);
+        mDay = cal.get(Calendar.DAY_OF_MONTH);
+        mHour = cal.get(Calendar.HOUR_OF_DAY);
+        mMinute = cal.get(Calendar.MINUTE);
+
+        // date TextView 업데이트
+        updateDateText();
     }
 
     @Override
