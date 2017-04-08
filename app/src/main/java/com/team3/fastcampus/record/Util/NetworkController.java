@@ -330,6 +330,108 @@ public class NetworkController {
     }
 
     /**
+     * Header 를 Build 한다.
+     *
+     * @param requestBuilder
+     * @return
+     */
+    private Request.Builder buildHeader(Request.Builder requestBuilder) {
+        return requestBuilder.headers(headersBuilder.build());
+    }
+
+    /**
+     * GET Type에 맞도록 Build한다.
+     *
+     * @param requestBuilder
+     * @return
+     */
+    private Request.Builder buildGET(Request.Builder requestBuilder) {
+        if (params != null) {
+            String urlParams = "?";
+            for (String key : params.keySet()) {
+                urlParams += key + "=" + params.get(key) + '&';
+            }
+            urlParams = urlParams.substring(0, urlParams.length() - 1);
+            url = url + urlParams;
+            requestBuilder.url(url);
+        }
+
+        return requestBuilder.get();
+    }
+
+    /**
+     * POST Type에 맞도록 Build한다.
+     *
+     * @param requestBuilder
+     * @return
+     */
+    private Request.Builder buildPOST(Request.Builder requestBuilder) {
+        FormBody.Builder formBuilder = new FormBody.Builder();
+        if (params != null) {
+            for (String key : params.keySet()) {
+                formBuilder.addEncoded(key, params.get(key).toString());
+            }
+        }
+        return requestBuilder.post(formBuilder.build());
+    }
+
+    /**
+     * Request를 만들어 낸다.
+     *
+     * @return
+     */
+    private Request buildRequest() {
+        Request.Builder requestBuilder = new Request.Builder();
+
+        requestBuilder.url(url);
+
+        buildHeader(requestBuilder);
+
+        switch (method) {
+            case GET:
+                buildGET(requestBuilder);
+                break;
+            case POST:
+                buildPOST(requestBuilder);
+                break;
+            default:
+                throw new RuntimeException("NetworkController is support GET or POST only");
+        }
+
+        return requestBuilder.build();
+    }
+
+    /**
+     * Http 통신 시작
+     */
+    public void excute() {
+        if (disposable != null && !disposable.isDisposed()) {
+            callbackError(new Throwable("disposable is using"));
+            return;
+        }
+
+        disposable = Observable.create(subscriber -> {
+            try {
+                OkHttpClient client = new OkHttpClient();
+
+                Response response = client.newCall(buildRequest()).execute();
+
+                subscriber.onNext(response);
+            } catch (IOException e) {
+                subscriber.onError(e);
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    callbackSuccess((Response) response);
+                    destroy();
+                }, error -> {
+                    callbackError(error);
+                    destroy();
+                });
+    }
+
+    /**
      * Http통신 시작
      *
      * @param method
