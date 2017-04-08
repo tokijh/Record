@@ -44,6 +44,7 @@ public class NetworkController {
 
     private String url;
     private int method = GET; // Defaul is GET
+    private Map<String, Object> bodyParams;
 
     private Disposable disposable;
 
@@ -52,6 +53,8 @@ public class NetworkController {
             url = "http://" + url;
         }
         this.url = url;
+
+        bodyParams = new HashMap<>(); // params 초기화
     }
 
     public static NetworkController newInstance(String url) {
@@ -134,6 +137,30 @@ public class NetworkController {
                 throw new RuntimeException("NetworkController is support GET or POST only");
         }
         this.method = method;
+
+        return this;
+    }
+
+    /**
+     * Body Params 설정
+     *
+     * @param bodyParams
+     * @return
+     */
+    public NetworkController setBodyParams(Map<String, Object> bodyParams) {
+        this.bodyParams = bodyParams;
+
+        return this;
+    }
+
+    /**
+     * Body Param 추가
+     * @param key
+     * @param value
+     * @return
+     */
+    public NetworkController addBodyParam(String key, Object value) {
+        bodyParams.put(key, value);
 
         return this;
     }
