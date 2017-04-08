@@ -170,12 +170,28 @@ public class NetworkController {
 
     /**
      * Body Param 추가
+     *
      * @param key
      * @param value
      * @return
      */
     public NetworkController paramsAdd(String key, Object value) {
         params.put(key, value);
+
+        return this;
+    }
+
+    /**
+     * Body Params 여러개 추가하기
+     *
+     * @param params
+     * @return
+     */
+    public NetworkController paramsAdd(Map<String, Object> params) {
+        Set<String> keys = params.keySet();
+        for (String key : keys) {
+            paramsAdd(key, params.get(key));
+        }
 
         return this;
     }
