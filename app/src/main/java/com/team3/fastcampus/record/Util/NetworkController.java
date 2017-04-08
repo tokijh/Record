@@ -16,8 +16,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -48,6 +50,7 @@ public class NetworkController {
     private int method = GET; // Default is GET
     private Map<String, Object> params;
     private Headers.Builder headersBuilder;
+    private List<StatusCallback> statusCallbacks;
 
     private Disposable disposable;
 
@@ -59,6 +62,7 @@ public class NetworkController {
 
         params = new HashMap<>(); // params 초기화
         headersBuilder = new Headers.Builder();
+        statusCallbacks = new ArrayList<>();
     }
 
     public static NetworkController newInstance(String url) {
@@ -275,6 +279,30 @@ public class NetworkController {
 
         return this;
     }
+
+    /**
+     * StatusCallback을 초기화
+     *
+     * @return
+     */
+    public NetworkController initCallback() {
+        statusCallbacks.clear();
+
+        return this;
+    }
+
+    /**
+     * StatusCallback을 추가 한다.
+     *
+     * @param statusCallback
+     * @return
+     */
+    public NetworkController addCallback(StatusCallback statusCallback) {
+        statusCallbacks.add(statusCallback);
+
+        return this;
+    }
+
 
     /**
      * Http통신 시작
