@@ -303,6 +303,31 @@ public class NetworkController {
         return this;
     }
 
+    /**
+     * callback의 error를 실행 (Used Observer Pattern)
+     *
+     * @param error
+     */
+    private void callbackError(Throwable error) {
+        for (StatusCallback statusCallback : statusCallbacks) {
+            if (statusCallback != null) {
+                statusCallback.onError(error);
+            }
+        }
+    }
+
+    /**
+     * callback의 success를 실행 (Used Observer Pattern)
+     *
+     * @param response
+     */
+    private void callbackSuccess(Response response) {
+        for (StatusCallback statusCallback : statusCallbacks) {
+            if (statusCallback != null) {
+                statusCallback.onSuccess(response);
+            }
+        }
+    }
 
     /**
      * Http통신 시작
