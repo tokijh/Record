@@ -168,4 +168,17 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
         mDay = dayOfMonth;
         updateDateText();
     };
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case REQ_CAMERA:
+                    break;
+                case REQ_GALLERY:
+                    break;
+            }
+        }
+    }
 }
