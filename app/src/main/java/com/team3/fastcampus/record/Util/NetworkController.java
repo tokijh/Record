@@ -470,6 +470,7 @@ public class NetworkController {
      * @param datas null시 전송 파라미터 없음.
      * @param statusCallback null시 callback없음.
      */
+    @Deprecated
     public void excute(int method, @Nullable Map<String, Object> datas, @Nullable StatusCallback statusCallback) {
         if (disposable != null && !disposable.isDisposed()) {
             if (statusCallback != null) {
@@ -573,6 +574,7 @@ public class NetworkController {
      * @param datas 함께 전송할 params
      * @return OKHttp3의 Request
      */
+    @Deprecated
     private Request buildRequest(int method, Map<String, Object> datas) {
         Request.Builder requestBuilder = new Request.Builder();
 
