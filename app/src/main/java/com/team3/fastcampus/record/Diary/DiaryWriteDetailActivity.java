@@ -45,12 +45,8 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
     }
 
     private void init() {
-        tv_date = (EditText) findViewById(R.id.diary_list_detail_tv_diary_date);
-        btn_add = (FloatingActionButton) findViewById(R.id.fab_add);
-        btn_add_photo = (FloatingActionButton) findViewById(R.id.fab_photo);
-        btn_update = (FloatingActionButton) findViewById(R.id.fab_update);
-        btn_delete = (FloatingActionButton) findViewById(R.id.fab_delete);
-        btn_gallery = (FloatingActionButton) findViewById(R.id.fab_gallery);
+        initView();
+
         tv_date.setOnClickListener(this);
         btn_add.setOnClickListener(this);
         btn_add_photo.setOnClickListener(this);
@@ -78,6 +74,15 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
                 UpdateCal();
             }
         };
+    }
+
+    private void initView() {
+        tv_date = (EditText) findViewById(R.id.diary_list_detail_tv_diary_date);
+        btn_add = (FloatingActionButton) findViewById(R.id.fab_add);
+        btn_add_photo = (FloatingActionButton) findViewById(R.id.fab_photo);
+        btn_update = (FloatingActionButton) findViewById(R.id.fab_update);
+        btn_delete = (FloatingActionButton) findViewById(R.id.fab_delete);
+        btn_gallery = (FloatingActionButton) findViewById(R.id.fab_gallery);
     }
 
     @Override
