@@ -47,13 +47,6 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
     private void init() {
         initView();
 
-        tv_date.setOnClickListener(this);
-        btn_add.setOnClickListener(this);
-        btn_add_photo.setOnClickListener(this);
-        btn_update.setOnClickListener(this);
-        btn_delete.setOnClickListener(this);
-        btn_gallery.setOnClickListener(this);
-
         //날자, 시간 가져오기
         Calendar cal = new GregorianCalendar();
         mYear = cal.get(Calendar.YEAR);
@@ -63,6 +56,24 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
         mMinute = cal.get(Calendar.MINUTE);
 
         updateDateText();
+    }
+
+    private void initView() {
+        tv_date = (EditText) findViewById(R.id.diary_list_detail_tv_diary_date);
+        btn_add = (FloatingActionButton) findViewById(R.id.fab_add);
+        btn_add_photo = (FloatingActionButton) findViewById(R.id.fab_photo);
+        btn_update = (FloatingActionButton) findViewById(R.id.fab_update);
+        btn_delete = (FloatingActionButton) findViewById(R.id.fab_delete);
+        btn_gallery = (FloatingActionButton) findViewById(R.id.fab_gallery);
+    }
+
+    private void initListener() {
+        tv_date.setOnClickListener(this);
+        btn_add.setOnClickListener(this);
+        btn_add_photo.setOnClickListener(this);
+        btn_update.setOnClickListener(this);
+        btn_delete.setOnClickListener(this);
+        btn_gallery.setOnClickListener(this);
 
         mDateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -74,15 +85,6 @@ public class DiaryWriteDetailActivity extends AppCompatActivity implements View.
                 updateDateText();
             }
         };
-    }
-
-    private void initView() {
-        tv_date = (EditText) findViewById(R.id.diary_list_detail_tv_diary_date);
-        btn_add = (FloatingActionButton) findViewById(R.id.fab_add);
-        btn_add_photo = (FloatingActionButton) findViewById(R.id.fab_photo);
-        btn_update = (FloatingActionButton) findViewById(R.id.fab_update);
-        btn_delete = (FloatingActionButton) findViewById(R.id.fab_delete);
-        btn_gallery = (FloatingActionButton) findViewById(R.id.fab_gallery);
     }
 
     @Override
