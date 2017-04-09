@@ -22,4 +22,36 @@ public class InDiary {
         this.photo_list = photo_list;
         this.created_date = created_date;
     }
+
+    public long getPk() {
+        return pk;
+    }
+
+    public void setPk(long pk) {
+        this.pk = pk;
+    }
+
+    public long getDiary() {
+        return diary;
+    }
+
+    public void setDiary(long diary) {
+        this.diary = diary;
+    }
+
+    public List<Image> getPhoto_list() {
+        return photo_list;
+    }
+
+    public void setPhoto_list(List<Image> photo_list) {
+        this.photo_list = photo_list;
+    }
+
+    public String getCreated_date() {
+        return created_date;
+    }
+
+    public void setCreated_date(String created_date) {
+        this.created_date = created_date;
+    }
 }
