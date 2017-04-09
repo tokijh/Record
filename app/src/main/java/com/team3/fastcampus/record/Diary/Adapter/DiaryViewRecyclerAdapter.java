@@ -14,7 +14,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.team3.fastcampus.record.Diary.Domain.Diary;
+import com.team3.fastcampus.record.Diary.Modal.Diary;
 import com.team3.fastcampus.record.R;
 import com.team3.fastcampus.record.Util.Logger;
 

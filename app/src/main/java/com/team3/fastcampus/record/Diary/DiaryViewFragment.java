@@ -21,7 +21,7 @@ import android.widget.RelativeLayout;
 
 import com.team3.fastcampus.record.*;
 import com.team3.fastcampus.record.Diary.Adapter.DiaryViewRecyclerAdapter;
-import com.team3.fastcampus.record.Diary.Domain.Diary;
+import com.team3.fastcampus.record.Diary.Modal.Diary;
 
 /**
  * Diary를 보여주기 위한 메인뷰

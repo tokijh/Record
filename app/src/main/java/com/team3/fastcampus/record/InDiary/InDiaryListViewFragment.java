@@ -9,20 +9,15 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.RelativeLayout;
 
-import com.team3.fastcampus.record.Diary.Adapter.DiaryViewRecyclerAdapter;
 import com.team3.fastcampus.record.InDiary.Adapter.InDiaryViewRecyclerAdapter;
-import com.team3.fastcampus.record.InDiary.Domain.Image;
-import com.team3.fastcampus.record.InDiary.Domain.InDiary;
+import com.team3.fastcampus.record.InDiary.Modal.Image;
+import com.team3.fastcampus.record.InDiary.Modal.InDiary;
 import com.team3.fastcampus.record.R;
 
 import java.io.ByteArrayOutputStream;

@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
-import com.team3.fastcampus.record.InDiary.Domain.InDiary;
+import com.team3.fastcampus.record.InDiary.Modal.InDiary;
 import com.team3.fastcampus.record.R;
 
 import java.util.ArrayList;
