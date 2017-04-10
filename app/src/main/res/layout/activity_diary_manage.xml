@@ -101,12 +101,13 @@
                     android:layout_weight="2"
                     android:src="@android:drawable/ic_menu_today" />
 
-                <EditText
+                <TextView
                     android:id="@+id/diary_list_detail_tv_diary_date"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="8dp"
                     android:layout_marginRight="5dp"
+                    android:gravity="center_vertical"
                     android:layout_weight="8"
                     android:hint="Start Date"
                     android:textSize="13dp" />
@@ -130,14 +131,16 @@
                     android:layout_weight="2"
                     android:src="@android:drawable/ic_menu_today" />
 
-                <EditText
+                <TextView
                     android:id="@+id/diary_list_detail_tv_diary_end_date"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="8dp"
                     android:layout_marginRight="5dp"
                     android:layout_weight="8"
-                    android:hint="End Date"
+                    android:textColor="#828282"
+                    android:text="End Date"
                     android:textSize="13dp" />
 
             </LinearLayout>
@@ -154,7 +157,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/diary_input_area"
         android:layout_marginTop="15dp"
-        android:text="make diary"
+        android:text="add your picture"
         android:textAlignment="center"
         android:textColor="#666666"
         android:textSize="12dp" />
@@ -162,7 +165,7 @@
     <ImageView
         android:id="@+id/diary_list_detail_image"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="200dp"
         android:layout_below="@+id/diary_list_detail_tv_photo"
         android:layout_marginTop="10dp"
         android:scaleType="centerCrop"
