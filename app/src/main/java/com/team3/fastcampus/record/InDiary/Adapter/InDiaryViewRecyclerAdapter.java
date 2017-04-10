@@ -50,7 +50,6 @@ public class InDiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
         addInDiaryAdd();
         for (InDiary inDiary : inDiaries) {
             add(inDiary);
-            addInDiaryAdd();
         }
         this.notifyDataSetChanged();
     }
