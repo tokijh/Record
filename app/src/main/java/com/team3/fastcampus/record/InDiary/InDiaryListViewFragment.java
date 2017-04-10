@@ -19,6 +19,7 @@ import com.team3.fastcampus.record.Diary.Model.Diary;
 import com.team3.fastcampus.record.InDiary.Adapter.InDiaryViewRecyclerAdapter;
 import com.team3.fastcampus.record.InDiary.Model.InDiary;
 import com.team3.fastcampus.record.R;
+import com.team3.fastcampus.record.Util.Logger;
 import com.team3.fastcampus.record.Util.NetworkController;
 import com.team3.fastcampus.record.Util.PreferenceManager;
 
@@ -26,15 +27,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.List;
-
-import okhttp3.Response;
 
 /**
  * InDiary의 리스트를 보여주기 위한 Fragment
  */
 public class InDiaryListViewFragment extends Fragment {
+
+    public static final String TAG = "InDiaryListViewFragment";
 
     private View view;
 
@@ -113,11 +113,11 @@ public class InDiaryListViewFragment extends Fragment {
                     }
 
                     @Override
-                    public void onSuccess(Response response) {
+                    public void onSuccess(NetworkController.ResponseData responseData) {
                         try {
-                            String rspstr = response.body().string();
-                            if (response.code() == 200) {
-                                JSONArray root = NetworkController.decodeArray(rspstr);
+                            Logger.e(TAG, responseData.body);
+                            if (responseData.response.code() == 200) {
+                                JSONArray root = NetworkController.decodeArray(responseData.body);
                                 for (int i=0;i<root.length();i++) {
                                     JSONObject jsonDiary = root.getJSONObject(i);
                                     if (jsonDiary.getLong("pk") == inDiaryListCallback.getDiary().pk) {
@@ -127,12 +127,10 @@ public class InDiaryListViewFragment extends Fragment {
                                     }
                                 }
                             }
-                        } catch (IOException e) {
-                            e.printStackTrace();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         } finally {
-                            response.close();
+                            responseData.response.close();
                             progressDisable();
                         }
                     }
