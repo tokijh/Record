@@ -36,7 +36,7 @@ import okhttp3.Response;
 /**
  * Diary를 보여주기 위한 메인뷰
  */
-public class DiaryViewFragment extends Fragment {
+public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdapter.DiaryListCallback {
 
     public static final String TAG = "DiaryViewFragment";
 
@@ -87,7 +87,7 @@ public class DiaryViewFragment extends Fragment {
     }
 
     private void initAdapter() {
-        diaryViewRecyclerAdapter = new DiaryViewRecyclerAdapter(getContext());
+        diaryViewRecyclerAdapter = new DiaryViewRecyclerAdapter(this);
         recyclerView.setAdapter(diaryViewRecyclerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
@@ -163,7 +163,12 @@ public class DiaryViewFragment extends Fragment {
         diaryViewInterface = null;
     }
 
+    @Override
+    public void onItemClick(Diary diary) {
+        diaryViewInterface.showInDiary(diary);
+    }
+
     public interface DiaryViewInterface {
-        void showInDiary();
+        void showInDiary(Diary diary);
     }
 }

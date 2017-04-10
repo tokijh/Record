@@ -5,6 +5,7 @@ package com.team3.fastcampus.record.Diary.Adapter;
  */
 
 import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +14,8 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.team3.fastcampus.record.Diary.Model.Diary;
 import com.team3.fastcampus.record.R;
-import com.team3.fastcampus.record.Util.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +26,17 @@ public class DiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
     public static final int CARD_ADD = 1;
 
     private Context context;
+    private DiaryListCallback diaryListCallback;
 
     private List<DiaryExtend> diaries;
 
-    public DiaryViewRecyclerAdapter(Context context) {
-        this.context = context;
+    public DiaryViewRecyclerAdapter(Object object) {
+        if (object instanceof DiaryListCallback) {
+            diaryListCallback = (DiaryListCallback) object;
+        } else {
+            throw new RuntimeException(object.toString() + " must implement DiaryListCallback");
+        }
+        this.context = ((Fragment) object).getContext();
         diaries = new ArrayList<>();
         addDiaryAdd();
     }
@@ -68,12 +73,7 @@ public class DiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         diaryViewHolder.tv_title.setText(diary.title);
         diaryViewHolder.tv_date.setText(diary.created_date);
 
-        if (diary.getPost().size() > 0 && diary.getPost().get(0).getPhoto_list().size() > 0) {
-            Glide.with(context)
-                    .load(diary.getPost().get(0).getPhoto_list().get(0).getPhoto())
-                    .placeholder(R.drawable.night)
-                    .into(diaryViewHolder.iv_image);
-        }
+        // TODO iv_image에 cover image보여주기
     }
 
     private void setCardAdd(RecyclerView.ViewHolder holder, int position) {
@@ -137,7 +137,6 @@ public class DiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         }
 
         View.OnClickListener cardDiaryHolderOnClickListener = v -> {
-            Logger.e("TAG", v.getId() + " ididididi");
             switch (v.getId()) {
                 case -1:
                     cardDiaryClicked(position);
@@ -150,7 +149,7 @@ public class DiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
     }
 
     private void cardDiaryClicked(int position) {
-
+        diaryListCallback.onItemClick(diaries.get(position).diary);
     }
 
     private void cardDiaryMenuCreate(View v, int position) {
@@ -182,5 +181,9 @@ public class DiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
             this.type = type;
             this.diary = diary;
         }
+    }
+
+    public interface DiaryListCallback {
+        void onItemClick(Diary diary);
     }
 }
