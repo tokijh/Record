@@ -28,10 +28,9 @@ import com.team3.fastcampus.record.Diary.Model.Diary;
 import com.team3.fastcampus.record.Util.Logger;
 import com.team3.fastcampus.record.Util.NetworkController;
 import com.team3.fastcampus.record.Util.PreferenceManager;
+import com.team3.fastcampus.record.Util.RealmDatabaseManager;
 
 import java.util.List;
-
-import io.realm.Realm;
 
 /**
  * Diary를 보여주기 위한 메인뷰
@@ -134,6 +133,7 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
                                     List<Diary> diaries = NetworkController.decode(new TypeToken<List<Diary>>() {
                                     }.getType(), responseData.body);
                                     diaryViewRecyclerAdapter.set(diaries);
+                                    dbSave(diaries);
                                     return;
                                 }
                             } catch (JsonSyntaxException e) {
@@ -147,6 +147,24 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
                         }
                     })
                     .excute();
+        }
+    }
+
+    private void dbSave(List<Diary> diaries) {
+        RealmDatabaseManager realmDatabaseManager = RealmDatabaseManager.getInstance();
+        for (Diary diary : diaries) {
+            Diary isSaved = realmDatabaseManager.get(Diary.class)
+                    .equalTo("username", diary.username)
+                    .equalTo("pk", diary.pk)
+                    .findFirst();
+            if (isSaved == null) {
+                realmDatabaseManager.create(Diary.class, (realm, realmObject) -> {
+                    realmObject.pk = diary.pk;
+                    realmObject.username = diary.username;
+                    realmObject.title = diary.title;
+                    realmObject.created_date = diary.created_date;
+                });
+            }
         }
     }
 
@@ -190,6 +208,7 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
     public void onDetach() {
         super.onDetach();
         diaryViewInterface = null;
+        RealmDatabaseManager.destroy();
     }
 
     @Override
