@@ -93,9 +93,10 @@ public class MainActivity extends AppCompatActivity
      * @param fragment
      */
     public void showContentFragment(Fragment fragment) {
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.replace(R.id.contentView, fragment);
-        transaction.commit();
+        manager.beginTransaction()
+        .replace(R.id.contentView, fragment)
+        .addToBackStack(fragment.getTag())
+        .commit();
     }
 
     @Override
@@ -104,7 +105,12 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if (manager.getBackStackEntryCount() > 2) {
+                manager.popBackStackImmediate();
+                manager.beginTransaction().commit();
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 
