@@ -100,7 +100,7 @@ public class DiaryViewFragment extends Fragment {
         if (NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(getContext()))) {
             NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_diary))
                     .setMethod(NetworkController.GET)
-                    .headerAdd("Authorization", PreferenceManager.getInstance().getString("token", null))
+                    .headerAdd("Authorization", "Token " + PreferenceManager.getInstance().getString("token", null))
                     .addCallback(new NetworkController.StatusCallback() {
                         @Override
                         public void onError(Throwable error) {
