@@ -16,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -555,6 +556,19 @@ public class NetworkController {
      */
     public static <T> T decode(Class<T> clazz, String json) throws JsonSyntaxException {
         return new Gson().fromJson(json, clazz);
+    }
+
+    /**
+     * Decoding by Gson
+     *
+     * @param type
+     * @param json
+     * @param <T>
+     * @return ClassData
+     * @throws JsonSyntaxException
+     */
+    public static <T> T decode(Type type, String json) throws JsonSyntaxException {
+        return new Gson().fromJson(json, type);
     }
 
     /**
