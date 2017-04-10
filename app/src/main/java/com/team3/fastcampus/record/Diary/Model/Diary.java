@@ -13,18 +13,16 @@ public class Diary {
     public long pk;
     public String title;
     public User author;
-    public List<InDiary> post;
     public String created_date;
 
     public Diary() {
 
     }
 
-    public Diary(long pk, String title, User author, List<InDiary> post, String created_date) {
+    public Diary(long pk, String title, User author, String created_date) {
         this.pk = pk;
         this.title = title;
         this.author = author;
-        this.post = post;
         this.created_date = created_date;
     }
 
@@ -50,14 +48,6 @@ public class Diary {
 
     public void setAuthor(User author) {
         this.author = author;
-    }
-
-    public List<InDiary> getPost() {
-        return post;
-    }
-
-    public void setPost(List<InDiary> post) {
-        this.post = post;
     }
 
     public String getCreated_date() {
