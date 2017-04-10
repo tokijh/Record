@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity
         initFragmentSettings();
 
         // 초기 화면 지정
-        showContentFragment(FragmentsID.DiaryViewFragment);
+        showContentFragment(diaryViewFragment);
     }
 
     private void initView() {
@@ -86,29 +86,6 @@ public class MainActivity extends AppCompatActivity
 
     private void successSignIn(String token) {
         PreferenceManager.getInstance().putString("token", token);
-    }
-
-    /**
-     * FragmentsID의 id(int)로 해당 id의 Fragment를 띄움
-     * @param id FragmentsID의 id(int)
-     */
-    public void showContentFragment(int id) {
-        Fragment fragment = null;
-
-        switch (id) {
-            case FragmentsID.DiaryViewFragment:
-                fragment = diaryViewFragment;
-                break;
-            case FragmentsID.InDiaryViewFragment:
-                fragment = inDiaryViewFragment;
-                break;
-        }
-
-        if (fragment != null) {
-            FragmentTransaction transaction = manager.beginTransaction();
-            transaction.replace(R.id.contentView, fragment);
-            transaction.commit();
-        }
     }
 
     /**
