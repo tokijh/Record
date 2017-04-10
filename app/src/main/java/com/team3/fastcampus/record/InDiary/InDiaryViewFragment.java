@@ -14,12 +14,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.team3.fastcampus.record.Diary.Model.Diary;
 import com.team3.fastcampus.record.R;
 
 /**
  * InDiary를 보여주기 위한 메인뷰
  */
-public class InDiaryViewFragment extends Fragment {
+public class InDiaryViewFragment extends Fragment implements InDiaryListViewFragment.InDiaryListCallback {
 
     private View view;
 
@@ -32,6 +33,8 @@ public class InDiaryViewFragment extends Fragment {
 
     // Adaper
     private InDiaryViewPagerAdapter inDiaryViewPagerAdapter;
+
+    private Diary diary;
 
     public InDiaryViewFragment() {
         // Required empty public constructor
@@ -72,8 +75,17 @@ public class InDiaryViewFragment extends Fragment {
     }
 
     private void initFragment() {
-        inDiaryListViewFragment = new InDiaryListViewFragment();
+        inDiaryListViewFragment = new InDiaryListViewFragment(this);
         inDiaryMapViewFragment = new InDiaryMapViewFragment();
+    }
+
+    public void setDiary(Diary diary) {
+        this.diary = diary;
+    }
+
+    @Override
+    public Diary getDiary() {
+        return diary;
     }
 
     class InDiaryViewPagerAdapter extends FragmentStatePagerAdapter {

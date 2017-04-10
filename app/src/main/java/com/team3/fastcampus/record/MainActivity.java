@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.team3.fastcampus.record.Account.SigninActivity;
 import com.team3.fastcampus.record.Diary.DiaryViewFragment;
+import com.team3.fastcampus.record.Diary.Model.Diary;
 import com.team3.fastcampus.record.InDiary.InDiaryViewFragment;
 import com.team3.fastcampus.record.Util.PreferenceManager;
 
@@ -145,7 +146,8 @@ public class MainActivity extends AppCompatActivity
 
     // Define Fragment Interface
     @Override
-    public void showInDiary() {
+    public void showInDiary(Diary diary) {
+        inDiaryViewFragment.setDiary(diary);
         showContentFragment(inDiaryViewFragment);
     }
 

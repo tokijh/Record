@@ -12,8 +12,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.reflect.TypeToken;
+import com.team3.fastcampus.record.Diary.Model.Diary;
 import com.team3.fastcampus.record.InDiary.Adapter.InDiaryViewRecyclerAdapter;
+import com.team3.fastcampus.record.InDiary.Model.InDiary;
 import com.team3.fastcampus.record.R;
+import com.team3.fastcampus.record.Util.NetworkController;
+import com.team3.fastcampus.record.Util.PreferenceManager;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.List;
+
+import okhttp3.Response;
 
 /**
  * InDiary의 리스트를 보여주기 위한 Fragment
@@ -26,10 +40,17 @@ public class InDiaryListViewFragment extends Fragment {
 
     private InDiaryViewRecyclerAdapter inDiaryViewRecyclerAdapter;
 
-    public InDiaryListViewFragment() {
-        // Required empty public constructor
-    }
+    private InDiaryListCallback inDiaryListCallback;
 
+    private int position = 0;
+
+    public InDiaryListViewFragment(Fragment fragment) {
+        if (fragment instanceof InDiaryListCallback) {
+            inDiaryListCallback = (InDiaryListCallback)  fragment;
+        } else {
+            throw new RuntimeException(fragment.toString() + " must implement InDiaryListCallback");
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,39 +61,10 @@ public class InDiaryListViewFragment extends Fragment {
 
         initAdapter();
 
-//        // TestDatas
-//
-//        // To get byte[] data from R.drawable.night
-//        Drawable d = getResources().getDrawable(R.drawable.night);
-//        Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
-//        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-//        byte[] bitmapdata = stream.toByteArray();
-//
-//        // To get byte[] data from R.drawable.logo
-//        Drawable d1 = getResources().getDrawable(R.drawable.logo);
-//        Bitmap bitmap1 = ((BitmapDrawable)d1).getBitmap();
-//        ByteArrayOutputStream stream1 = new ByteArrayOutputStream();
-//        bitmap1.compress(Bitmap.CompressFormat.JPEG, 100, stream1);
-//        byte[] bitmapdata1 = stream1.toByteArray();
-//
-//        List<Image> images = new ArrayList<>();
-//        Image image1 = new Image();
-//        image1.imageData = bitmapdata;
-//        Image image2 = new Image();
-//        image2.imageData = bitmapdata1;
-//
-//        images.add(image1);
-//        images.add(image2);
-//        InDiary inDiary = new InDiary(1, "title", "date", "content", images);
-//        inDiaryViewRecyclerAdapter.add(inDiary);
-//        inDiaryViewRecyclerAdapter.add(inDiary);
-//        inDiaryViewRecyclerAdapter.add(inDiary);
-//        inDiaryViewRecyclerAdapter.add(inDiary);
+        getData(position);
 
         return view;
     }
-
 
     private void initView() {
         recyclerView = (RecyclerView) view.findViewById(R.id.fragment_in_diary_view_recyclerview);
@@ -82,5 +74,44 @@ public class InDiaryListViewFragment extends Fragment {
         inDiaryViewRecyclerAdapter = new InDiaryViewRecyclerAdapter(getContext());
         recyclerView.setAdapter(inDiaryViewRecyclerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+    }
+
+    private void getData(int position) {
+        NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_diary))
+                .setMethod(NetworkController.GET)
+                .headerAdd("Authorization", "Token " + PreferenceManager.getInstance().getString("token", null))
+                .addCallback(new NetworkController.StatusCallback() {
+                    @Override
+                    public void onError(Throwable error) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(Response response) {
+                        try {
+                            String rspstr = response.body().string();
+                            if (response.code() == 200) {
+                                JSONArray root = NetworkController.decodeArray(rspstr);
+                                for (int i=0;i<root.length();i++) {
+                                    JSONObject jsonDiary = root.getJSONObject(i);
+                                    if (jsonDiary.getLong("pk") == inDiaryListCallback.getDiary().pk) {
+                                        JSONArray jsonPost = jsonDiary.getJSONArray("post");
+                                        inDiaryViewRecyclerAdapter.set(NetworkController.decode(new TypeToken<List<InDiary>>() {
+                                        }.getType(), jsonPost.toString()));
+                                    }
+                                }
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                })
+                .excute();
+    }
+
+    interface InDiaryListCallback {
+        Diary getDiary();
     }
 }
