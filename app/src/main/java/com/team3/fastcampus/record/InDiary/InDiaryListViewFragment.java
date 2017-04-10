@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.google.gson.reflect.TypeToken;
 import com.team3.fastcampus.record.Diary.Model.Diary;
@@ -38,6 +39,7 @@ public class InDiaryListViewFragment extends Fragment {
     private View view;
 
     private RecyclerView recyclerView;
+    private ProgressBar progress;
 
     private InDiaryViewRecyclerAdapter inDiaryViewRecyclerAdapter;
 
@@ -90,6 +92,7 @@ public class InDiaryListViewFragment extends Fragment {
 
     private void initView() {
         recyclerView = (RecyclerView) view.findViewById(R.id.fragment_in_diary_view_recyclerview);
+        progress = (ProgressBar) view.findViewById(R.id.progress);
     }
 
     private void initAdapter() {
@@ -99,13 +102,14 @@ public class InDiaryListViewFragment extends Fragment {
     }
 
     private void getData(int position) {
+        progressEnable();
         NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_diary))
                 .setMethod(NetworkController.GET)
                 .headerAdd("Authorization", "Token " + PreferenceManager.getInstance().getString("token", null))
                 .addCallback(new NetworkController.StatusCallback() {
                     @Override
                     public void onError(Throwable error) {
-
+                        progressDisable();
                     }
 
                     @Override
@@ -127,10 +131,21 @@ public class InDiaryListViewFragment extends Fragment {
                             e.printStackTrace();
                         } catch (JSONException e) {
                             e.printStackTrace();
+                        } finally {
+                            response.close();
+                            progressDisable();
                         }
                     }
                 })
                 .excute();
+    }
+
+    private void progressEnable() {
+        progress.setVisibility(View.VISIBLE);
+    }
+
+    private void progressDisable() {
+        progress.setVisibility(View.GONE);
     }
 
     interface InDiaryListCallback {

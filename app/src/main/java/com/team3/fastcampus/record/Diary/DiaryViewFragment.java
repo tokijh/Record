@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
@@ -44,6 +45,7 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
 
     private EditText ed_search;
     private RecyclerView recyclerView;
+    private ProgressBar progress;
 
     private DiaryViewRecyclerAdapter diaryViewRecyclerAdapter;
 
@@ -95,6 +97,7 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         ed_search = (EditText) view.findViewById(R.id.fragment_diary_view_search);
         recyclerView = (RecyclerView) view.findViewById(R.id.fragment_diary_view_recyclerview);
+        progress = (ProgressBar) view.findViewById(R.id.progress);
     }
 
     private void initAdapter() {
@@ -108,6 +111,7 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
     }
 
     private void getData(int position) {
+        progressEnable();
         if (NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(getContext()))) {
             NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_diary))
                     .setMethod(NetworkController.GET)
@@ -115,6 +119,7 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
                     .addCallback(new NetworkController.StatusCallback() {
                         @Override
                         public void onError(Throwable error) {
+                            progressDisable();
                             Logger.e(TAG, "getData - error" + error.getMessage());
                         }
 
@@ -133,11 +138,20 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
                                 Logger.e(TAG, "signin - NetworkController - excute - onSuccess - JsonSyntaxException : " + e.getMessage());
                             } finally {
                                 response.close();
+                                progressDisable();
                             }
                         }
                     })
                     .excute();
         }
+    }
+
+    private void progressEnable() {
+        progress.setVisibility(View.VISIBLE);
+    }
+
+    private void progressDisable() {
+        progress.setVisibility(View.GONE);
     }
 
     private TextWatcher searchWatcher = new TextWatcher() {
