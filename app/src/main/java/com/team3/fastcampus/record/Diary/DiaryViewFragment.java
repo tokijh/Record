@@ -19,14 +19,26 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import com.team3.fastcampus.record.*;
 import com.team3.fastcampus.record.Diary.Adapter.DiaryViewRecyclerAdapter;
-import com.team3.fastcampus.record.Diary.Modal.Diary;
+import com.team3.fastcampus.record.Diary.Model.Diary;
+import com.team3.fastcampus.record.Util.Logger;
+import com.team3.fastcampus.record.Util.NetworkController;
+import com.team3.fastcampus.record.Util.PreferenceManager;
+
+import java.io.IOException;
+import java.util.List;
+
+import okhttp3.Response;
 
 /**
  * Diary를 보여주기 위한 메인뷰
  */
 public class DiaryViewFragment extends Fragment {
+
+    public static final String TAG = "DiaryViewFragment";
 
     private View view;
 
@@ -38,6 +50,8 @@ public class DiaryViewFragment extends Fragment {
 
     // Connector with Activity
     private DiaryViewInterface diaryViewInterface;
+
+    private int position = 0;
 
 
     public DiaryViewFragment() {
@@ -56,17 +70,7 @@ public class DiaryViewFragment extends Fragment {
 
         initListener();
 
-        Diary diary = new Diary();
-        diary.id = 10;
-        diary.title = "title";
-        diary.date = "2016";
-        diary.location = "location";
-        diaryViewRecyclerAdapter.add(diary);
-        diaryViewRecyclerAdapter.add(diary);
-        diaryViewRecyclerAdapter.add(diary);
-        diaryViewRecyclerAdapter.add(diary);
-        diaryViewRecyclerAdapter.add(diary);
-        diaryViewRecyclerAdapter.add(diary);
+        getData(position);
 
         // #3 테스트용 소스 View가 로드되면 바로 InDiaryViewFragment 를 실행한다.
 //        diaryViewInterface.showInDiary();
@@ -90,6 +94,39 @@ public class DiaryViewFragment extends Fragment {
 
     private void initListener() {
         ed_search.addTextChangedListener(searchWatcher);
+    }
+
+    private void getData(int position) {
+        if (NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(getContext()))) {
+            NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_diary))
+                    .setMethod(NetworkController.GET)
+                    .headerAdd("Authorization", PreferenceManager.getInstance().getString("token", null))
+                    .addCallback(new NetworkController.StatusCallback() {
+                        @Override
+                        public void onError(Throwable error) {
+                            Logger.e(TAG, "getData - error" + error.getMessage());
+                        }
+
+                        @Override
+                        public void onSuccess(Response response) {
+                            try {
+                                String str = response.body().string();
+                                Logger.e(TAG, "HERE " + str);
+                                if (response.code() == 200) {
+                                    diaryViewRecyclerAdapter.set(NetworkController.decode(new TypeToken<List<Diary>>(){}.getType(), str));
+                                    return;
+                                }
+                            } catch (IOException e) {
+                                Logger.e(TAG, "signin - NetworkController - excute - onSuccess - IOException : " + e.getMessage());
+                            } catch (JsonSyntaxException e) {
+                                Logger.e(TAG, "signin - NetworkController - excute - onSuccess - JsonSyntaxException : " + e.getMessage());
+                            } finally {
+                                response.close();
+                            }
+                        }
+                    })
+                    .excute();
+        }
     }
 
     private TextWatcher searchWatcher = new TextWatcher() {
