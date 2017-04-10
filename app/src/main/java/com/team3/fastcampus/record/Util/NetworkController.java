@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -578,8 +579,19 @@ public class NetworkController {
      * @return JSONObject
      * @throws JSONException
      */
-    public static JSONObject decode(String json) throws JSONException {
+    public static JSONObject decodeObject(String json) throws JSONException {
         return new JSONObject(json);
+    }
+
+    /**
+     * Decoding by JSONArray
+     *
+     * @param json
+     * @return JSONArray
+     * @throws JSONException
+     */
+    public static JSONArray decodeArray(String json) throws JSONException {
+        return new JSONArray(json);
     }
 
     /**
@@ -597,6 +609,21 @@ public class NetworkController {
             data.put(key, jsonObject.get(key));
         }
         return data;
+    }
+
+    /**
+     * Encoding by JSONArray
+     *
+     * @param jsonArray
+     * @return
+     * @throws JSONException
+     */
+    public static List<Map<String, Object>> encode(JSONArray jsonArray) throws JSONException {
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            list.add(encode(jsonArray.getJSONObject(i)));
+        }
+        return list;
     }
 
     /**
