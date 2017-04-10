@@ -154,7 +154,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/diary_input_area"
         android:layout_marginTop="15dp"
-        android:text="make diary"
+        android:text="add your picture"
         android:textAlignment="center"
         android:textColor="#666666"
         android:textSize="12dp" />
@@ -162,7 +162,7 @@
     <ImageView
         android:id="@+id/diary_list_detail_image"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="200dp"
         android:layout_below="@+id/diary_list_detail_tv_photo"
         android:layout_marginTop="10dp"
         android:scaleType="centerCrop"
