@@ -10,8 +10,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -29,16 +29,17 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
 
     Uri fileUri = null;
 
-    EditText tv_date;
+    TextView tv_date, tv_endDate;
     FloatingActionButton btn_add_photo, btn_add, btn_update, btn_delete, btn_gallery;
     int mYear, mMonth, mDay, mHour, mMinute;
+    int mEndYear, mEndMonth, mEndDay;
     ImageView imageView;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_diary_write_detail);
+        setContentView(R.layout.activity_diary_manage);
 
         new PermissionController(this,
                 new String[]{
@@ -67,7 +68,8 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void initView() {
-        tv_date = (EditText) findViewById(R.id.diary_list_detail_tv_diary_date);
+        tv_date = (TextView) findViewById(R.id.diary_list_detail_tv_diary_date);
+        tv_endDate = (TextView) findViewById(R.id.diary_list_detail_tv_diary_end_date);
         btn_add = (FloatingActionButton) findViewById(R.id.fab_add);
         btn_add_photo = (FloatingActionButton) findViewById(R.id.fab_photo);
         btn_update = (FloatingActionButton) findViewById(R.id.fab_update);
@@ -77,6 +79,7 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
 
     private void initListener() {
         tv_date.setOnClickListener(this);
+        tv_endDate.setOnClickListener(this);
         btn_add.setOnClickListener(this);
         btn_add_photo.setOnClickListener(this);
         btn_update.setOnClickListener(this);
@@ -100,9 +103,16 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
     private void updateDateText() {
         tv_date.setText(String.format("%d/%d/%d", mYear, mMonth + 1, mDay));
     }
+    private void upEndDateDateText() {
+        tv_endDate.setText(String.format("%d/%d/%d", mEndYear, mEndMonth + 1, mEndDay));
+    }
 
     private void showDatePicker() {
         new DatePickerDialog(this, mDateSetListener, mYear, mMonth, mDay).show();
+    }
+
+    private void showEndDatePicker() {
+        new DatePickerDialog(this, mEndDateSetListener, mYear, mMonth, mDay).show();
     }
 
     private void actionAdd() {
@@ -148,6 +158,9 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
             case R.id.diary_list_detail_tv_diary_date:
                 showDatePicker();
                 break;
+            case R.id.diary_list_detail_tv_diary_end_date:
+                showEndDatePicker();
+                break;
             case R.id.fab_add:
                 actionAdd();
                 break;
@@ -171,6 +184,13 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
         mMonth = month;
         mDay = dayOfMonth;
         updateDateText();
+    };
+
+    private DatePickerDialog.OnDateSetListener mEndDateSetListener = (view, year, month, dayOfMonth) -> {
+        mEndYear = year;
+        mEndMonth = month;
+        mEndDay = dayOfMonth;
+        upEndDateDateText();
     };
 
     @Override
