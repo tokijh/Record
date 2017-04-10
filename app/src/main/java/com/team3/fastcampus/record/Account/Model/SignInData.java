@@ -1,4 +1,4 @@
-package com.team3.fastcampus.record.Account.Modal;
+package com.team3.fastcampus.record.Account.Model;
 
 /**
  * Created by tokijh on 2017. 4. 5..

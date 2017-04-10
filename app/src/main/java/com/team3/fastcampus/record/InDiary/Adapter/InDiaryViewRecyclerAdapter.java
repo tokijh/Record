@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
-import com.team3.fastcampus.record.InDiary.Modal.InDiary;
+import com.team3.fastcampus.record.InDiary.Model.InDiary;
 import com.team3.fastcampus.record.R;
 
 import java.util.ArrayList;
@@ -63,10 +63,10 @@ public class InDiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
         CardInDiaryHolder inDiaryViewHolder = (CardInDiaryHolder) holder;
         InDiary inDiary = inDiaries.get(position).inDiary;
         inDiaryViewHolder.position = position;
-        inDiaryViewHolder.tv_title.setText(inDiary.title);
-        inDiaryViewHolder.tv_date.setText(inDiary.date);
-        inDiaryViewHolder.tv_content.setText(inDiary.content);
-        inDiaryViewHolder.inDiaryListImageViewPagerAdapter.set(inDiaries.get(position).inDiary.images);
+//        inDiaryViewHolder.tv_title.setText(inDiary.title);
+        inDiaryViewHolder.tv_date.setText(inDiary.getCreated_date());
+//        inDiaryViewHolder.tv_content.setText(inDiary.content);
+        inDiaryViewHolder.inDiaryListImageViewPagerAdapter.set(inDiaries.get(position).inDiary.getPhoto_list());
     }
 
     private void setCardAdd(RecyclerView.ViewHolder holder, int position) {

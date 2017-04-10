@@ -1,4 +1,4 @@
-package com.team3.fastcampus.record.InDiary.Modal;
+package com.team3.fastcampus.record.InDiary.Model;
 
 /**
  * Created by tokijh on 2017. 4. 4..

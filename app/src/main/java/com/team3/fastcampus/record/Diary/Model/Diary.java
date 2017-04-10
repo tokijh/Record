@@ -1,7 +1,9 @@
-package com.team3.fastcampus.record.Diary.Modal;
+package com.team3.fastcampus.record.Diary.Model;
 
-import com.team3.fastcampus.record.InDiary.Modal.InDiary;
+import com.team3.fastcampus.record.InDiary.Model.InDiary;
 import com.team3.fastcampus.record.Model.User;
+
+import java.util.List;
 
 /**
  * Created by tokijh on 2017. 3. 31..
@@ -11,14 +13,14 @@ public class Diary {
     public long pk;
     public String title;
     public User author;
-    public InDiary post;
+    public List<InDiary> post;
     public String created_date;
 
     public Diary() {
 
     }
 
-    public Diary(long pk, String title, User author, InDiary post, String created_date) {
+    public Diary(long pk, String title, User author, List<InDiary> post, String created_date) {
         this.pk = pk;
         this.title = title;
         this.author = author;
@@ -50,11 +52,11 @@ public class Diary {
         this.author = author;
     }
 
-    public InDiary getPost() {
+    public List<InDiary> getPost() {
         return post;
     }
 
-    public void setPost(InDiary post) {
+    public void setPost(List<InDiary> post) {
         this.post = post;
     }
 

@@ -1,4 +1,4 @@
-package com.team3.fastcampus.record.Account.Modal;
+package com.team3.fastcampus.record.Account.Model;
 
 import com.team3.fastcampus.record.Model.User;
 

@@ -14,7 +14,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.team3.fastcampus.record.Diary.Modal.Diary;
+import com.team3.fastcampus.record.Diary.Model.Diary;
 import com.team3.fastcampus.record.R;
 import com.team3.fastcampus.record.Util.Logger;
 
@@ -62,15 +62,18 @@ public class DiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
     private void setCardDiary(RecyclerView.ViewHolder holder, int position) {
         CardDiaryHolder diaryViewHolder = (CardDiaryHolder) holder;
+
         Diary diary = diaries.get(position).diary;
         diaryViewHolder.position = position;
         diaryViewHolder.tv_title.setText(diary.title);
-        diaryViewHolder.tv_date.setText(diary.date);
-        diaryViewHolder.tv_location.setText(diary.location);
-        Glide.with(context)
-                .load(diary.image)
-                .placeholder(R.drawable.night)
-                .into(diaryViewHolder.iv_image);
+        diaryViewHolder.tv_date.setText(diary.created_date);
+
+        if (diary.getPost().size() > 0 && diary.getPost().get(0).getPhoto_list().size() > 0) {
+            Glide.with(context)
+                    .load(diary.getPost().get(0).getPhoto_list().get(0).getPhoto())
+                    .placeholder(R.drawable.night)
+                    .into(diaryViewHolder.iv_image);
+        }
     }
 
     private void setCardAdd(RecyclerView.ViewHolder holder, int position) {

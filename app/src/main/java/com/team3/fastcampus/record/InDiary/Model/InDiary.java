@@ -1,4 +1,4 @@
-package com.team3.fastcampus.record.InDiary.Modal;
+package com.team3.fastcampus.record.InDiary.Model;
 
 import java.util.List;
 

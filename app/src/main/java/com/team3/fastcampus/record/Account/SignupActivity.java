@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.google.gson.JsonSyntaxException;
 import com.jakewharton.rxbinding2.widget.RxTextView;
-import com.team3.fastcampus.record.Account.Modal.SignUpData;
+import com.team3.fastcampus.record.Account.Model.SignUpData;
 import com.team3.fastcampus.record.R;
 import com.team3.fastcampus.record.Util.Logger;
 import com.team3.fastcampus.record.Util.NetworkController;
