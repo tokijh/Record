@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -47,8 +46,12 @@ public class MainActivity extends AppCompatActivity
         String token = PreferenceManager.getInstance().getString("token", "");
         if ("".equals(token)) {
             toSignUp();
+        } else {
+            init();
         }
+    }
 
+    private void init() {
         initView();
 
         initFragmentSettings();
@@ -85,6 +88,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void successSignIn(String token) {
+        init();
         PreferenceManager.getInstance().putString("token", token);
     }
 
