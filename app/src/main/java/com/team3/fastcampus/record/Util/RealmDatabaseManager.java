@@ -31,6 +31,9 @@ public class RealmDatabaseManager {
         if (instance == null) {
             instance = new RealmDatabaseManager();
         }
+        if (instance.realm.isClosed()) {
+            instance.realm = Realm.getDefaultInstance();
+        }
         return instance;
     }
 
