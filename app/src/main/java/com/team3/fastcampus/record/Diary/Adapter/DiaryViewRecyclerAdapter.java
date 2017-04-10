@@ -61,6 +61,10 @@ public class DiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         this.notifyDataSetChanged();
     }
 
+    public void clear() {
+        set(new ArrayList<>());
+    }
+
     public Diary get(int position) {
         return diaries.get(position).diary;
     }

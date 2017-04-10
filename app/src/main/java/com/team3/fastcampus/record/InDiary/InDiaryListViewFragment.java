@@ -5,6 +5,7 @@ package com.team3.fastcampus.record.InDiary;
  */
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -55,15 +56,36 @@ public class InDiaryListViewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (view != null) {
+            return view;
+        }
+
         view = inflater.inflate(R.layout.fragment_in_diary_list_view, container, false);
 
         initView();
 
         initAdapter();
 
-        getData(position);
-
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        initValue();
+    }
+
+    public void init() {
+        initValue();
+    }
+
+    private void initValue() {
+        position = 0;
+        if (inDiaryViewRecyclerAdapter != null) {
+            inDiaryViewRecyclerAdapter.clear();
+            getData(position);
+        }
     }
 
     private void initView() {

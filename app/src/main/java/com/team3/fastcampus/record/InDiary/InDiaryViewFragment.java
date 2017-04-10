@@ -5,6 +5,7 @@ package com.team3.fastcampus.record.InDiary;
  */
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -28,8 +29,8 @@ public class InDiaryViewFragment extends Fragment implements InDiaryListViewFrag
     private ViewPager viewPager;
 
     // Fragment
-    private InDiaryListViewFragment inDiaryListViewFragment;
-    private InDiaryMapViewFragment inDiaryMapViewFragment;
+    private static InDiaryListViewFragment inDiaryListViewFragment;
+    private static InDiaryMapViewFragment inDiaryMapViewFragment;
 
     // Adaper
     private InDiaryViewPagerAdapter inDiaryViewPagerAdapter;
@@ -44,6 +45,11 @@ public class InDiaryViewFragment extends Fragment implements InDiaryListViewFrag
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        if (view != null) {
+            return view;
+        }
+
         view = inflater.inflate(R.layout.fragment_in_diary_view, container, false);
 
         initView();
@@ -55,6 +61,18 @@ public class InDiaryViewFragment extends Fragment implements InDiaryListViewFrag
         initFragment();
 
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        initValue();
+    }
+
+    private void initValue() {
+        inDiaryListViewFragment.init();
+        inDiaryMapViewFragment.init();
     }
 
     private void initView() {

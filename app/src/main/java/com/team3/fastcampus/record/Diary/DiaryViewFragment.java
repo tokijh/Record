@@ -6,6 +6,7 @@ package com.team3.fastcampus.record.Diary;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,7 +18,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
@@ -42,7 +42,6 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
 
     private View view;
 
-    private RelativeLayout search_bar;
     private EditText ed_search;
     private RecyclerView recyclerView;
 
@@ -53,15 +52,18 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
 
     private int position = 0;
 
-
     public DiaryViewFragment() {
-        // Required empty public constructor
+
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (view != null) {
+            return view;
+        }
+
         view = inflater.inflate(R.layout.fragment_diary_view, container, false);
 
         initView();
@@ -70,18 +72,27 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
 
         initListener();
 
-        getData(position);
-
-        // #3 테스트용 소스 View가 로드되면 바로 InDiaryViewFragment 를 실행한다.
-//        diaryViewInterface.showInDiary();
-
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        initValue();
+
+        getData(position);
+    }
+
+    private void initValue() {
+        position = 0;
+        ed_search.setText("");
+        diaryViewRecyclerAdapter.clear();
     }
 
     private void initView() {
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-        search_bar = (RelativeLayout) view.findViewById(R.id.search_bar);
         ed_search = (EditText) view.findViewById(R.id.fragment_diary_view_search);
         recyclerView = (RecyclerView) view.findViewById(R.id.fragment_diary_view_recyclerview);
     }

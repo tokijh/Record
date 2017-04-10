@@ -54,6 +54,10 @@ public class InDiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
         this.notifyDataSetChanged();
     }
 
+    public void clear() {
+        set(new ArrayList<>());
+    }
+
     public InDiary get(int position) {
         return inDiaries.get(position).inDiary;
     }
