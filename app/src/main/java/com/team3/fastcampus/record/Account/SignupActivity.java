@@ -22,13 +22,11 @@ import com.team3.fastcampus.record.Util.Logger;
 import com.team3.fastcampus.record.Util.NetworkController;
 import com.team3.fastcampus.record.Util.TextPatternChecker;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
-import okhttp3.Response;
 
 /**
  * 회원 가입 Activity
@@ -123,10 +121,10 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                     }
 
                     @Override
-                    public void onSuccess(Response response) {
+                    public void onSuccess(NetworkController.ResponseData responseData) {
                         try {
-                            if (response.code() == 201) {
-                                SignUpData signUpData = NetworkController.decode(SignUpData.class, response.body().string());
+                            if (responseData.response.code() == 201) {
+                                SignUpData signUpData = NetworkController.decode(SignUpData.class, responseData.body);
                                 Toast.makeText(SignupActivity.this, "회원 가입 성공", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent();
                                 intent.putExtra("token", signUpData.getToken());
@@ -134,12 +132,10 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                                 finish();
                                 return;
                             }
-                        } catch (IOException e) {
-                            Logger.e(TAG, "signup - NetworkController - excute - onSuccess - IOException : " + e.getMessage());
                         } catch (JsonSyntaxException e) {
                             Logger.e(TAG, "signup - NetworkController - excute - onSuccess - JsonSyntaxException : " + e.getMessage());
                         } finally {
-                            response.close();
+                            responseData.response.close();
                             progressDisable();
                         }
                         Toast.makeText(SignupActivity.this, "회원 가입을 할 수 없습니다.\n계정을 다시 확인해 주세요.", Toast.LENGTH_SHORT).show();

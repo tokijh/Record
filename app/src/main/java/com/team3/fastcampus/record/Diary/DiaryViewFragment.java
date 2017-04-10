@@ -29,10 +29,9 @@ import com.team3.fastcampus.record.Util.Logger;
 import com.team3.fastcampus.record.Util.NetworkController;
 import com.team3.fastcampus.record.Util.PreferenceManager;
 
-import java.io.IOException;
 import java.util.List;
 
-import okhttp3.Response;
+import io.realm.Realm;
 
 /**
  * Diary를 보여주기 위한 메인뷰
@@ -81,6 +80,10 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        init();
+    }
+
+    public void init() {
         initValue();
 
         getData(position);
@@ -124,20 +127,21 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
                         }
 
                         @Override
-                        public void onSuccess(Response response) {
+                        public void onSuccess(NetworkController.ResponseData responseData) {
                             try {
-                                String str = response.body().string();
-                                Logger.e(TAG, "HERE " + str);
-                                if (response.code() == 200) {
-                                    diaryViewRecyclerAdapter.set(NetworkController.decode(new TypeToken<List<Diary>>(){}.getType(), str));
+                                Logger.e(TAG, responseData.body);
+                                if (responseData.response.code() == 200) {
+                                    List<Diary> diaries = NetworkController.decode(new TypeToken<List<Diary>>() {
+                                    }.getType(), responseData.body);
+                                    diaryViewRecyclerAdapter.set(diaries);
                                     return;
                                 }
-                            } catch (IOException e) {
-                                Logger.e(TAG, "signin - NetworkController - excute - onSuccess - IOException : " + e.getMessage());
                             } catch (JsonSyntaxException e) {
                                 Logger.e(TAG, "signin - NetworkController - excute - onSuccess - JsonSyntaxException : " + e.getMessage());
-                            } finally {
-                                response.close();
+                            } catch (Exception e) {
+                                Logger.e(TAG, "signin - NetworkController - excute - onSuccess - Exception : " + e.getMessage());
+                            }finally {
+                                responseData.response.close();
                                 progressDisable();
                             }
                         }

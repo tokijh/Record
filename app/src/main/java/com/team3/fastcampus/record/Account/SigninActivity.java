@@ -38,13 +38,11 @@ import com.team3.fastcampus.record.Util.TextPatternChecker;
 
 import org.json.JSONException;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
-import okhttp3.Response;
 
 /**
  * 회원 로그인 Activity
@@ -222,19 +220,18 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                     }
 
                     @Override
-                    public void onSuccess(Response response) {
+                    public void onSuccess(NetworkController.ResponseData responseData) {
                         try {
-                            if (response.code() == 201) {
-                                SignUpData signUpData = NetworkController.decode(SignUpData.class, response.body().string());
+                            Logger.e(TAG, responseData.body);
+                            if (responseData.response.code() == 201) {
+                                SignUpData signUpData = NetworkController.decode(SignUpData.class, responseData.body);
                                 successSignIn(new SignInData(signUpData.getToken()));
                                 return;
                             }
-                        } catch (IOException e) {
-                            Logger.e(TAG, "signup - NetworkController - excute - onSuccess - IOException : " + e.getMessage());
                         } catch (JsonSyntaxException e) {
                             Logger.e(TAG, "signup - NetworkController - excute - onSuccess - JsonSyntaxException : " + e.getMessage());
                         } finally {
-                            response.close();
+                            responseData.response.close();
                             progressDisable();
                         }
                         Toast.makeText(SigninActivity.this, "로그인을 할 수 없습니다.\n로그아웃 후 다시 시도 해 주세요.", Toast.LENGTH_SHORT).show();
@@ -261,19 +258,20 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                     }
 
                     @Override
-                    public void onSuccess(Response response) {
+                    public void onSuccess(NetworkController.ResponseData responseData) {
                         try {
-                            if (response.code() == 200) {
-                                SignInData signInData = NetworkController.decode(SignInData.class, response.body().string());
+                            Logger.e(TAG, responseData.body);
+                            if (responseData.response.code() == 200) {
+                                SignInData signInData = NetworkController.decode(SignInData.class, responseData.body);
                                 successSignIn(signInData);
                                 return;
                             }
-                        } catch (IOException e) {
-                            Logger.e(TAG, "signin - NetworkController - excute - onSuccess - IOException : " + e.getMessage());
                         } catch (JsonSyntaxException e) {
                             Logger.e(TAG, "signin - NetworkController - excute - onSuccess - JsonSyntaxException : " + e.getMessage());
+                        } catch (Exception e) {
+                            Logger.e(TAG, "signin - NetworkController - excute - onSuccess - Exception : " + e.getMessage());
                         } finally {
-                            response.close();
+                            responseData.response.close();
                             progressDisable();
                         }
                         Toast.makeText(SigninActivity.this, "로그인을 할 수 없습니다.\n아이디, 비밀번호를 확인해 주세요.", Toast.LENGTH_SHORT).show();

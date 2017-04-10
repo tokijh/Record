@@ -7,7 +7,6 @@ package com.team3.fastcampus.record.Util;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -287,12 +286,12 @@ public class NetworkController {
     /**
      * callback의 success를 실행 (Used Observer Pattern)
      *
-     * @param response
+     * @param responseData
      */
-    private void callbackSuccess(Response response) {
+    private void callbackSuccess(ResponseData responseData) {
         for (StatusCallback statusCallback : statusCallbacks) {
             if (statusCallback != null) {
-                statusCallback.onSuccess(response);
+                statusCallback.onSuccess(responseData);
             }
         }
     }
@@ -391,44 +390,6 @@ public class NetworkController {
     }
 
     /**
-     * 서버에 보낼 Request만들기
-     *
-     * @param method 전송 방식 GET OR POST
-     * @param datas 함께 전송할 params
-     * @return OKHttp3의 Request
-     */
-    @Deprecated
-    private Request buildRequest(int method, Map<String, Object> datas) {
-        Request.Builder requestBuilder = new Request.Builder();
-
-        if (method == GET) {
-            if (datas != null) {
-                String params = "?";
-                for (String key : datas.keySet()) {
-                    params += key + "=" + datas.get(key) + '&';
-                }
-                params = params.substring(0, params.length() - 1);
-                url = url + params;
-            }
-            requestBuilder.get();
-        } else if (method == POST) {
-            FormBody.Builder formBuilder = new FormBody.Builder();
-            if (datas != null) {
-                for (String key : datas.keySet()) {
-                    formBuilder.addEncoded(key, datas.get(key).toString());
-                }
-            }
-            requestBuilder.post(formBuilder.build());
-        } else {
-            throw new RuntimeException("NetworkController is support GET or POST only");
-        }
-
-        requestBuilder.url(url);
-
-        return requestBuilder.build();
-    }
-
-    /**
      * Http 통신 시작
      */
     public void excute() {
@@ -441,60 +402,20 @@ public class NetworkController {
             try {
                 OkHttpClient client = new OkHttpClient();
 
-                Response response = client.newCall(buildRequest()).execute();
+                ResponseData responseData = new ResponseData(client.newCall(buildRequest()).execute());
 
-                subscriber.onNext(response);
+                subscriber.onNext(responseData);
             } catch (IOException e) {
                 subscriber.onError(e);
             }
         }).subscribeOn(Schedulers.io())
+                .doOnNext(response -> ((ResponseData) response).body = ((ResponseData) response).response.body().string())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response -> {
-                    callbackSuccess((Response) response);
+                .subscribe(responseData -> {
+                    callbackSuccess((ResponseData) responseData);
                     destroy();
                 }, error -> {
                     callbackError(error);
-                    destroy();
-                });
-    }
-
-    /**
-     * Http통신 시작
-     *
-     * @param method
-     * @param datas null시 전송 파라미터 없음.
-     * @param statusCallback null시 callback없음.
-     */
-    @Deprecated
-    public void excute(int method, @Nullable Map<String, Object> datas, @Nullable StatusCallback statusCallback) {
-        if (disposable != null && !disposable.isDisposed()) {
-            if (statusCallback != null) {
-                statusCallback.onError(new Throwable("disposable is using"));
-            }
-            return;
-        }
-
-        disposable = Observable.create(subscriber -> {
-            try {
-                OkHttpClient client = new OkHttpClient();
-
-                Response response = client.newCall(buildRequest(method, datas)).execute();
-
-                subscriber.onNext(response);
-            } catch (IOException e) {
-                subscriber.onError(e);
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response -> {
-                    if (statusCallback != null) {
-                        statusCallback.onSuccess((Response) response);
-                    }
-                    destroy();
-                }, error -> {
-                    if (statusCallback != null) {
-                        statusCallback.onError(error);
-                    }
                     destroy();
                 });
     }
@@ -654,6 +575,26 @@ public class NetworkController {
     public interface StatusCallback {
         void onError(Throwable error);
 
-        void onSuccess(Response response);
+        void onSuccess(ResponseData responseData);
+    }
+
+    /**
+     * Callback해줄 응답 데이터
+     */
+    public class ResponseData {
+
+        /**
+         * excute되어 반환되는 body
+         */
+        public String body;
+
+        /**
+         * close된 response
+         */
+        public Response response;
+
+        public ResponseData(Response response) {
+            this.response = response;
+        }
     }
 }
