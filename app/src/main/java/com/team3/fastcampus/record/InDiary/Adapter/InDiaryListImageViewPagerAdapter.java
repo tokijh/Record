@@ -2,13 +2,12 @@ package com.team3.fastcampus.record.InDiary.Adapter;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.team3.fastcampus.record.InDiary.Domain.Image;
+import com.team3.fastcampus.record.InDiary.Model.Image;
 import com.team3.fastcampus.record.R;
 
 import java.util.ArrayList;
@@ -57,7 +56,7 @@ public class InDiaryListImageViewPagerAdapter extends PagerAdapter {
         ImageView imageView = new ImageView(context);
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         Glide.with(context)
-                .load(images.get(position).imageData)
+                .load(images.get(position).getPhoto())
                 .placeholder(R.drawable.night)
                 .into(imageView);
         container.addView(imageView);

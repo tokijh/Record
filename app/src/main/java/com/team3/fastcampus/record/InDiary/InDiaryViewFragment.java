@@ -5,6 +5,7 @@ package com.team3.fastcampus.record.InDiary;
  */
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,12 +15,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.team3.fastcampus.record.Diary.Model.Diary;
 import com.team3.fastcampus.record.R;
 
 /**
  * InDiary를 보여주기 위한 메인뷰
  */
-public class InDiaryViewFragment extends Fragment {
+public class InDiaryViewFragment extends Fragment implements InDiaryListViewFragment.InDiaryListCallback {
 
     private View view;
 
@@ -27,11 +29,13 @@ public class InDiaryViewFragment extends Fragment {
     private ViewPager viewPager;
 
     // Fragment
-    private InDiaryListViewFragment inDiaryListViewFragment;
-    private InDiaryMapViewFragment inDiaryMapViewFragment;
+    private static InDiaryListViewFragment inDiaryListViewFragment;
+    private static InDiaryMapViewFragment inDiaryMapViewFragment;
 
     // Adaper
     private InDiaryViewPagerAdapter inDiaryViewPagerAdapter;
+
+    private Diary diary;
 
     public InDiaryViewFragment() {
         // Required empty public constructor
@@ -41,6 +45,11 @@ public class InDiaryViewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        if (view != null) {
+            return view;
+        }
+
         view = inflater.inflate(R.layout.fragment_in_diary_view, container, false);
 
         initView();
@@ -52,6 +61,18 @@ public class InDiaryViewFragment extends Fragment {
         initFragment();
 
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        initValue();
+    }
+
+    private void initValue() {
+        inDiaryListViewFragment.init();
+        inDiaryMapViewFragment.init();
     }
 
     private void initView() {
@@ -72,8 +93,17 @@ public class InDiaryViewFragment extends Fragment {
     }
 
     private void initFragment() {
-        inDiaryListViewFragment = new InDiaryListViewFragment();
+        inDiaryListViewFragment = new InDiaryListViewFragment(this);
         inDiaryMapViewFragment = new InDiaryMapViewFragment();
+    }
+
+    public void setDiary(Diary diary) {
+        this.diary = diary;
+    }
+
+    @Override
+    public Diary getDiary() {
+        return diary;
     }
 
     class InDiaryViewPagerAdapter extends FragmentStatePagerAdapter {

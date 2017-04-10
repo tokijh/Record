@@ -91,4 +91,13 @@
         android:layout_height="match_parent"
         tools:listitem="@layout/fragment_diary_list_view_item" />
 
+
+    <ProgressBar
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progress"
+        android:visibility="gone"
+        android:layout_gravity="center" />
+
 </android.support.design.widget.CoordinatorLayout>

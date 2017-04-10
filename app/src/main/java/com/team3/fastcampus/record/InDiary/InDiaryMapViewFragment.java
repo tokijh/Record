@@ -17,17 +17,27 @@ import com.team3.fastcampus.record.R;
  */
 public class InDiaryMapViewFragment extends Fragment {
 
+    private View view;
 
     public InDiaryMapViewFragment() {
-        // Required empty public constructor
+
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_in_diary_map_view, container, false);
+        if (view != null) {
+            return view;
+        }
+
+        view = inflater.inflate(R.layout.fragment_in_diary_map_view, container, false);
+
+        return view;
+    }
+
+    public void init() {
+
     }
 
 }
