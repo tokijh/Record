@@ -578,8 +578,19 @@ public class NetworkController {
         void onSuccess(ResponseData responseData);
     }
 
+    /**
+     * Callback해줄 응답 데이터
+     */
     public class ResponseData {
+
+        /**
+         * excute되어 반환되는 body
+         */
         public String body;
+
+        /**
+         * close된 response
+         */
         public Response response;
 
         public ResponseData(Response response) {
