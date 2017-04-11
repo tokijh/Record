@@ -96,7 +96,7 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
 
     private void initView() {
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ed_search = (EditText) view.findViewById(R.id.fragment_diary_view_search);
         recyclerView = (RecyclerView) view.findViewById(R.id.fragment_diary_view_recyclerview);
         progress = (ProgressBar) view.findViewById(R.id.progress);
@@ -115,44 +115,48 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
     private void getData(int position) {
         progressEnable();
         if (NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(getContext()))) {
-            NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_diary))
-                    .setMethod(NetworkController.GET)
-                    .headerAdd("Authorization", "Token " + PreferenceManager.getInstance().getString("token", null))
-                    .addCallback(new NetworkController.StatusCallback() {
-                        @Override
-                        public void onError(Throwable error) {
-                            progressDisable();
-                            Logger.e(TAG, "getData - error" + error.getMessage());
-                        }
-
-                        @Override
-                        public void onSuccess(NetworkController.ResponseData responseData) {
-                            try {
-                                Logger.e(TAG, responseData.body);
-                                if (responseData.response.code() == 200) {
-                                    List<Diary> diaries = NetworkController.decode(new TypeToken<List<Diary>>() {
-                                    }.getType(), responseData.body);
-                                    diaryViewRecyclerAdapter.set(diaries);
-                                    dbSave(diaries);
-                                    return;
-                                }
-                            } catch (JsonSyntaxException e) {
-                                Logger.e(TAG, "signin - NetworkController - excute - onSuccess - JsonSyntaxException : " + e.getMessage());
-                            } catch (Exception e) {
-                                Logger.e(TAG, "signin - NetworkController - excute - onSuccess - Exception : " + e.getMessage());
-                            }finally {
-                                responseData.response.close();
-                                progressDisable();
-                            }
-                        }
-                    })
-                    .excute();
+            loadFromServer(position);
         } else {
-            dbLoad(position);
+            loadFromDB(position);
         }
     }
 
-    private void dbSave(List<Diary> diaries) {
+    private void loadFromServer(int position) {
+        NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_diary))
+                .setMethod(NetworkController.GET)
+                .headerAdd("Authorization", "Token " + PreferenceManager.getInstance().getString("token", null))
+                .addCallback(new NetworkController.StatusCallback() {
+                    @Override
+                    public void onError(Throwable error) {
+                        progressDisable();
+                        Logger.e(TAG, "getData - error" + error.getMessage());
+                    }
+
+                    @Override
+                    public void onSuccess(NetworkController.ResponseData responseData) {
+                        try {
+                            Logger.e(TAG, responseData.body);
+                            if (responseData.response.code() == 200) {
+                                List<Diary> diaries = NetworkController.decode(new TypeToken<List<Diary>>() {
+                                }.getType(), responseData.body);
+                                diaryViewRecyclerAdapter.set(diaries);
+                                saveToDB(diaries);
+                                return;
+                            }
+                        } catch (JsonSyntaxException e) {
+                            Logger.e(TAG, "signin - NetworkController - excute - onSuccess - JsonSyntaxException : " + e.getMessage());
+                        } catch (Exception e) {
+                            Logger.e(TAG, "signin - NetworkController - excute - onSuccess - Exception : " + e.getMessage());
+                        } finally {
+                            responseData.response.close();
+                            progressDisable();
+                        }
+                    }
+                })
+                .excute();
+    }
+
+    private void saveToDB(List<Diary> diaries) {
         RealmDatabaseManager realmDatabaseManager = RealmDatabaseManager.getInstance();
         for (Diary diary : diaries) {
             Diary isSaved = realmDatabaseManager.get(Diary.class)
@@ -170,7 +174,7 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
         }
     }
 
-    private void dbLoad(int position) {
+    private void loadFromDB(int position) {
         RealmDatabaseManager realmDatabaseManager = RealmDatabaseManager.getInstance();
         List<Diary> diaries = realmDatabaseManager.get(Diary.class)
                 .equalTo("username", PreferenceManager.getInstance().getString("username", null))
