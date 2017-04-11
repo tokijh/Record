@@ -65,6 +65,17 @@ public class RealmDatabaseManager {
     }
 
     /**
+     * 데이터베이스 클래스로 테이블 생성
+     *
+     * @param clazz
+     * @param <E>
+     * @return
+     */
+    public <E extends RealmObject> E create(Class<E> clazz) {
+        return realm.createObject(clazz);
+    }
+
+    /**
      * 데이터베이스 클래스로 테이블 생성 (데이터를 저장하기위한 틀 마련)
      *
      * @param realm executeTransaction 되어진 realm을 받아야 한다.
