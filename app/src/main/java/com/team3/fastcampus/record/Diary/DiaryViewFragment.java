@@ -147,6 +147,8 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
                         }
                     })
                     .excute();
+        } else {
+            dbLoad(position);
         }
     }
 
@@ -154,18 +156,33 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
         RealmDatabaseManager realmDatabaseManager = RealmDatabaseManager.getInstance();
         for (Diary diary : diaries) {
             Diary isSaved = realmDatabaseManager.get(Diary.class)
-                    .equalTo("username", diary.username)
+                    .equalTo("username", PreferenceManager.getInstance().getString("username", null))
                     .equalTo("pk", diary.pk)
                     .findFirst();
             if (isSaved == null) {
                 realmDatabaseManager.create(Diary.class, (realm, realmObject) -> {
                     realmObject.pk = diary.pk;
-                    realmObject.username = diary.username;
+                    realmObject.username = PreferenceManager.getInstance().getString("username", null);
                     realmObject.title = diary.title;
                     realmObject.created_date = diary.created_date;
                 });
             }
         }
+    }
+
+    private void dbLoad(int position) {
+        RealmDatabaseManager realmDatabaseManager = RealmDatabaseManager.getInstance();
+        List<Diary> diaries = realmDatabaseManager.get(Diary.class)
+                .equalTo("username", PreferenceManager.getInstance().getString("username", null))
+                .findAll();
+        List<Diary> diaries1 = realmDatabaseManager.getAll(Diary.class);
+        Logger.e(TAG, PreferenceManager.getInstance().getString("username", null));
+        Logger.e(TAG, diaries.size() + " " + diaries1.size());
+        for (Diary diary : diaries1) {
+            Logger.e(TAG, diary.username + " " + diary.title + " " + diary.pk);
+        }
+        diaryViewRecyclerAdapter.set(diaries);
+        progressDisable();
     }
 
     private void progressEnable() {
