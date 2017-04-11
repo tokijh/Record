@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -20,6 +19,7 @@ import android.widget.Toast;
 
 import com.team3.fastcampus.record.Account.SigninActivity;
 import com.team3.fastcampus.record.Diary.DiaryViewFragment;
+import com.team3.fastcampus.record.Diary.Model.Diary;
 import com.team3.fastcampus.record.InDiary.InDiaryViewFragment;
 import com.team3.fastcampus.record.Util.PreferenceManager;
 
@@ -46,14 +46,18 @@ public class MainActivity extends AppCompatActivity
         String token = PreferenceManager.getInstance().getString("token", "");
         if ("".equals(token)) {
             toSignUp();
+        } else {
+            init();
         }
+    }
 
+    private void init() {
         initView();
 
         initFragmentSettings();
 
         // 초기 화면 지정
-        showContentFragment(FragmentsID.DiaryViewFragment);
+        showContentFragment(diaryViewFragment);
     }
 
     private void initView() {
@@ -84,30 +88,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void successSignIn(String token) {
+        init();
         PreferenceManager.getInstance().putString("token", token);
-    }
-
-    /**
-     * FragmentsID의 id(int)로 해당 id의 Fragment를 띄움
-     * @param id FragmentsID의 id(int)
-     */
-    public void showContentFragment(int id) {
-        Fragment fragment = null;
-
-        switch (id) {
-            case FragmentsID.DiaryViewFragment:
-                fragment = diaryViewFragment;
-                break;
-            case FragmentsID.InDiaryViewFragment:
-                fragment = inDiaryViewFragment;
-                break;
-        }
-
-        if (fragment != null) {
-            FragmentTransaction transaction = manager.beginTransaction();
-            transaction.replace(R.id.contentView, fragment);
-            transaction.commit();
-        }
     }
 
     /**
@@ -115,9 +97,10 @@ public class MainActivity extends AppCompatActivity
      * @param fragment
      */
     public void showContentFragment(Fragment fragment) {
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.replace(R.id.contentView, fragment);
-        transaction.commit();
+        manager.beginTransaction()
+        .replace(R.id.contentView, fragment)
+        .addToBackStack(fragment.getTag())
+        .commit();
     }
 
     @Override
@@ -126,7 +109,12 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if (manager.getBackStackEntryCount() > 2) {
+                manager.popBackStackImmediate();
+                manager.beginTransaction().commit();
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -145,7 +133,8 @@ public class MainActivity extends AppCompatActivity
 
     // Define Fragment Interface
     @Override
-    public void showInDiary() {
+    public void showInDiary(Diary diary) {
+        inDiaryViewFragment.setDiary(diary);
         showContentFragment(inDiaryViewFragment);
     }
 

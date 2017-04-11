@@ -4,29 +4,29 @@ package com.team3.fastcampus.record.InDiary;
  * Created by yoonjoonghyun on 2017. 3. 25..
  */
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.RelativeLayout;
+import android.widget.ProgressBar;
 
-import com.team3.fastcampus.record.Diary.Adapter.DiaryViewRecyclerAdapter;
+import com.google.gson.reflect.TypeToken;
+import com.team3.fastcampus.record.Diary.Model.Diary;
 import com.team3.fastcampus.record.InDiary.Adapter.InDiaryViewRecyclerAdapter;
-import com.team3.fastcampus.record.InDiary.Domain.Image;
-import com.team3.fastcampus.record.InDiary.Domain.InDiary;
+import com.team3.fastcampus.record.InDiary.Model.InDiary;
 import com.team3.fastcampus.record.R;
+import com.team3.fastcampus.record.Util.Logger;
+import com.team3.fastcampus.record.Util.NetworkController;
+import com.team3.fastcampus.record.Util.PreferenceManager;
 
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
 
 /**
@@ -34,67 +34,119 @@ import java.util.List;
  */
 public class InDiaryListViewFragment extends Fragment {
 
+    public static final String TAG = "InDiaryListViewFragment";
+
     private View view;
 
     private RecyclerView recyclerView;
+    private ProgressBar progress;
 
     private InDiaryViewRecyclerAdapter inDiaryViewRecyclerAdapter;
 
-    public InDiaryListViewFragment() {
-        // Required empty public constructor
-    }
+    private InDiaryListCallback inDiaryListCallback;
 
+    private int position = 0;
+
+    public InDiaryListViewFragment(Fragment fragment) {
+        if (fragment instanceof InDiaryListCallback) {
+            inDiaryListCallback = (InDiaryListCallback)  fragment;
+        } else {
+            throw new RuntimeException(fragment.toString() + " must implement InDiaryListCallback");
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (view != null) {
+            return view;
+        }
+
         view = inflater.inflate(R.layout.fragment_in_diary_list_view, container, false);
 
         initView();
 
         initAdapter();
 
-        // TestDatas
-
-        // To get byte[] data from R.drawable.night
-        Drawable d = getResources().getDrawable(R.drawable.night);
-        Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        byte[] bitmapdata = stream.toByteArray();
-
-        // To get byte[] data from R.drawable.logo
-        Drawable d1 = getResources().getDrawable(R.drawable.logo);
-        Bitmap bitmap1 = ((BitmapDrawable)d1).getBitmap();
-        ByteArrayOutputStream stream1 = new ByteArrayOutputStream();
-        bitmap1.compress(Bitmap.CompressFormat.JPEG, 100, stream1);
-        byte[] bitmapdata1 = stream1.toByteArray();
-
-        List<Image> images = new ArrayList<>();
-        Image image1 = new Image();
-        image1.imageData = bitmapdata;
-        Image image2 = new Image();
-        image2.imageData = bitmapdata1;
-
-        images.add(image1);
-        images.add(image2);
-        InDiary inDiary = new InDiary(1, "title", "date", "content", images);
-        inDiaryViewRecyclerAdapter.add(inDiary);
-        inDiaryViewRecyclerAdapter.add(inDiary);
-        inDiaryViewRecyclerAdapter.add(inDiary);
-        inDiaryViewRecyclerAdapter.add(inDiary);
-
         return view;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        initValue();
+    }
+
+    public void init() {
+        initValue();
+    }
+
+    private void initValue() {
+        position = 0;
+        if (inDiaryViewRecyclerAdapter != null) {
+            inDiaryViewRecyclerAdapter.clear();
+            getData(position);
+        }
+    }
 
     private void initView() {
         recyclerView = (RecyclerView) view.findViewById(R.id.fragment_in_diary_view_recyclerview);
+        progress = (ProgressBar) view.findViewById(R.id.progress);
     }
 
     private void initAdapter() {
         inDiaryViewRecyclerAdapter = new InDiaryViewRecyclerAdapter(getContext());
         recyclerView.setAdapter(inDiaryViewRecyclerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+    }
+
+    private void getData(int position) {
+        progressEnable();
+        NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_diary))
+                .setMethod(NetworkController.GET)
+                .headerAdd("Authorization", "Token " + PreferenceManager.getInstance().getString("token", null))
+                .addCallback(new NetworkController.StatusCallback() {
+                    @Override
+                    public void onError(Throwable error) {
+                        progressDisable();
+                    }
+
+                    @Override
+                    public void onSuccess(NetworkController.ResponseData responseData) {
+                        try {
+                            Logger.e(TAG, responseData.body);
+                            if (responseData.response.code() == 200) {
+                                JSONArray root = NetworkController.decodeArray(responseData.body);
+                                for (int i=0;i<root.length();i++) {
+                                    JSONObject jsonDiary = root.getJSONObject(i);
+                                    if (jsonDiary.getLong("pk") == inDiaryListCallback.getDiary().pk) {
+                                        JSONArray jsonPost = jsonDiary.getJSONArray("post");
+                                        inDiaryViewRecyclerAdapter.set(NetworkController.decode(new TypeToken<List<InDiary>>() {
+                                        }.getType(), jsonPost.toString()));
+                                    }
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } finally {
+                            responseData.response.close();
+                            progressDisable();
+                        }
+                    }
+                })
+                .excute();
+    }
+
+    private void progressEnable() {
+        progress.setVisibility(View.VISIBLE);
+    }
+
+    private void progressDisable() {
+        progress.setVisibility(View.GONE);
+    }
+
+    interface InDiaryListCallback {
+        Diary getDiary();
     }
 }

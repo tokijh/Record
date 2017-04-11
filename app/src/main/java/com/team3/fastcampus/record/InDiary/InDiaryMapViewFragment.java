@@ -52,6 +52,7 @@ public class InDiaryMapViewFragment extends Fragment implements OnMapReadyCallba
         if (view != null) {
             return view;
         }
+
         view = inflater.inflate(R.layout.fragment_in_diary_map_view, container, false);
 
         initView();
@@ -73,6 +74,10 @@ public class InDiaryMapViewFragment extends Fragment implements OnMapReadyCallba
         MapsInitializer.initialize(getActivity().getApplicationContext());
 
         mapView.getMapAsync(this);
+    }
+  
+    public void init() {
+
     }
 
     @Override

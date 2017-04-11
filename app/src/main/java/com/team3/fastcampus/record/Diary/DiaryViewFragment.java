@@ -6,6 +6,7 @@ package com.team3.fastcampus.record.Diary;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,37 +18,53 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
+import android.widget.ProgressBar;
 
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import com.team3.fastcampus.record.*;
 import com.team3.fastcampus.record.Diary.Adapter.DiaryViewRecyclerAdapter;
-import com.team3.fastcampus.record.Diary.Domain.Diary;
+import com.team3.fastcampus.record.Diary.Model.Diary;
+import com.team3.fastcampus.record.Util.Logger;
+import com.team3.fastcampus.record.Util.NetworkController;
+import com.team3.fastcampus.record.Util.PreferenceManager;
+
+import java.util.List;
+
+import io.realm.Realm;
 
 /**
  * Diary를 보여주기 위한 메인뷰
  */
-public class DiaryViewFragment extends Fragment {
+public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdapter.DiaryListCallback {
+
+    public static final String TAG = "DiaryViewFragment";
 
     private View view;
 
-    private RelativeLayout search_bar;
     private EditText ed_search;
     private RecyclerView recyclerView;
+    private ProgressBar progress;
 
     private DiaryViewRecyclerAdapter diaryViewRecyclerAdapter;
 
     // Connector with Activity
     private DiaryViewInterface diaryViewInterface;
 
+    private int position = 0;
 
     public DiaryViewFragment() {
-        // Required empty public constructor
+
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (view != null) {
+            return view;
+        }
+
         view = inflater.inflate(R.layout.fragment_diary_view, container, false);
 
         initView();
@@ -56,40 +73,89 @@ public class DiaryViewFragment extends Fragment {
 
         initListener();
 
-        Diary diary = new Diary();
-        diary.id = 10;
-        diary.title = "title";
-        diary.date = "2016";
-        diary.location = "location";
-        diaryViewRecyclerAdapter.add(diary);
-        diaryViewRecyclerAdapter.add(diary);
-        diaryViewRecyclerAdapter.add(diary);
-        diaryViewRecyclerAdapter.add(diary);
-        diaryViewRecyclerAdapter.add(diary);
-        diaryViewRecyclerAdapter.add(diary);
-
-        // #3 테스트용 소스 View가 로드되면 바로 InDiaryViewFragment 를 실행한다.
-//        diaryViewInterface.showInDiary();
-
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        init();
+    }
+
+    public void init() {
+        initValue();
+
+        getData(position);
+    }
+
+    private void initValue() {
+        position = 0;
+        ed_search.setText("");
+        diaryViewRecyclerAdapter.clear();
     }
 
     private void initView() {
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-        search_bar = (RelativeLayout) view.findViewById(R.id.search_bar);
         ed_search = (EditText) view.findViewById(R.id.fragment_diary_view_search);
         recyclerView = (RecyclerView) view.findViewById(R.id.fragment_diary_view_recyclerview);
+        progress = (ProgressBar) view.findViewById(R.id.progress);
     }
 
     private void initAdapter() {
-        diaryViewRecyclerAdapter = new DiaryViewRecyclerAdapter(getContext());
+        diaryViewRecyclerAdapter = new DiaryViewRecyclerAdapter(this);
         recyclerView.setAdapter(diaryViewRecyclerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
     private void initListener() {
         ed_search.addTextChangedListener(searchWatcher);
+    }
+
+    private void getData(int position) {
+        progressEnable();
+        if (NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(getContext()))) {
+            NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_diary))
+                    .setMethod(NetworkController.GET)
+                    .headerAdd("Authorization", "Token " + PreferenceManager.getInstance().getString("token", null))
+                    .addCallback(new NetworkController.StatusCallback() {
+                        @Override
+                        public void onError(Throwable error) {
+                            progressDisable();
+                            Logger.e(TAG, "getData - error" + error.getMessage());
+                        }
+
+                        @Override
+                        public void onSuccess(NetworkController.ResponseData responseData) {
+                            try {
+                                Logger.e(TAG, responseData.body);
+                                if (responseData.response.code() == 200) {
+                                    List<Diary> diaries = NetworkController.decode(new TypeToken<List<Diary>>() {
+                                    }.getType(), responseData.body);
+                                    diaryViewRecyclerAdapter.set(diaries);
+                                    return;
+                                }
+                            } catch (JsonSyntaxException e) {
+                                Logger.e(TAG, "signin - NetworkController - excute - onSuccess - JsonSyntaxException : " + e.getMessage());
+                            } catch (Exception e) {
+                                Logger.e(TAG, "signin - NetworkController - excute - onSuccess - Exception : " + e.getMessage());
+                            }finally {
+                                responseData.response.close();
+                                progressDisable();
+                            }
+                        }
+                    })
+                    .excute();
+        }
+    }
+
+    private void progressEnable() {
+        progress.setVisibility(View.VISIBLE);
+    }
+
+    private void progressDisable() {
+        progress.setVisibility(View.GONE);
     }
 
     private TextWatcher searchWatcher = new TextWatcher() {
@@ -126,7 +192,12 @@ public class DiaryViewFragment extends Fragment {
         diaryViewInterface = null;
     }
 
+    @Override
+    public void onItemClick(Diary diary) {
+        diaryViewInterface.showInDiary(diary);
+    }
+
     public interface DiaryViewInterface {
-        void showInDiary();
+        void showInDiary(Diary diary);
     }
 }
