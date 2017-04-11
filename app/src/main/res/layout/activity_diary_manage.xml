@@ -184,22 +184,6 @@
         fab:menu_colorRipple="#62B2FF">
 
         <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_gallery"
-            style="@style/MenuButtonsSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:src="@android:drawable/ic_menu_gallery" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_photo"
-            style="@style/MenuButtonsSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:src="@android:drawable/ic_menu_camera" />
-
-        <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_delete"
             style="@style/MenuButtonsSmall"
             android:layout_width="wrap_content"
