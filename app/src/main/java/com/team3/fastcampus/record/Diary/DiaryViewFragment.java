@@ -28,10 +28,9 @@ import com.team3.fastcampus.record.Diary.Model.Diary;
 import com.team3.fastcampus.record.Util.Logger;
 import com.team3.fastcampus.record.Util.NetworkController;
 import com.team3.fastcampus.record.Util.PreferenceManager;
+import com.team3.fastcampus.record.Util.RealmDatabaseManager;
 
 import java.util.List;
-
-import io.realm.Realm;
 
 /**
  * Diary를 보여주기 위한 메인뷰
@@ -97,7 +96,7 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
 
     private void initView() {
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ed_search = (EditText) view.findViewById(R.id.fragment_diary_view_search);
         recyclerView = (RecyclerView) view.findViewById(R.id.fragment_diary_view_recyclerview);
         progress = (ProgressBar) view.findViewById(R.id.progress);
@@ -116,38 +115,78 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
     private void getData(int position) {
         progressEnable();
         if (NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(getContext()))) {
-            NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_diary))
-                    .setMethod(NetworkController.GET)
-                    .headerAdd("Authorization", "Token " + PreferenceManager.getInstance().getString("token", null))
-                    .addCallback(new NetworkController.StatusCallback() {
-                        @Override
-                        public void onError(Throwable error) {
-                            progressDisable();
-                            Logger.e(TAG, "getData - error" + error.getMessage());
-                        }
-
-                        @Override
-                        public void onSuccess(NetworkController.ResponseData responseData) {
-                            try {
-                                Logger.e(TAG, responseData.body);
-                                if (responseData.response.code() == 200) {
-                                    List<Diary> diaries = NetworkController.decode(new TypeToken<List<Diary>>() {
-                                    }.getType(), responseData.body);
-                                    diaryViewRecyclerAdapter.set(diaries);
-                                    return;
-                                }
-                            } catch (JsonSyntaxException e) {
-                                Logger.e(TAG, "signin - NetworkController - excute - onSuccess - JsonSyntaxException : " + e.getMessage());
-                            } catch (Exception e) {
-                                Logger.e(TAG, "signin - NetworkController - excute - onSuccess - Exception : " + e.getMessage());
-                            }finally {
-                                responseData.response.close();
-                                progressDisable();
-                            }
-                        }
-                    })
-                    .excute();
+            loadFromServer(position);
+        } else {
+            loadFromDB(position);
         }
+    }
+
+    private void loadFromServer(int position) {
+        NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_diary))
+                .setMethod(NetworkController.GET)
+                .headerAdd("Authorization", "Token " + PreferenceManager.getInstance().getString("token", null))
+                .addCallback(new NetworkController.StatusCallback() {
+                    @Override
+                    public void onError(Throwable error) {
+                        progressDisable();
+                        Logger.e(TAG, "getData - error" + error.getMessage());
+                    }
+
+                    @Override
+                    public void onSuccess(NetworkController.ResponseData responseData) {
+                        try {
+                            Logger.e(TAG, responseData.body);
+                            if (responseData.response.code() == 200) {
+                                List<Diary> diaries = NetworkController.decode(new TypeToken<List<Diary>>() {
+                                }.getType(), responseData.body);
+                                diaryViewRecyclerAdapter.set(diaries);
+                                saveToDB(diaries);
+                                return;
+                            }
+                        } catch (JsonSyntaxException e) {
+                            Logger.e(TAG, "signin - NetworkController - excute - onSuccess - JsonSyntaxException : " + e.getMessage());
+                        } catch (Exception e) {
+                            Logger.e(TAG, "signin - NetworkController - excute - onSuccess - Exception : " + e.getMessage());
+                        } finally {
+                            responseData.response.close();
+                            progressDisable();
+                        }
+                    }
+                })
+                .excute();
+    }
+
+    private void saveToDB(List<Diary> diaries) {
+        RealmDatabaseManager realmDatabaseManager = RealmDatabaseManager.getInstance();
+        for (Diary diary : diaries) {
+            Diary isSaved = realmDatabaseManager.get(Diary.class)
+                    .equalTo("username", PreferenceManager.getInstance().getString("username", null))
+                    .equalTo("pk", diary.pk)
+                    .findFirst();
+            if (isSaved == null) {
+                realmDatabaseManager.create(Diary.class, (realm, realmObject) -> {
+                    realmObject.pk = diary.pk;
+                    realmObject.username = PreferenceManager.getInstance().getString("username", null);
+                    realmObject.title = diary.title;
+                    realmObject.created_date = diary.created_date;
+                });
+            }
+        }
+    }
+
+    private void loadFromDB(int position) {
+        RealmDatabaseManager realmDatabaseManager = RealmDatabaseManager.getInstance();
+        List<Diary> diaries = realmDatabaseManager.get(Diary.class)
+                .equalTo("username", PreferenceManager.getInstance().getString("username", null))
+                .findAll();
+        List<Diary> diaries1 = realmDatabaseManager.getAll(Diary.class);
+        Logger.e(TAG, PreferenceManager.getInstance().getString("username", null));
+        Logger.e(TAG, diaries.size() + " " + diaries1.size());
+        for (Diary diary : diaries1) {
+            Logger.e(TAG, diary.username + " " + diary.title + " " + diary.pk);
+        }
+        diaryViewRecyclerAdapter.set(diaries);
+        progressDisable();
     }
 
     private void progressEnable() {
@@ -190,6 +229,7 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
     public void onDetach() {
         super.onDetach();
         diaryViewInterface = null;
+        RealmDatabaseManager.destroy();
     }
 
     @Override

@@ -409,10 +409,11 @@ public class NetworkController {
                 subscriber.onError(e);
             }
         }).subscribeOn(Schedulers.io())
-                .doOnNext(response -> ((ResponseData) response).body = ((ResponseData) response).response.body().string())
+                .cast(ResponseData.class)
+                .doOnNext(response -> response.body = response.response.body().string())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(responseData -> {
-                    callbackSuccess((ResponseData) responseData);
+                    callbackSuccess(responseData);
                     destroy();
                 }, error -> {
                     callbackError(error);

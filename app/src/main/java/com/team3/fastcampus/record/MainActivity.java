@@ -87,9 +87,10 @@ public class MainActivity extends AppCompatActivity
         startActivityForResult(intent, REQ_LOGIN);
     }
 
-    private void successSignIn(String token) {
-        init();
+    private void successSignIn(String token, String username) {
         PreferenceManager.getInstance().putString("token", token);
+        PreferenceManager.getInstance().putString("username", username);
+        init();
     }
 
     /**
@@ -144,11 +145,15 @@ public class MainActivity extends AppCompatActivity
         if (requestCode == REQ_LOGIN) {
             if (resultCode == RESULT_OK) {
                 Bundle bundle = data.getExtras();
-                if (bundle.containsKey("token")) {
+                if (bundle.containsKey("token") && bundle.containsKey("username")) {
                     String token = bundle.getString("token");
-                    if (token != null)
-                        successSignIn(token);
+                    String username = bundle.getString("username");
+                    if (token != null && username != null) {
+                        successSignIn(token, username);
+                        return;
+                    }
                 }
+                throw new RuntimeException("token or username is null");
             } else {
                 Toast.makeText(this, "로그인을 해야 이용 할 수 있습니다.", Toast.LENGTH_SHORT).show();
                 finish();

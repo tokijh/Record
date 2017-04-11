@@ -103,6 +103,14 @@ public class InDiaryListViewFragment extends Fragment {
 
     private void getData(int position) {
         progressEnable();
+        if (NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(getContext()))) {
+            loadFromServer(position);
+        } else {
+            loadFromDB(position);
+        }
+    }
+
+    private void loadFromServer(int position) {
         NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_diary))
                 .setMethod(NetworkController.GET)
                 .headerAdd("Authorization", "Token " + PreferenceManager.getInstance().getString("token", null))
@@ -118,12 +126,14 @@ public class InDiaryListViewFragment extends Fragment {
                             Logger.e(TAG, responseData.body);
                             if (responseData.response.code() == 200) {
                                 JSONArray root = NetworkController.decodeArray(responseData.body);
-                                for (int i=0;i<root.length();i++) {
+                                for (int i = 0; i < root.length(); i++) {
                                     JSONObject jsonDiary = root.getJSONObject(i);
                                     if (jsonDiary.getLong("pk") == inDiaryListCallback.getDiary().pk) {
                                         JSONArray jsonPost = jsonDiary.getJSONArray("post");
-                                        inDiaryViewRecyclerAdapter.set(NetworkController.decode(new TypeToken<List<InDiary>>() {
-                                        }.getType(), jsonPost.toString()));
+                                        List<InDiary> diaries = NetworkController.decode(new TypeToken<List<InDiary>>() {
+                                        }.getType(), jsonPost.toString());
+                                        inDiaryViewRecyclerAdapter.set(diaries);
+                                        saveToDB(diaries);
                                     }
                                 }
                             }
@@ -136,6 +146,14 @@ public class InDiaryListViewFragment extends Fragment {
                     }
                 })
                 .excute();
+    }
+
+    private void saveToDB(List<InDiary> inDiaries) {
+
+    }
+
+    private void loadFromDB(int position) {
+        progressDisable();
     }
 
     private void progressEnable() {

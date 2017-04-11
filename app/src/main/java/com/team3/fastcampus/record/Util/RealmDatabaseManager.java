@@ -31,6 +31,9 @@ public class RealmDatabaseManager {
         if (instance == null) {
             instance = new RealmDatabaseManager();
         }
+        if (instance.realm.isClosed()) {
+            instance.realm = Realm.getDefaultInstance();
+        }
         return instance;
     }
 
@@ -59,6 +62,17 @@ public class RealmDatabaseManager {
         } catch (Exception e) {
             return 0;
         }
+    }
+
+    /**
+     * 데이터베이스 클래스로 테이블 생성
+     *
+     * @param clazz
+     * @param <E>
+     * @return
+     */
+    public <E extends RealmObject> E create(Class<E> clazz) {
+        return realm.createObject(clazz);
     }
 
     /**
