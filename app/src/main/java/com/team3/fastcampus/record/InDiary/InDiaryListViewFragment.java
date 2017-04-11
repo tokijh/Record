@@ -103,39 +103,41 @@ public class InDiaryListViewFragment extends Fragment {
 
     private void getData(int position) {
         progressEnable();
-        NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_diary))
-                .setMethod(NetworkController.GET)
-                .headerAdd("Authorization", "Token " + PreferenceManager.getInstance().getString("token", null))
-                .addCallback(new NetworkController.StatusCallback() {
-                    @Override
-                    public void onError(Throwable error) {
-                        progressDisable();
-                    }
-
-                    @Override
-                    public void onSuccess(NetworkController.ResponseData responseData) {
-                        try {
-                            Logger.e(TAG, responseData.body);
-                            if (responseData.response.code() == 200) {
-                                JSONArray root = NetworkController.decodeArray(responseData.body);
-                                for (int i=0;i<root.length();i++) {
-                                    JSONObject jsonDiary = root.getJSONObject(i);
-                                    if (jsonDiary.getLong("pk") == inDiaryListCallback.getDiary().pk) {
-                                        JSONArray jsonPost = jsonDiary.getJSONArray("post");
-                                        inDiaryViewRecyclerAdapter.set(NetworkController.decode(new TypeToken<List<InDiary>>() {
-                                        }.getType(), jsonPost.toString()));
-                                    }
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } finally {
-                            responseData.response.close();
+        if (NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(getContext()))) {
+            NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_diary))
+                    .setMethod(NetworkController.GET)
+                    .headerAdd("Authorization", "Token " + PreferenceManager.getInstance().getString("token", null))
+                    .addCallback(new NetworkController.StatusCallback() {
+                        @Override
+                        public void onError(Throwable error) {
                             progressDisable();
                         }
-                    }
-                })
-                .excute();
+
+                        @Override
+                        public void onSuccess(NetworkController.ResponseData responseData) {
+                            try {
+                                Logger.e(TAG, responseData.body);
+                                if (responseData.response.code() == 200) {
+                                    JSONArray root = NetworkController.decodeArray(responseData.body);
+                                    for (int i = 0; i < root.length(); i++) {
+                                        JSONObject jsonDiary = root.getJSONObject(i);
+                                        if (jsonDiary.getLong("pk") == inDiaryListCallback.getDiary().pk) {
+                                            JSONArray jsonPost = jsonDiary.getJSONArray("post");
+                                            inDiaryViewRecyclerAdapter.set(NetworkController.decode(new TypeToken<List<InDiary>>() {
+                                            }.getType(), jsonPost.toString()));
+                                        }
+                                    }
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            } finally {
+                                responseData.response.close();
+                                progressDisable();
+                            }
+                        }
+                    })
+                    .excute();
+        }
     }
 
     private void progressEnable() {
