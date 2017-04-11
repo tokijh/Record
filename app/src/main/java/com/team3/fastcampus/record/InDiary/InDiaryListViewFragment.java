@@ -105,6 +105,8 @@ public class InDiaryListViewFragment extends Fragment {
         progressEnable();
         if (NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(getContext()))) {
             loadFromServer(position);
+        } else {
+            loadFromDB(position);
         }
     }
 
@@ -128,8 +130,10 @@ public class InDiaryListViewFragment extends Fragment {
                                     JSONObject jsonDiary = root.getJSONObject(i);
                                     if (jsonDiary.getLong("pk") == inDiaryListCallback.getDiary().pk) {
                                         JSONArray jsonPost = jsonDiary.getJSONArray("post");
-                                        inDiaryViewRecyclerAdapter.set(NetworkController.decode(new TypeToken<List<InDiary>>() {
-                                        }.getType(), jsonPost.toString()));
+                                        List<InDiary> diaries = NetworkController.decode(new TypeToken<List<InDiary>>() {
+                                        }.getType(), jsonPost.toString());
+                                        inDiaryViewRecyclerAdapter.set(diaries);
+                                        saveToDB(diaries);
                                     }
                                 }
                             }
@@ -142,6 +146,14 @@ public class InDiaryListViewFragment extends Fragment {
                     }
                 })
                 .excute();
+    }
+
+    private void saveToDB(List<InDiary> inDiaries) {
+
+    }
+
+    private void loadFromDB(int position) {
+        progressDisable();
     }
 
     private void progressEnable() {
