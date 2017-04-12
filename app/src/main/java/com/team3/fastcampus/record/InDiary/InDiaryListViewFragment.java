@@ -17,11 +17,13 @@ import android.widget.ProgressBar;
 import com.google.gson.reflect.TypeToken;
 import com.team3.fastcampus.record.Diary.Model.Diary;
 import com.team3.fastcampus.record.InDiary.Adapter.InDiaryViewRecyclerAdapter;
+import com.team3.fastcampus.record.InDiary.Model.Image;
 import com.team3.fastcampus.record.InDiary.Model.InDiary;
 import com.team3.fastcampus.record.R;
 import com.team3.fastcampus.record.Util.Logger;
 import com.team3.fastcampus.record.Util.NetworkController;
 import com.team3.fastcampus.record.Util.PreferenceManager;
+import com.team3.fastcampus.record.Util.RealmDatabaseManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -123,9 +125,9 @@ public class InDiaryListViewFragment extends Fragment {
                     @Override
                     public void onSuccess(NetworkController.ResponseData responseData) {
                         try {
-                            Logger.e(TAG, responseData.body);
+                            Logger.e(TAG, new String(responseData.body));
                             if (responseData.response.code() == 200) {
-                                JSONArray root = NetworkController.decodeArray(responseData.body);
+                                JSONArray root = NetworkController.decodeArray(new String(responseData.body));
                                 for (int i = 0; i < root.length(); i++) {
                                     JSONObject jsonDiary = root.getJSONObject(i);
                                     if (jsonDiary.getLong("pk") == inDiaryListCallback.getDiary().pk) {
@@ -145,14 +147,49 @@ public class InDiaryListViewFragment extends Fragment {
                         }
                     }
                 })
-                .excute();
+                .execute();
     }
 
     private void saveToDB(List<InDiary> inDiaries) {
-
+        RealmDatabaseManager realmDatabaseManager = RealmDatabaseManager.getInstance();
+        for (InDiary inDiary : inDiaries) {
+            InDiary isSaved = realmDatabaseManager.get(InDiary.class)
+                    .equalTo("username", PreferenceManager.getInstance().getString("username", null))
+                    .equalTo("pk", inDiary.pk)
+                    .findFirst();
+            if (isSaved == null) {
+                realmDatabaseManager.create(InDiary.class, (realm, realmObject) -> {
+                    realmObject.pk = inDiary.pk;
+                    realmObject.username = PreferenceManager.getInstance().getString("username", null);
+                    realmObject.diary = inDiary.diary;
+                    for (Image image : inDiary.photo_list) {
+                        Image forsave = realmDatabaseManager.create(Image.class);
+                        forsave.photo = image.photo;
+                        forsave.post = image.post;
+                        forsave.gpsLatitude = image.gpsLatitude;
+                        forsave.gpsLongitude = image.gpsLongitude;
+                        forsave.pk = image.pk;
+                        realmObject.photo_list.add(forsave);
+                    }
+                    realmObject.created_date = inDiary.created_date;
+                });
+            }
+        }
     }
 
     private void loadFromDB(int position) {
+        RealmDatabaseManager realmDatabaseManager = RealmDatabaseManager.getInstance();
+        List<InDiary> inDiaries = realmDatabaseManager.get(InDiary.class)
+                .equalTo("username", PreferenceManager.getInstance().getString("username", null))
+                .equalTo("diary", inDiaryListCallback.getDiary().pk)
+                .findAll();
+        List<InDiary> inDiaries1 = realmDatabaseManager.getAll(InDiary.class);
+        Logger.e(TAG, PreferenceManager.getInstance().getString("username", null));
+        Logger.e(TAG, inDiaries.size() + " " + inDiaries1.size());
+        for (InDiary inDiary : inDiaries1) {
+            Logger.e(TAG, inDiary.username + " " + inDiary.diary + " " + inDiary.pk + " " + inDiary.photo_list.size() + " " + ((inDiary.photo_list.size() > 0) ? inDiary.photo_list.get(0) + " :: " + inDiary.photo_list.get(0).photo: "NULL"));
+        }
+        inDiaryViewRecyclerAdapter.set(inDiaries);
         progressDisable();
     }
 
