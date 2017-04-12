@@ -38,15 +38,6 @@ public class RealmDatabaseManager {
     }
 
     /**
-     * Create new Instance
-     *
-     * @return
-     */
-    public static RealmDatabaseManager newInstance() {
-        return new RealmDatabaseManager();
-    }
-
-    /**
      * 사용하지 않은 경우 반드시 destroy 되어야 한다.
      *
      * 없으면 memory leek 발생
@@ -213,14 +204,10 @@ public class RealmDatabaseManager {
     /**
      * DB에 저장된 내용을 갱신 하는 함수
      *
-     * @param clazz 저장할 클래스(테이블)
      * @param realmUpdate 업데이트 작업이 일어나는 callback
-     * @param <E> 지정 클래스
      */
-    public <E extends RealmObject> void update(Class<E> clazz, RealmUpdate realmUpdate) {
-        realm.executeTransaction(_realm -> {
-            realmUpdate.update();
-        });
+    public void update(RealmUpdate realmUpdate) {
+        realm.executeTransaction(_realm -> realmUpdate.update());
     }
 
     /**
