@@ -153,6 +153,26 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQ_GALLERY);
     }
 
+    private void actionCameraSelect() {
+        AlertDialog.Builder alert_confirm = new AlertDialog.Builder(DiaryManageActivity.this);
+        alert_confirm.setMessage("Select Camera").setCancelable(false).setPositiveButton("camera",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        actionPhoto();
+                    }
+                }).setNegativeButton("gallery",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        actionGallery();
+                        return;
+                    }
+                });
+        AlertDialog alert = alert_confirm.create();
+        alert.show();
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -172,28 +192,12 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
                 actionDelete();
                 break;
             case R.id.diary_list_detail_image:
-                AlertDialog.Builder alert_confirm = new AlertDialog.Builder(DiaryManageActivity.this);
-                alert_confirm.setMessage("Select Camera").setCancelable(false).setPositiveButton("camera",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                actionPhoto();
-                            }
-                        }).setNegativeButton("gallery",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                actionGallery();
-                                return;
-                            }
-                        });
-                AlertDialog alert = alert_confirm.create();
-                alert.show();
-
+                actionCameraSelect();
                 break;
 
         }
     }
+
 
     private DatePickerDialog.OnDateSetListener mDateSetListener = (view, year, month, dayOfMonth) -> {
         mYear = year;
