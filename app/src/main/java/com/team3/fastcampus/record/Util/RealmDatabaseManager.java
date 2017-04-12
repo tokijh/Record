@@ -213,14 +213,10 @@ public class RealmDatabaseManager {
     /**
      * DB에 저장된 내용을 갱신 하는 함수
      *
-     * @param clazz 저장할 클래스(테이블)
      * @param realmUpdate 업데이트 작업이 일어나는 callback
-     * @param <E> 지정 클래스
      */
-    public <E extends RealmObject> void update(Class<E> clazz, RealmUpdate realmUpdate) {
-        realm.executeTransaction(_realm -> {
-            realmUpdate.update();
-        });
+    public void update(RealmUpdate realmUpdate) {
+        realm.executeTransaction(_realm -> realmUpdate.update());
     }
 
     /**
