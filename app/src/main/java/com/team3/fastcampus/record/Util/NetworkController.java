@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import io.reactivex.Observable;
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -391,8 +392,19 @@ public class NetworkController {
 
     /**
      * Http 통신 시작
+     * callback은 mainThread로 지정한다.
      */
-    public void excute() {
+    public void execute() {
+        execute(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * Http 통신 시작
+     * Scheduler로 callback의 Thread를 지정 해준다.
+     *
+     * @param scheduler
+     */
+    public void execute(Scheduler scheduler) {
         if (disposable != null && !disposable.isDisposed()) {
             callbackError(new Throwable("disposable is using"));
             return;
@@ -410,8 +422,8 @@ public class NetworkController {
             }
         }).subscribeOn(Schedulers.io())
                 .cast(ResponseData.class)
-                .doOnNext(response -> response.body = response.response.body().string())
-                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(response -> response.body = response.response.body().bytes())
+                .observeOn(scheduler)
                 .subscribe(responseData -> {
                     callbackSuccess(responseData);
                     destroy();
@@ -587,7 +599,7 @@ public class NetworkController {
         /**
          * excute되어 반환되는 body
          */
-        public String body;
+        public byte[] body;
 
         /**
          * close된 response
