@@ -124,7 +124,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                     public void onSuccess(NetworkController.ResponseData responseData) {
                         try {
                             if (responseData.response.code() == 201) {
-                                SignUpData signUpData = NetworkController.decode(SignUpData.class, responseData.body);
+                                SignUpData signUpData = NetworkController.decode(SignUpData.class, new String(responseData.body));
                                 Toast.makeText(SignupActivity.this, "회원 가입 성공", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent();
                                 intent.putExtra("token", signUpData.getToken());
@@ -141,7 +141,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                         Toast.makeText(SignupActivity.this, "회원 가입을 할 수 없습니다.\n계정을 다시 확인해 주세요.", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .excute();
+                .execute();
     }
 
     private void progressEnable() {
