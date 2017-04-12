@@ -3,11 +3,13 @@ package com.team3.fastcampus.record.Diary;
 import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
@@ -30,7 +32,7 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
     Uri fileUri = null;
 
     TextView tv_date, tv_endDate;
-    FloatingActionButton btn_add_photo, btn_add, btn_update, btn_delete, btn_gallery;
+    FloatingActionButton btn_add, btn_update, btn_delete;
     int mYear, mMonth, mDay, mHour, mMinute;
     int mEndYear, mEndMonth, mEndDay;
     ImageView imageView;
@@ -71,20 +73,18 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
         tv_date = (TextView) findViewById(R.id.diary_list_detail_tv_diary_date);
         tv_endDate = (TextView) findViewById(R.id.diary_list_detail_tv_diary_end_date);
         btn_add = (FloatingActionButton) findViewById(R.id.fab_add);
-        btn_add_photo = (FloatingActionButton) findViewById(R.id.fab_photo);
         btn_update = (FloatingActionButton) findViewById(R.id.fab_update);
         btn_delete = (FloatingActionButton) findViewById(R.id.fab_delete);
-        btn_gallery = (FloatingActionButton) findViewById(R.id.fab_gallery);
+        imageView = (ImageView) findViewById(R.id.diary_list_detail_image);
     }
 
     private void initListener() {
         tv_date.setOnClickListener(this);
         tv_endDate.setOnClickListener(this);
         btn_add.setOnClickListener(this);
-        btn_add_photo.setOnClickListener(this);
         btn_update.setOnClickListener(this);
         btn_delete.setOnClickListener(this);
-        btn_gallery.setOnClickListener(this);
+        imageView.setOnClickListener(this);
     }
 
     private void initDateValue() {
@@ -103,6 +103,7 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
     private void updateDateText() {
         tv_date.setText(String.format("%d/%d/%d", mYear, mMonth + 1, mDay));
     }
+
     private void upEndDateDateText() {
         tv_endDate.setText(String.format("%d/%d/%d", mEndYear, mEndMonth + 1, mEndDay));
     }
@@ -164,18 +165,33 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
             case R.id.fab_add:
                 actionAdd();
                 break;
-            case R.id.fab_photo:
-                actionPhoto();
-                break;
             case R.id.fab_update:
                 actionUpdate();
                 break;
             case R.id.fab_delete:
                 actionDelete();
                 break;
-            case R.id.fab_gallery:
-                actionGallery();
+            case R.id.diary_list_detail_image:
+                AlertDialog.Builder alert_confirm = new AlertDialog.Builder(DiaryManageActivity.this);
+                alert_confirm.setMessage("Select Camera").setCancelable(false).setPositiveButton("camera",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                actionPhoto();
+                            }
+                        }).setNegativeButton("gallery",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                actionGallery();
+                                return;
+                            }
+                        });
+                AlertDialog alert = alert_confirm.create();
+                alert.show();
+
                 break;
+
         }
     }
 
