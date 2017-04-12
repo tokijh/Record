@@ -16,7 +16,7 @@ import com.team3.fastcampus.record.Util.RealmDatabaseManager;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.schedulers.Schedulers;
+import io.realm.RealmResults;
 
 /**
  * Created by tokijh on 2017. 4. 5..
@@ -58,18 +58,24 @@ public class InDiaryListImageViewPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        RealmDatabaseManager realmDatabaseManager = RealmDatabaseManager.getInstance();
         ImageView imageView = new ImageView(context);
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        imageProssessing(images.get(position), imageView);
+        container.addView(imageView);
+        return imageView;
+    }
+
+    private void imageProssessing(Image image, ImageView imageView) {
+        RealmDatabaseManager realmDatabaseManager = RealmDatabaseManager.getInstance();
         ImageData imageData = realmDatabaseManager.get(ImageData.class)
-                .equalTo("url", images.get(position).photo)
+                .equalTo("url", image.photo)
                 .findFirst();
         if (imageData == null) {
             Glide.with(context)
-                    .load(images.get(position).photo)
+                    .load(image.photo)
                     .placeholder(R.drawable.night)
                     .into(imageView);
-            saveImageToDB(images.get(position));
+            saveImageToDB(image);
         } else {
             if (imageData.data != null) {
                 Glide.with(context)
@@ -81,10 +87,9 @@ public class InDiaryListImageViewPagerAdapter extends PagerAdapter {
                         .load(imageData.url)
                         .placeholder(R.drawable.night)
                         .into(imageView);
+                updateImageToDB(image);
             }
         }
-        container.addView(imageView);
-        return imageView;
     }
 
     private void saveImageToDB(Image image) {
@@ -98,13 +103,14 @@ public class InDiaryListImageViewPagerAdapter extends PagerAdapter {
 
                     @Override
                     public void onSuccess(NetworkController.ResponseData responseData) {
-                        RealmDatabaseManager.getInstance().create(ImageData.class, (realm, realmObject) -> {
+                        RealmDatabaseManager realmDatabaseManager = RealmDatabaseManager.getInstance();
+                        realmDatabaseManager.create(ImageData.class, (realm, realmObject) -> {
                             realmObject.url = image.photo;
                             realmObject.data = responseData.body;
                         });
                     }
                 })
-                .execute(Schedulers.io());
+                .execute();
     }
 
     private void updateImageToDB(Image image) {
@@ -118,15 +124,19 @@ public class InDiaryListImageViewPagerAdapter extends PagerAdapter {
 
                     @Override
                     public void onSuccess(NetworkController.ResponseData responseData) {
-                        RealmDatabaseManager realmDatabaseManager = RealmDatabaseManager.newInstance();
-
-                        RealmDatabaseManager.newInstance().create(ImageData.class, (realm, realmObject) -> {
-                            realmObject.url = image.photo;
-                            realmObject.data = responseData.body;
+                        RealmDatabaseManager realmDatabaseManager = RealmDatabaseManager.getInstance();
+                        realmDatabaseManager.update(() -> {
+                            RealmResults<ImageData> results = RealmDatabaseManager.getInstance().get(ImageData.class)
+                                    .equalTo("url", image.photo)
+                                    .findAll();
+                            for (ImageData realmObject : results) {
+                                realmObject.url = image.photo;
+                                realmObject.data = responseData.body;
+                            }
                         });
                     }
                 })
-                .execute(Schedulers.io());
+                .execute();
     }
 
     @Override
