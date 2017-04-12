@@ -135,10 +135,10 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
                     @Override
                     public void onSuccess(NetworkController.ResponseData responseData) {
                         try {
-                            Logger.e(TAG, responseData.body);
+                            Logger.e(TAG, new String(responseData.body));
                             if (responseData.response.code() == 200) {
                                 List<Diary> diaries = NetworkController.decode(new TypeToken<List<Diary>>() {
-                                }.getType(), responseData.body);
+                                }.getType(), new String(responseData.body));
                                 diaryViewRecyclerAdapter.set(diaries);
                                 saveToDB(diaries);
                                 return;
@@ -153,7 +153,7 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
                         }
                     }
                 })
-                .excute();
+                .execute();
     }
 
     private void saveToDB(List<Diary> diaries) {

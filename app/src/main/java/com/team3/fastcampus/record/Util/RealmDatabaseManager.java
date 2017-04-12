@@ -38,6 +38,15 @@ public class RealmDatabaseManager {
     }
 
     /**
+     * Create new Instance
+     *
+     * @return
+     */
+    public static RealmDatabaseManager newInstance() {
+        return new RealmDatabaseManager();
+    }
+
+    /**
      * 사용하지 않은 경우 반드시 destroy 되어야 한다.
      *
      * 없으면 memory leek 발생

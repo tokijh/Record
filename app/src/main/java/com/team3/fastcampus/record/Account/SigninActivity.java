@@ -224,9 +224,9 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                     @Override
                     public void onSuccess(NetworkController.ResponseData responseData) {
                         try {
-                            Logger.e(TAG, responseData.body);
+                            Logger.e(TAG, new String(responseData.body));
                             if (responseData.response.code() == 201) {
-                                SignUpData signUpData = NetworkController.decode(SignUpData.class, responseData.body);
+                                SignUpData signUpData = NetworkController.decode(SignUpData.class, responseData.body.toString());
                                 successSignIn(new SignInData(signUpData.getToken()));
                                 return;
                             }
@@ -239,7 +239,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                         Toast.makeText(SigninActivity.this, "로그인을 할 수 없습니다.\n로그아웃 후 다시 시도 해 주세요.", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .excute();
+                .execute();
     }
 
     private void signin() {
@@ -262,9 +262,9 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                     @Override
                     public void onSuccess(NetworkController.ResponseData responseData) {
                         try {
-                            Logger.e(TAG, responseData.body);
+                            Logger.e(TAG, new String(responseData.body));
                             if (responseData.response.code() == 200) {
-                                SignInData signInData = NetworkController.decode(SignInData.class, responseData.body);
+                                SignInData signInData = NetworkController.decode(SignInData.class, new String(responseData.body));
                                 successSignIn(signInData);
                                 return;
                             }
@@ -278,7 +278,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                         }
                         Toast.makeText(SigninActivity.this, "로그인을 할 수 없습니다.\n아이디, 비밀번호를 확인해 주세요.", Toast.LENGTH_SHORT).show();
                     }
-                }).excute();
+                }).execute();
     }
 
     private void progressEnable() {
