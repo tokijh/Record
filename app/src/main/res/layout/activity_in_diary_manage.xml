@@ -125,18 +125,17 @@
         android:background="#FFFFFF">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/indiary_input_recyclerview"
+            android:id="@+id/indiary_input_area_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="100dp">
 
         </android.support.v7.widget.RecyclerView>
 
         <EditText
-            android:id="@+id/indiary_input_context"
+            android:id="@+id/indiary_input_area_context"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/indiary_input_recyclerview"
-            />
+            android:layout_below="@+id/indiary_input_area_recyclerview" />
 
 
     </RelativeLayout>
