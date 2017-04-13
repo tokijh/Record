@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#A1A1A1"
-
     tools:context="com.team3.fastcampus.record.InDiary.InDiaryManageActivity">
 
 
@@ -114,8 +113,6 @@
 
 
             </LinearLayout>
-
-
         </LinearLayout>
 
     </RelativeLayout>
@@ -127,15 +124,20 @@
         android:layout_marginTop="10dp"
         android:background="#FFFFFF">
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/indiary_input_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="100dp">
+
+        </android.support.v7.widget.RecyclerView>
+
         <EditText
+            android:id="@+id/indiary_input_context"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@null"
-            android:hint="Content"
-            android:textAlignment="center"
-            android:textSize="13dp"
-
+            android:layout_below="@+id/indiary_input_recyclerview"
             />
+
 
     </RelativeLayout>
 
