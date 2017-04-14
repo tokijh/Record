@@ -15,7 +15,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,13 +61,6 @@ public class NetworkController {
 
     public static NetworkController newInstance(String url) {
         return new NetworkController(url);
-    }
-
-    private void destroy() {
-        if (disposable != null && !disposable.isDisposed())
-            disposable.dispose();
-        params.clear();
-        statusCallbacks.clear();
     }
 
     /**
@@ -419,10 +411,9 @@ public class NetworkController {
                 .observeOn(scheduler)
                 .subscribe(responseData -> {
                     callbackSuccess(responseData);
-                    destroy();
                 }, error -> {
                     callbackError(error);
-                    destroy();
+                    callbackError(error);
                 });
     }
 
