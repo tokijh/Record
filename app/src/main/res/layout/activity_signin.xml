@@ -6,10 +6,6 @@
     android:background="#ffffff">
 
 
-    <VideoView
-        android:id="@+id/activity_login_video"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -19,7 +15,7 @@
         android:layout_alignParentTop="true">
 
 
-            <RelativeLayout
+        <RelativeLayout
                 android:id="@+id/activity_login"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -28,6 +24,10 @@
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingTop="@dimen/activity_vertical_margin"
                 tools:context="com.team3.fastcampus.record.Account.SigninActivity">
+            <VideoView
+                android:id="@+id/activity_login_video"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
 
                 <ImageView
                     android:id="@+id/image_logo"
