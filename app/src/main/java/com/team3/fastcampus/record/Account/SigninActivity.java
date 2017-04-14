@@ -201,9 +201,10 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
 
     private void successSignIn(SignInData signInData) {
         Intent intent = new Intent();
-        intent.putExtra("token", signInData.getKey());
-        // TODO Login API 로부터 username을 받아와 저장한다.
-        intent.putExtra("username", "tokijh22@naver.com"); // 임시로 해둔 username
+        intent.putExtra("token", signInData.key);
+        intent.putExtra("username", signInData.user.username);
+        intent.putExtra("nickname", signInData.user.nickname);
+        intent.putExtra("user_type", signInData.user.user_type);
         setResult(RESULT_OK, intent);
         finish();
     }

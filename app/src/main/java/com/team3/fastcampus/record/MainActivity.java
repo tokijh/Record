@@ -87,9 +87,11 @@ public class MainActivity extends AppCompatActivity
         startActivityForResult(intent, REQ_LOGIN);
     }
 
-    private void successSignIn(String token, String username) {
+    private void successSignIn(String token, String username, String nickname, String user_type) {
         PreferenceManager.getInstance().putString("token", token);
         PreferenceManager.getInstance().putString("username", username);
+        PreferenceManager.getInstance().putString("nickname", nickname);
+        PreferenceManager.getInstance().putString("user_type", user_type);
         init();
     }
 
@@ -145,11 +147,16 @@ public class MainActivity extends AppCompatActivity
         if (requestCode == REQ_LOGIN) {
             if (resultCode == RESULT_OK) {
                 Bundle bundle = data.getExtras();
-                if (bundle.containsKey("token") && bundle.containsKey("username")) {
+                if (bundle.containsKey("token")
+                        && bundle.containsKey("username")
+                        && bundle.containsKey("nickname")
+                        && bundle.containsKey("user_type")) {
                     String token = bundle.getString("token");
                     String username = bundle.getString("username");
-                    if (token != null && username != null) {
-                        successSignIn(token, username);
+                    String nickname = bundle.getString("nickname");
+                    String user_type = bundle.getString("user_type");
+                    if (token != null && username != null && nickname != null && user_type != null) {
+                        successSignIn(token, username, nickname, user_type);
                         return;
                     }
                 }
