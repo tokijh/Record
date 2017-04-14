@@ -410,16 +410,9 @@ public class NetworkController {
             return;
         }
 
-        disposable = Observable.create(subscriber -> {
-            try {
-                OkHttpClient client = new OkHttpClient();
-
-                ResponseData responseData = new ResponseData(client.newCall(buildRequest()).execute());
-
-                subscriber.onNext(responseData);
-            } catch (IOException e) {
-                subscriber.onError(e);
-            }
+        disposable = Observable.fromCallable(() -> {
+            OkHttpClient client = new OkHttpClient();
+            return new ResponseData(client.newCall(buildRequest()).execute());
         }).subscribeOn(Schedulers.io())
                 .cast(ResponseData.class)
                 .doOnNext(response -> response.body = response.response.body().bytes())
