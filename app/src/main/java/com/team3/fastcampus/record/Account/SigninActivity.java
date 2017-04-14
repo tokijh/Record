@@ -6,6 +6,7 @@ package com.team3.fastcampus.record.Account;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +16,6 @@ import android.widget.EditText;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -53,7 +53,7 @@ import io.reactivex.disposables.CompositeDisposable;
 public class SigninActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String TAG = "SigninActivity";
-    public final String VIDEO_URL = "android.resource://com.team3.fastcampus.record/"+R.raw.mainvideo;
+    public final String VIDEO_URL = "android.resource://com.team3.fastcampus.record/" + R.raw.mainvideo;
     private static final int REQ_GOOGLE_SIGNIN = 9001;
     private static final int REQ_SIGNUP = 55;
 
@@ -71,7 +71,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
     private GoogleApiClient mGoogleApiClient;
 
     private CompositeDisposable compositeDisposable;
-    private VideoView videoView;
+    private MyVideoView videoView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,18 +83,34 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         signinCheck();
 
         //레이아웃 위젯 findViewById
-        videoView = (VideoView) findViewById(R.id.activity_login_video);
+        videoView = (MyVideoView) findViewById(R.id.activity_login_video);
 
 
         //미디어컨트롤러 추가하는 부분
         MediaController controller = new MediaController(SigninActivity.this);
         videoView.setMediaController(controller);
 
+
         //비디오뷰 포커스를 요청함
         videoView.requestFocus();
         videoView.setVideoURI(Uri.parse(VIDEO_URL));
         videoView.seekTo(0);
         videoView.start();
+
+        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer arg0) {
+                videoView.requestFocus();
+                videoView.start();
+            }
+        });
+
+        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            public void onCompletion(MediaPlayer mp) {
+                videoView.setVideoURI(Uri.parse(VIDEO_URL));
+
+            }
+        });
 
     }
 
@@ -105,7 +121,6 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         settingGoogle();
         //settingVideoView();
     }
-
 
 
     private void initView() {
@@ -390,4 +405,9 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
             }
         }
     }
+
+
+
 }
+
+
