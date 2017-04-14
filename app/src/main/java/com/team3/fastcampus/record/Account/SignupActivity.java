@@ -127,7 +127,10 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                                 SignUpData signUpData = NetworkController.decode(SignUpData.class, new String(responseData.body));
                                 Toast.makeText(SignupActivity.this, "회원 가입 성공", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent();
-                                intent.putExtra("token", signUpData.getToken());
+                                intent.putExtra("token", signUpData.key);
+                                intent.putExtra("username", signUpData.user.username);
+                                intent.putExtra("nickname", signUpData.user.nickname);
+                                intent.putExtra("user_type", signUpData.user.user_type);
                                 setResult(RESULT_OK, intent);
                                 finish();
                                 return;

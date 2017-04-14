@@ -8,4 +8,14 @@ public class User {
     public String username;
     public String nickname;
     public String user_type;
+
+    public User() {
+
+    }
+
+    public User(String username, String nickname, String user_type) {
+        this.username = username;
+        this.nickname = nickname;
+        this.user_type = user_type;
+    }
 }

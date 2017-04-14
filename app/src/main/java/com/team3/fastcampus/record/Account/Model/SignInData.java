@@ -15,4 +15,9 @@ public class SignInData {
         this.key = key;
     }
 
+    public SignInData(String key, User user) {
+        this.key = key;
+        this.user = user;
+    }
+
 }

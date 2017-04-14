@@ -31,6 +31,7 @@ import com.google.gson.JsonSyntaxException;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.team3.fastcampus.record.Account.Model.SignInData;
 import com.team3.fastcampus.record.Account.Model.SignUpData;
+import com.team3.fastcampus.record.Model.User;
 import com.team3.fastcampus.record.R;
 import com.team3.fastcampus.record.Util.Logger;
 import com.team3.fastcampus.record.Util.NetworkController;
@@ -228,7 +229,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                             Logger.e(TAG, new String(responseData.body));
                             if (responseData.response.code() == 201) {
                                 SignUpData signUpData = NetworkController.decode(SignUpData.class, responseData.body.toString());
-                                successSignIn(new SignInData(signUpData.getToken()));
+                                successSignIn(new SignInData(signUpData.key, signUpData.user));
                                 return;
                             }
                         } catch (JsonSyntaxException e) {
@@ -350,11 +351,18 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
             switch (requestCode) {
                 case REQ_SIGNUP:
                     Bundle bundle = data.getExtras();
-                    if (bundle.containsKey("token")) {
+                    if (bundle.containsKey("token")
+                            && bundle.containsKey("username")
+                            && bundle.containsKey("nickname")
+                            && bundle.containsKey("user_type")) {
                         String token = bundle.getString("token");
-                        if (token != null)
-                            successSignIn(new SignInData(token));
-                        break;
+                        String username = bundle.getString("username");
+                        String nickname = bundle.getString("nickname");
+                        String user_type = bundle.getString("user_type");
+                        if (token != null && username != null && nickname != null && user_type != null) {
+                            successSignIn(new SignInData(token, new User(username, nickname, user_type)));
+                            break;
+                        }
                     }
             }
         }
