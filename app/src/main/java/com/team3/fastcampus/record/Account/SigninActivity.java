@@ -6,13 +6,16 @@ package com.team3.fastcampus.record.Account;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -50,7 +53,7 @@ import io.reactivex.disposables.CompositeDisposable;
 public class SigninActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String TAG = "SigninActivity";
-
+    public final String VIDEO_URL = "android.resource://com.team3.fastcampus.record/"+R.raw.mainvideo;
     private static final int REQ_GOOGLE_SIGNIN = 9001;
     private static final int REQ_SIGNUP = 55;
 
@@ -68,7 +71,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
     private GoogleApiClient mGoogleApiClient;
 
     private CompositeDisposable compositeDisposable;
-
+    private VideoView videoView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +81,21 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         init();
 
         signinCheck();
+
+        //레이아웃 위젯 findViewById
+        videoView = (VideoView) findViewById(R.id.activity_login_video);
+
+
+        //미디어컨트롤러 추가하는 부분
+        MediaController controller = new MediaController(SigninActivity.this);
+        videoView.setMediaController(controller);
+
+        //비디오뷰 포커스를 요청함
+        videoView.requestFocus();
+        videoView.setVideoURI(Uri.parse(VIDEO_URL));
+        videoView.seekTo(0);
+        videoView.start();
+
     }
 
     private void init() {
@@ -85,7 +103,10 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         initListener();
         settingFacebook();
         settingGoogle();
+        //settingVideoView();
     }
+
+
 
     private void initView() {
         et_email = (EditText) findViewById(R.id.et_email);
@@ -95,6 +116,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         btn_Google = (SignInButton) findViewById(R.id.btn_google);
         btn_Facebook = (LoginButton) findViewById(R.id.btn_facebook);
         progress = (ProgressBar) findViewById(R.id.progress);
+        //videoView = (VideoView) findViewById(R.id.activity_login_video);
     }
 
     private void initListener() {
@@ -147,6 +169,16 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
     }
+
+//    private void settingVideoView() {
+//        android.widget.MediaController controller = new android.widget.MediaController(SigninActivity.this);
+//        videoView.setMediaController(controller);
+//        videoView.requestFocus();
+//        videoView.setVideoPath(VIDEO_URL);
+//        videoView.seekTo(0);
+//        videoView.start();
+//
+//    }
 
     private void signinCheck() {
         googleSignInCheck();
