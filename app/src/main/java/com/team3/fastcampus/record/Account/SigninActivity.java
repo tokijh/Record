@@ -97,13 +97,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         videoView.seekTo(0);
         videoView.start();
 
-        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer arg0) {
 
-                videoView.start();
-            }
-        });
 
         videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             public void onCompletion(MediaPlayer mp) {
