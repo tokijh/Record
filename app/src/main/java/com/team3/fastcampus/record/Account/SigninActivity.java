@@ -367,4 +367,10 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
             }
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.dispose();
+    }
 }
