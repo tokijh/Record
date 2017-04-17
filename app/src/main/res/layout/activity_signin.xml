@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,9 +8,10 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true">
 
         <RelativeLayout
             android:id="@+id/activity_login"
@@ -22,6 +22,7 @@
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin"
             tools:context="com.team3.fastcampus.record.Account.SigninActivity">
+
 
             <ImageView
                 android:id="@+id/image_logo"
@@ -82,10 +83,10 @@
                 android:id="@+id/btn_google"
                 android:layout_width="300dp"
                 android:layout_height="50dp"
-                android:layout_below="@+id/btn_signup"
-                android:layout_marginTop="10dp"
                 android:layout_alignLeft="@+id/btn_signup"
-                android:layout_alignStart="@+id/btn_signup" />
+                android:layout_alignStart="@+id/btn_signup"
+                android:layout_below="@+id/btn_signup"
+                android:layout_marginTop="10dp" />
 
             <com.facebook.login.widget.LoginButton
                 android:id="@+id/btn_facebook"
@@ -98,16 +99,15 @@
 
 
         </RelativeLayout>
-
     </ScrollView>
 
     <ProgressBar
+        android:id="@+id/progress"
         style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/progress"
-        android:visibility="gone"
+        android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:visibility="gone" />
 
 </RelativeLayout>
