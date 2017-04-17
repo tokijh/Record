@@ -203,9 +203,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
     private void successSignIn(SignInData signInData) {
         Intent intent = new Intent();
         intent.putExtra("token", signInData.key);
-        intent.putExtra("username", signInData.user.username);
-        intent.putExtra("nickname", signInData.user.nickname);
-        intent.putExtra("user_type", signInData.user.user_type);
+        signInData.user.save();
         setResult(RESULT_OK, intent);
         finish();
     }
@@ -354,13 +352,22 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                     if (bundle.containsKey("token")
                             && bundle.containsKey("username")
                             && bundle.containsKey("nickname")
-                            && bundle.containsKey("user_type")) {
+                            && bundle.containsKey("user_type")
+                            && bundle.containsKey("profile_img")
+                            && bundle.containsKey("introduction")) {
                         String token = bundle.getString("token");
                         String username = bundle.getString("username");
                         String nickname = bundle.getString("nickname");
                         String user_type = bundle.getString("user_type");
-                        if (token != null && username != null && nickname != null && user_type != null) {
-                            successSignIn(new SignInData(token, new User(username, nickname, user_type)));
+                        String profile_img = bundle.getString("profile_img");
+                        String introduction = bundle.getString("introduction");
+                        if (token != null
+                                && username != null
+                                && nickname != null
+                                && user_type != null
+                                && profile_img != null
+                                && introduction != null) {
+                            successSignIn(new SignInData(token, new User(username, nickname, user_type, profile_img, introduction)));
                             break;
                         }
                     }

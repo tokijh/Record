@@ -131,6 +131,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                                 intent.putExtra("username", signUpData.user.username);
                                 intent.putExtra("nickname", signUpData.user.nickname);
                                 intent.putExtra("user_type", signUpData.user.user_type);
+                                intent.putExtra("profile_img", signUpData.user.profile_img);
+                                intent.putExtra("introduction", signUpData.user.introduction);
                                 setResult(RESULT_OK, intent);
                                 finish();
                                 return;
