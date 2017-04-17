@@ -14,8 +14,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.github.clans.fab.FloatingActionButton;
+import com.team3.fastcampus.record.InDiary.Model.InDiary;
 import com.team3.fastcampus.record.R;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -27,21 +29,26 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
     int mYear, mMonth, mDay, mHour, mMinute;
     FloatingActionButton btn_add, btn_update, btn_delete;
 
+    ArrayList<InDiary> datas;
     EditText et_indiary_title;
     TextView tv_date, tv_location;
     RecyclerView rv;
     InDiaryRecyclerAdapter ra;
-    String datas = "test";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_in_diary_manage);
+
 
         init();
         initListener();
         initDateValue();
 
         ra = new InDiaryRecyclerAdapter(datas, R.layout.activity_in_diary_manage_item, this);
+        rv.setAdapter(ra);
+
+        rv.setLayoutManager(new LinearLayoutManager(this));
 
 
     }
@@ -52,9 +59,6 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
         btn_add.setOnClickListener(this);
         btn_update.setOnClickListener(this);
         btn_delete.setOnClickListener(this);
-        rv.setAdapter(ra);
-        rv.setLayoutManager(new LinearLayoutManager(this));
-
     }
 
     private void init() {
@@ -94,6 +98,7 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
         mDay = dayOfMonth;
         updateDateText();
     };
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {

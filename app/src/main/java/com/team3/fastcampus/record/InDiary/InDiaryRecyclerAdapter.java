@@ -17,7 +17,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.team3.fastcampus.record.InDiary.Model.InDiary;
 import com.team3.fastcampus.record.R;
+
+import java.util.ArrayList;
 
 /**
  * Created by kimkyuwan on 2017. 4. 18..
@@ -30,11 +33,11 @@ public class InDiaryRecyclerAdapter extends RecyclerView.Adapter<InDiaryRecycler
     Uri fileUri = null;
 
     int itemLayout;
-    String datas;
+    ArrayList<InDiary> datas;
     Context context;
     ImageView imageView;
 
-    public InDiaryRecyclerAdapter(String datas, int itemLayout, Context context) {
+    public InDiaryRecyclerAdapter(ArrayList<InDiary> datas, int itemLayout, Context context) {
         this.itemLayout = itemLayout;
         this.context = context;
         this.datas = datas;
@@ -52,6 +55,7 @@ public class InDiaryRecyclerAdapter extends RecyclerView.Adapter<InDiaryRecycler
     public void onBindViewHolder(RecyclerViewHolder holder, int position) {
 
 
+        holder.et.setText(datas.get(position).content.toString());
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,7 +80,6 @@ public class InDiaryRecyclerAdapter extends RecyclerView.Adapter<InDiaryRecycler
 
             imageView = (ImageView) itemView.findViewById(R.id.in_diary_manage_item_image);
             et = (EditText) itemView.findViewById(R.id.in_diary_manage_item_et);
-            et.setText(datas);
 
         }
     }
