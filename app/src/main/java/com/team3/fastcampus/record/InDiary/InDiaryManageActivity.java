@@ -7,10 +7,13 @@ package com.team3.fastcampus.record.InDiary;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.team3.fastcampus.record.R;
 
 import java.util.Calendar;
@@ -22,10 +25,13 @@ import java.util.GregorianCalendar;
 public class InDiaryManageActivity extends AppCompatActivity implements View.OnClickListener {
 
     int mYear, mMonth, mDay, mHour, mMinute;
+    FloatingActionButton btn_add, btn_update, btn_delete;
 
     EditText et_indiary_title;
     TextView tv_date, tv_location;
-
+    RecyclerView rv;
+    InDiaryRecyclerAdapter ra;
+    String datas = "test";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,17 +41,30 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
         initListener();
         initDateValue();
 
+        ra = new InDiaryRecyclerAdapter(datas, R.layout.activity_in_diary_manage_item, this);
+
+
     }
 
     private void initListener() {
         tv_date.setOnClickListener(this);
         tv_location.setOnClickListener(this);
+        btn_add.setOnClickListener(this);
+        btn_update.setOnClickListener(this);
+        btn_delete.setOnClickListener(this);
+        rv.setAdapter(ra);
+        rv.setLayoutManager(new LinearLayoutManager(this));
+
     }
 
     private void init() {
         et_indiary_title = (EditText) findViewById(R.id.indiary_list_detail_et_diary_title);
         tv_date = (TextView) findViewById(R.id.indiary_list_detail_tv_diary_date);
         tv_location = (TextView) findViewById(R.id.indiary_list_detail_tv_diary_locataion);
+        btn_add = (FloatingActionButton) findViewById(R.id.in_diary_fab_add);
+        btn_update = (FloatingActionButton) findViewById(R.id.in_diary_fab_update);
+        btn_delete = (FloatingActionButton) findViewById(R.id.in_diary_fab_delete);
+        rv = (RecyclerView) findViewById(R.id.in_diary_recyclerview);
     }
 
     private void initDateValue() {
