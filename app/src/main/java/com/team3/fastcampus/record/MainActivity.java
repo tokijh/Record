@@ -15,8 +15,13 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.team3.fastcampus.record.Account.AccountActivity;
 import com.team3.fastcampus.record.Account.SigninActivity;
 import com.team3.fastcampus.record.Diary.DiaryViewFragment;
 import com.team3.fastcampus.record.Diary.Model.Diary;
@@ -26,7 +31,7 @@ import com.team3.fastcampus.record.Util.NetworkController;
 import com.team3.fastcampus.record.Util.PreferenceManager;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, DiaryViewFragment.DiaryViewInterface {
+        implements NavigationView.OnNavigationItemSelectedListener, DiaryViewFragment.DiaryViewInterface, View.OnClickListener {
 
     private static final int REQ_LOGIN = 54;
 
@@ -34,9 +39,15 @@ public class MainActivity extends AppCompatActivity
     DrawerLayout drawer;
     Intent intent;
 
+    private ImageView head_iv_profile;
+    private TextView head_tv_username;
+    private TextView head_tv_nickname;
+
     // Fragments
     DiaryViewFragment diaryViewFragment;
     InDiaryViewFragment inDiaryViewFragment;
+
+    private Fragment showing_fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +89,14 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View nav_header = navigationView.getHeaderView(0);
+        nav_header.setOnClickListener(this);
+
+        head_iv_profile = (ImageView) nav_header.findViewById(R.id.iv_profile);
+        head_tv_nickname = (TextView) nav_header.findViewById(R.id.tv_nickname);
+        head_tv_username = (TextView) nav_header.findViewById(R.id.tv_username);
+
+        initHeadView();
     }
 
     private void initFragmentSettings() {
@@ -85,6 +104,18 @@ public class MainActivity extends AppCompatActivity
 
         diaryViewFragment = new DiaryViewFragment();
         inDiaryViewFragment = new InDiaryViewFragment();
+    }
+
+    private void initHeadView() {
+        if (head_tv_username == null || head_tv_nickname == null || head_iv_profile == null)
+            return;
+        head_tv_username.setText(PreferenceManager.getInstance().getString("username", ""));
+        head_tv_nickname.setText(PreferenceManager.getInstance().getString("nickname", ""));
+
+        Glide.with(this)
+                .load(PreferenceManager.getInstance().getString("profile_img", ""))
+                .placeholder(android.R.drawable.sym_def_app_icon)
+                .into(head_iv_profile);
     }
 
     private void toSignUp() {
@@ -133,6 +164,7 @@ public class MainActivity extends AppCompatActivity
         .replace(R.id.contentView, fragment)
         .addToBackStack(fragment.getTag())
         .commit();
+        showing_fragment = fragment;
     }
 
     @Override
@@ -141,11 +173,11 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            if (manager.getBackStackEntryCount() > 2) {
+            if (showing_fragment != diaryViewFragment) {
                 manager.popBackStackImmediate();
                 manager.beginTransaction().commit();
             } else {
-                super.onBackPressed();
+                finish();
             }
         }
     }
@@ -156,11 +188,22 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         switch (id) {
-
+            case R.id.nav_diary:
+                showContentFragment(diaryViewFragment);
+                break;
         }
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.nav_head_layout:
+                startActivity(new Intent(MainActivity.this, AccountActivity.class));
+                break;
+        }
     }
 
     // Define Fragment Interface
@@ -168,6 +211,13 @@ public class MainActivity extends AppCompatActivity
     public void showInDiary(Diary diary) {
         inDiaryViewFragment.setDiary(diary);
         showContentFragment(inDiaryViewFragment);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        initHeadView();
     }
 
     @Override
