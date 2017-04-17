@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity
         // 초기 화면 지정
         showContentFragment(diaryViewFragment);
 
-        startActivity(new Intent(this, SigninActivity.class));
     }
 
     private void initView() {
