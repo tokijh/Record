@@ -100,6 +100,8 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     private void logOut() {
         PreferenceManager.getInstance().putString("token", "");
         new User().save();
+        Toast.makeText(this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     private void initView_password(View view) {

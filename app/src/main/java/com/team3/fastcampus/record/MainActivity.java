@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity
 
     private static final int REQ_LOGIN = 54;
 
+    private boolean isViewReady = false;
+
     FragmentManager manager;
     DrawerLayout drawer;
     Intent intent;
@@ -56,6 +58,10 @@ public class MainActivity extends AppCompatActivity
 
         PreferenceManager.create(this);
 
+        loginCheck();
+    }
+
+    private void loginCheck() {
         String token = PreferenceManager.getInstance().getString("token", "");
         if ("".equals(token)) {
             toSignUp();
@@ -69,12 +75,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void init() {
-        initView();
+        if (!isViewReady) {
+            initView();
 
-        initFragmentSettings();
+            initFragmentSettings();
 
-        // 초기 화면 지정
-        showContentFragment(diaryViewFragment);
+            // 초기 화면 지정
+            showContentFragment(diaryViewFragment);
+
+            isViewReady = true;
+        }
     }
 
     private void initView() {
@@ -107,8 +117,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initHeadView() {
-        if (head_tv_username == null || head_tv_nickname == null || head_iv_profile == null)
-            return;
         head_tv_username.setText(PreferenceManager.getInstance().getString("username", ""));
         head_tv_nickname.setText(PreferenceManager.getInstance().getString("nickname", ""));
 
@@ -217,7 +225,11 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
-        initHeadView();
+        if (isViewReady) {
+            loginCheck();
+
+            initHeadView();
+        }
     }
 
     @Override
