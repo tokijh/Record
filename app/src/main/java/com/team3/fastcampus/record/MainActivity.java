@@ -245,7 +245,6 @@ public class MainActivity extends AppCompatActivity
                         return;
                     }
                 }
-                throw new RuntimeException("token or username is null");
             } else {
                 Toast.makeText(this, "로그인을 해야 이용 할 수 있습니다.", Toast.LENGTH_SHORT).show();
                 finish();

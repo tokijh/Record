@@ -51,7 +51,6 @@ import io.reactivex.disposables.CompositeDisposable;
 public class SigninActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String TAG = "SigninActivity";
-
     private static final int REQ_GOOGLE_SIGNIN = 9001;
     private static final int REQ_SIGNUP = 55;
 
@@ -70,7 +69,6 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
 
     private CompositeDisposable compositeDisposable;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +77,8 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         init();
 
         signinCheck();
+
+
     }
 
     private void init() {
@@ -87,6 +87,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         settingFacebook();
         settingGoogle();
     }
+
 
     private void initView() {
         et_email = (EditText) findViewById(R.id.et_email);
@@ -148,6 +149,8 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
     }
+
+
 
     private void signinCheck() {
         googleSignInCheck();
@@ -381,3 +384,5 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         compositeDisposable.dispose();
     }
 }
+
+
