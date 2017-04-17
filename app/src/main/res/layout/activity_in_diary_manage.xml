@@ -8,12 +8,52 @@
     android:background="#FAFAFA"
     tools:context="com.team3.fastcampus.record.InDiary.InDiaryManageActivity">
 
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/fab_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="15dp"
+        fab:menu_colorNormal="#1565C0"
+        fab:menu_colorPressed="#2272CD"
+        fab:menu_colorRipple="#62B2FF">
+
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_delete"
+            style="@style/MenuButtonsSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:src="@android:drawable/ic_menu_delete" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_update"
+            style="@style/MenuButtonsSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:src="@android:drawable/ic_menu_edit" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_add"
+            style="@style/MenuButtonsSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:src="@drawable/ic_collapse_00008" />
+
+
+    </com.github.clans.fab.FloatingActionMenu>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentStart="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -80,7 +120,7 @@
                             android:src="@android:drawable/ic_menu_mylocation" />
 
                         <TextView
-                            android:id="@+id/indiary_list_detail_et_diary_locataion"
+                            android:id="@+id/indiary_list_detail_tv_diary_locataion"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginLeft="8dp"
@@ -118,7 +158,6 @@
                             android:layout_weight="8"
                             android:gravity="center_vertical"
                             android:hint="Date"
-                            android:textColor="#000000"
                             android:textSize="13dp" />
 
 
@@ -148,46 +187,6 @@
             </RelativeLayout>
         </RelativeLayout>
     </ScrollView>
-
-    <com.github.clans.fab.FloatingActionMenu
-        android:id="@+id/fab_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginRight="15dp"
-        fab:menu_colorNormal="#1565C0"
-        fab:menu_colorPressed="#2272CD"
-        fab:menu_colorRipple="#62B2FF">
-
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_delete"
-            style="@style/MenuButtonsSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:src="@android:drawable/ic_menu_delete" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_update"
-            style="@style/MenuButtonsSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:src="@android:drawable/ic_menu_edit" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_add"
-            style="@style/MenuButtonsSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:src="@drawable/ic_collapse_00008" />
-
-
-    </com.github.clans.fab.FloatingActionMenu>
 
 
 </RelativeLayout>

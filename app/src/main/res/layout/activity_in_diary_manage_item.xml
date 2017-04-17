@@ -13,8 +13,9 @@
 
         <ImageView
             android:id="@+id/in_diary_manage_item_image"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="4dp"
@@ -25,7 +26,10 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="1dp"
             android:layout_marginLeft="5dp"
+            android:layout_marginRight="3dp"
+            android:layout_marginTop="1dp"
             android:layout_toEndOf="@+id/in_diary_manage_item_image"
             android:layout_toRightOf="@+id/in_diary_manage_item_image">
 
