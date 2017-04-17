@@ -50,7 +50,6 @@ import io.reactivex.disposables.CompositeDisposable;
 public class SigninActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String TAG = "SigninActivity";
-    public final String VIDEO_URL = "android.resource://com.team3.fastcampus.record/" + R.raw.mainvideo;
     private static final int REQ_GOOGLE_SIGNIN = 9001;
     private static final int REQ_SIGNUP = 55;
 
