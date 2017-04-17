@@ -31,6 +31,7 @@ import com.google.gson.JsonSyntaxException;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.team3.fastcampus.record.Account.Model.SignInData;
 import com.team3.fastcampus.record.Account.Model.SignUpData;
+import com.team3.fastcampus.record.Model.User;
 import com.team3.fastcampus.record.R;
 import com.team3.fastcampus.record.Util.Logger;
 import com.team3.fastcampus.record.Util.NetworkController;
@@ -204,9 +205,8 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
 
     private void successSignIn(SignInData signInData) {
         Intent intent = new Intent();
-        intent.putExtra("token", signInData.getKey());
-        // TODO Login API 로부터 username을 받아와 저장한다.
-        intent.putExtra("username", "tokijh22@naver.com"); // 임시로 해둔 username
+        intent.putExtra("token", signInData.key);
+        signInData.user.save();
         setResult(RESULT_OK, intent);
         finish();
     }
@@ -230,7 +230,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                             Logger.e(TAG, new String(responseData.body));
                             if (responseData.response.code() == 201) {
                                 SignUpData signUpData = NetworkController.decode(SignUpData.class, responseData.body.toString());
-                                successSignIn(new SignInData(signUpData.getToken()));
+                                successSignIn(new SignInData(signUpData.key, signUpData.user));
                                 return;
                             }
                         } catch (JsonSyntaxException e) {
@@ -352,18 +352,37 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
             switch (requestCode) {
                 case REQ_SIGNUP:
                     Bundle bundle = data.getExtras();
-                    if (bundle.containsKey("token")) {
+                    if (bundle.containsKey("token")
+                            && bundle.containsKey("username")
+                            && bundle.containsKey("nickname")
+                            && bundle.containsKey("user_type")
+                            && bundle.containsKey("profile_img")
+                            && bundle.containsKey("introduction")) {
                         String token = bundle.getString("token");
-                        if (token != null)
-                            successSignIn(new SignInData(token));
-                        break;
+                        String username = bundle.getString("username");
+                        String nickname = bundle.getString("nickname");
+                        String user_type = bundle.getString("user_type");
+                        String profile_img = bundle.getString("profile_img");
+                        String introduction = bundle.getString("introduction");
+                        if (token != null
+                                && username != null
+                                && nickname != null
+                                && user_type != null
+                                && profile_img != null
+                                && introduction != null) {
+                            successSignIn(new SignInData(token, new User(username, nickname, user_type, profile_img, introduction)));
+                            break;
+                        }
                     }
             }
         }
     }
 
-
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.dispose();
+    }
 }
 
 

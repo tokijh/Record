@@ -1,35 +1,35 @@
 package com.team3.fastcampus.record.Model;
 
+import com.team3.fastcampus.record.Util.PreferenceManager;
+
 /**
  * Created by tokijh on 2017. 4. 9..
  */
 
 public class User {
-    private String username;
-    private String nickname;
-    private String user_type;
+    public String username;
+    public String nickname;
+    public String user_type;
+    public String profile_img;
+    public String introduction;
 
-    public String getUsername() {
-        return username;
+    public User() {
+
     }
 
-    public void setUsername(String username) {
+    public User(String username, String nickname, String user_type, String profile_img, String introduction) {
         this.username = username;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
         this.nickname = nickname;
-    }
-
-    public String getUser_type() {
-        return user_type;
-    }
-
-    public void setUser_type(String user_type) {
         this.user_type = user_type;
+        this.profile_img = profile_img;
+        this.introduction = introduction;
+    }
+
+    public void save() {
+        PreferenceManager.getInstance().putString("username", username)
+                .putString("nickname", nickname)
+                .putString("user_type", user_type)
+                .putString("profile_img", profile_img)
+                .putString("introduction", introduction);
     }
 }

@@ -41,28 +41,34 @@ public class PreferenceManager {
         return preferenceManager;
     }
 
-    public void putInt(String key, int value) {
+    public PreferenceManager putInt(String key, int value) {
         editor.putInt(key, value).commit();
+        return this;
     }
 
-    public void putString(String key, String value) {
+    public PreferenceManager putString(String key, String value) {
         editor.putString(key, value).commit();
+        return this;
     }
 
-    public void putFloat(String key, float value) {
+    public PreferenceManager putFloat(String key, float value) {
         editor.putFloat(key, value).commit();
+        return this;
     }
 
-    public void putLong(String key, long value) {
+    public PreferenceManager putLong(String key, long value) {
         editor.putLong(key, value).commit();
+        return this;
     }
 
-    public void putBoolean(String key, boolean value) {
+    public PreferenceManager putBoolean(String key, boolean value) {
         editor.putBoolean(key, value).commit();
+        return this;
     }
 
-    public void putStringSet(String key, Set<String> value) {
+    public PreferenceManager putStringSet(String key, Set<String> value) {
         editor.putStringSet(key, value).commit();
+        return this;
     }
 
     public int getInt(String key, int value) {
