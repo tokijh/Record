@@ -6,14 +6,11 @@ package com.team3.fastcampus.record.Account;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -71,7 +68,6 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
     private GoogleApiClient mGoogleApiClient;
 
     private CompositeDisposable compositeDisposable;
-    private MyVideoView videoView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,29 +78,6 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
 
         signinCheck();
 
-        //레이아웃 위젯 findViewById
-        videoView = (MyVideoView) findViewById(R.id.activity_login_video);
-
-
-        //미디어컨트롤러 추가하는 부분
-        MediaController controller = new MediaController(SigninActivity.this);
-        videoView.setMediaController(controller);
-
-
-        //비디오뷰 포커스를 요청함
-        videoView.requestFocus();
-        videoView.setVideoURI(Uri.parse(VIDEO_URL));
-        videoView.seekTo(0);
-        videoView.start();
-
-
-
-        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            public void onCompletion(MediaPlayer mp) {
-                videoView.setVideoURI(Uri.parse(VIDEO_URL));
-
-            }
-        });
 
     }
 
@@ -179,15 +152,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                 .build();
     }
 
-//    private void settingVideoView() {
-//        android.widget.MediaController controller = new android.widget.MediaController(SigninActivity.this);
-//        videoView.setMediaController(controller);
-//        videoView.requestFocus();
-//        videoView.setVideoPath(VIDEO_URL);
-//        videoView.seekTo(0);
-//        videoView.start();
-//
-//    }
+
 
     private void signinCheck() {
         googleSignInCheck();
