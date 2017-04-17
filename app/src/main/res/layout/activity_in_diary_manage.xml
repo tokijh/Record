@@ -5,141 +5,149 @@
     android:id="@+id/activity_in_diary_add"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#A1A1A1"
+    android:background="#FAFAFA"
     tools:context="com.team3.fastcampus.record.InDiary.InDiaryManageActivity">
 
-
-    <TextView
-        android:id="@+id/tv_write_diary"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="write your travel diary"
-        android:textAlignment="center"
-        android:textColor="#666666"
-        android:textSize="12dp" />
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true">
 
-    <RelativeLayout
-        android:id="@+id/diary_input_area"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_write_diary"
-        android:layout_marginTop="10dp"
-        android:background="#FFFFFF">
-
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:weightSum="3">
+            android:layout_height="match_parent">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:weightSum="10">
+            <RelativeLayout
+                android:id="@+id/in_diary_input_area"
+                android:layout_width="wrap_content"
+                android:layout_height="152dp"
+                android:layout_marginTop="6dp"
+                android:background="#EEEEEE">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="2"
-                    android:src="@android:drawable/ic_menu_info_details" />
-
-                <EditText
-                    android:id="@+id/indiary_list_detail_et_diary_title"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_weight="8"
-                    android:hint="Diary name"
-                    android:textSize="13dp" />
-            </LinearLayout>
+                    android:layout_height="150dp"
+                    android:layout_centerInParent="true"
+                    android:background="#FFFFFF"
+                    android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:weightSum="10">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="2"
+                            android:src="@android:drawable/ic_menu_info_details" />
+
+                        <EditText
+                            android:id="@+id/indiary_list_detail_et_diary_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="8"
+                            android:background="@null"
+                            android:focusable="false"
+                            android:hint="Diary name"
+                            android:textColor="#000000"
+                            android:textSize="13dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:weightSum="10">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="2"
+                            android:src="@android:drawable/ic_menu_mylocation" />
+
+                        <TextView
+                            android:id="@+id/indiary_list_detail_et_diary_locataion"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="8"
+                            android:gravity="center_vertical"
+                            android:hint="Location"
+                            android:textColor="#000000"
+                            android:textSize="13dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:weightSum="10">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="2"
+                            android:src="@android:drawable/ic_menu_today" />
+
+                        <TextView
+                            android:id="@+id/indiary_list_detail_tv_diary_date"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="8"
+                            android:gravity="center_vertical"
+                            android:hint="Date"
+                            android:textColor="#000000"
+                            android:textSize="13dp" />
+
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="302dp"
+                android:layout_below="@+id/in_diary_input_area"
                 android:layout_marginTop="10dp"
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:weightSum="10">
+                android:background="#EEEEEE">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="2"
-                    android:src="@android:drawable/ic_menu_mylocation" />
-
-                <EditText
-                    android:id="@+id/indiary_list_detail_et_diary_locataion"
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/in_diary_recyclerview"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_weight="8"
-                    android:hint="Location"
-                    android:textSize="13dp" />
-            </LinearLayout>
+                    android:layout_height="300dp"
+                    android:layout_centerInParent="true"
+                    android:background="#FFFFFF">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:weightSum="10">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="2"
-                    android:src="@android:drawable/ic_menu_today" />
-
-                <EditText
-                    android:id="@+id/indiary_list_detail_tv_diary_date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_weight="8"
-                    android:hint="Date"
-                    android:textSize="13dp" />
-
-
-            </LinearLayout>
-        </LinearLayout>
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_below="@+id/diary_input_area"
-        android:layout_marginTop="10dp"
-        android:background="#FFFFFF">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/indiary_input_area_recyclerview"
-            android:layout_width="match_parent"
-            android:layout_height="100dp">
-
-        </android.support.v7.widget.RecyclerView>
-
-        <EditText
-            android:id="@+id/indiary_input_area_context"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/indiary_input_area_recyclerview" />
-
-
-    </RelativeLayout>
-
+                </android.support.v7.widget.RecyclerView>
+            </RelativeLayout>
+        </RelativeLayout>
+    </ScrollView>
 
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/fab_group"
@@ -153,21 +161,6 @@
         fab:menu_colorPressed="#2272CD"
         fab:menu_colorRipple="#62B2FF">
 
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_gallery"
-            style="@style/MenuButtonsSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:src="@android:drawable/ic_menu_gallery" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_photo"
-            style="@style/MenuButtonsSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:src="@android:drawable/ic_menu_camera" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_delete"
