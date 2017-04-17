@@ -21,6 +21,8 @@ import com.team3.fastcampus.record.Account.SigninActivity;
 import com.team3.fastcampus.record.Diary.DiaryViewFragment;
 import com.team3.fastcampus.record.Diary.Model.Diary;
 import com.team3.fastcampus.record.InDiary.InDiaryViewFragment;
+import com.team3.fastcampus.record.Model.User;
+import com.team3.fastcampus.record.Util.NetworkController;
 import com.team3.fastcampus.record.Util.PreferenceManager;
 
 public class MainActivity extends AppCompatActivity
@@ -47,7 +49,11 @@ public class MainActivity extends AppCompatActivity
         if ("".equals(token)) {
             toSignUp();
         } else {
-            init();
+            if (NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(this))) {
+                checkTokenAvailable();
+            } else {
+                init();
+            }
         }
     }
 
@@ -83,16 +89,39 @@ public class MainActivity extends AppCompatActivity
 
     private void toSignUp() {
         Toast.makeText(this, "로그인을 해야 이용 할 수 있습니다.", Toast.LENGTH_SHORT).show();
+        PreferenceManager.getInstance().putString("token", "");
+        new User().save();
         intent = new Intent(MainActivity.this, SigninActivity.class);
         startActivityForResult(intent, REQ_LOGIN);
     }
 
-    private void successSignIn(String token, String username, String nickname, String user_type) {
+    private void successSignIn(String token) {
         PreferenceManager.getInstance().putString("token", token);
-        PreferenceManager.getInstance().putString("username", username);
-        PreferenceManager.getInstance().putString("nickname", nickname);
-        PreferenceManager.getInstance().putString("user_type", user_type);
         init();
+    }
+
+    private void checkTokenAvailable() {
+        NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_validtoken))
+                .setMethod(NetworkController.POST)
+                .paramsAdd("key", PreferenceManager.getInstance().getString("token", ""))
+                .addCallback(new NetworkController.StatusCallback() {
+                    @Override
+                    public void onError(Throwable error) {
+                        Toast.makeText(MainActivity.this, "로그인이 만료되어 다시 로그인 해주세요.", Toast.LENGTH_SHORT).show();
+                        toSignUp();
+                    }
+
+                    @Override
+                    public void onSuccess(NetworkController.ResponseData responseData) {
+                        if (responseData.response.code() == 200) {
+                            init();
+                        } else {
+                            Toast.makeText(MainActivity.this, "로그인이 만료되어 다시 로그인 해주세요.", Toast.LENGTH_SHORT).show();
+                            toSignUp();
+                        }
+                    }
+                })
+                .execute();
     }
 
     /**
@@ -147,16 +176,10 @@ public class MainActivity extends AppCompatActivity
         if (requestCode == REQ_LOGIN) {
             if (resultCode == RESULT_OK) {
                 Bundle bundle = data.getExtras();
-                if (bundle.containsKey("token")
-                        && bundle.containsKey("username")
-                        && bundle.containsKey("nickname")
-                        && bundle.containsKey("user_type")) {
+                if (bundle.containsKey("token")) {
                     String token = bundle.getString("token");
-                    String username = bundle.getString("username");
-                    String nickname = bundle.getString("nickname");
-                    String user_type = bundle.getString("user_type");
-                    if (token != null && username != null && nickname != null && user_type != null) {
-                        successSignIn(token, username, nickname, user_type);
+                    if (token != null) {
+                        successSignIn(token);
                         return;
                     }
                 }
