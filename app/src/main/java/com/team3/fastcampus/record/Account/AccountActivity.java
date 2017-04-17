@@ -4,9 +4,15 @@ package com.team3.fastcampus.record.Account;
  * Created by yoonjoonghyun on 2017. 3. 25..
  */
 
+import android.Manifest;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,12 +24,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.jakewharton.rxbinding2.widget.RxTextView;
+import com.team3.fastcampus.record.Model.User;
 import com.team3.fastcampus.record.R;
 import com.team3.fastcampus.record.Util.Logger;
 import com.team3.fastcampus.record.Util.NetworkController;
+import com.team3.fastcampus.record.Util.Permission.PermissionController;
 import com.team3.fastcampus.record.Util.PreferenceManager;
 import com.team3.fastcampus.record.Util.TextPatternChecker;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
@@ -34,6 +47,11 @@ import io.reactivex.disposables.CompositeDisposable;
 public class AccountActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String TAG = "AccountActivity";
+
+    private final int REQ_CAMERA = 101; //카메라요청코드
+    private final int REQ_GALLERY = 102; //갤러리요청코드
+
+    private Uri fileUri;
 
     private Button btn_logout;
     private ImageView iv_profile;
@@ -80,15 +98,8 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void logOut() {
-
-    }
-
-    private void settingProfile() {
-
-    }
-
-    private void changeProfile() {
-
+        PreferenceManager.getInstance().putString("token", "");
+        new User().save();
     }
 
     private void initView_password(View view) {
@@ -184,6 +195,129 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                 }).execute();
     }
 
+    private void actionPhotoSelect() {
+        new PermissionController(this, new String[]{
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA})
+                .check(new PermissionController.PermissionCallback() {
+                    @Override
+                    public void success() {
+                        new android.support.v7.app.AlertDialog.Builder(AccountActivity.this)
+                                .setMessage("Select Action")
+                                .setCancelable(false)
+                                .setPositiveButton("Camera",
+                                        (dialog, which) -> {
+                                            actionCamera();
+                                            dialog.dismiss();
+                                        })
+                                .setNegativeButton("Gallery",
+                                        (dialog, which) -> {
+                                            actionGallery();
+                                            dialog.dismiss();
+                                        })
+                                .create()
+                                .show();
+                    }
+
+                    @Override
+                    public void error() {
+                        Toast.makeText(AccountActivity.this, "권한을 허용 하지 않으면 사용할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void actionCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        // --- 카메라 촬영 후 미디어 컨텐트 uri 를 생성해서 외부저장소에 저장한다 ---
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            ContentValues values = new ContentValues(1);
+            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg");
+            fileUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        }
+
+        startActivityForResult(intent, REQ_CAMERA);
+    }
+
+    private void returnCamera(Intent intent) {
+        // 롤리팝 체크
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            fileUri = intent.getData();
+        }
+        if (fileUri != null) {
+            saveProfile(fileUri);
+        } else {
+            Toast.makeText(this, "사진파일을 못받아 왔습니다.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void actionGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*"); // 외부저장소에있는 이미지만 가져오기위한 필터링
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQ_GALLERY);
+    }
+
+    private void returnGallery(Intent intent) {
+        fileUri = intent.getData();
+        saveProfile(fileUri);
+    }
+
+    private void saveProfile(Uri uri) {
+        Glide.with(this)
+                .load(uri)
+                .placeholder(R.drawable.no_photo)
+                .into(iv_profile);
+        try {
+            NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_changeprofile))
+                    .setMethod(NetworkController.POST)
+                    .headerAdd("Authorization", "Token " + PreferenceManager.getInstance().getString("token", null))
+                    .paramsAdd("photo", getBinaryfromUri(uri))
+                    .addCallback(new NetworkController.StatusCallback() {
+                        @Override
+                        public void onError(Throwable error) {
+                            Logger.e(TAG, error.getMessage());
+                            Toast.makeText(AccountActivity.this, "프로필 등록 실패", Toast.LENGTH_SHORT).show();
+                            Glide.with(AccountActivity.this)
+                                    .load(R.drawable.no_photo)
+                                    .into(iv_profile);
+                        }
+
+                        @Override
+                        public void onSuccess(NetworkController.ResponseData responseData) {
+                            Logger.e(TAG, new String(responseData.body));
+                            Logger.e(TAG, responseData.response.code());
+                            if (responseData.response.code() == 201) {
+                                Toast.makeText(AccountActivity.this, "프로필 등록 완료", Toast.LENGTH_SHORT).show();
+                                User user = NetworkController.decode(User.class, new String(responseData.body));
+                                user.save();
+                            } else {
+                                Glide.with(AccountActivity.this)
+                                        .load(R.drawable.no_photo)
+                                        .into(iv_profile);
+                                Toast.makeText(AccountActivity.this, "프로필 등록 실패", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    })
+                    .execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private byte[] getBinaryfromUri(Uri uri) throws IOException {
+        InputStream iStream =   getContentResolver().openInputStream(uri);
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+        int len;
+        while ((len = iStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -191,7 +325,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                 logOut();
                 break;
             case R.id.iv_profile:
-                settingProfile();
+                actionPhotoSelect();
                 break;
             case R.id.ed_password:
                 settingPassword();
@@ -200,8 +334,24 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case REQ_CAMERA:
+                    returnCamera(data);
+                    break;
+                case REQ_GALLERY:
+                    returnGallery(data);
+                    break;
+            }
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-        compositeDisposable.dispose();
+        if (compositeDisposable != null)
+            compositeDisposable.dispose();
     }
 }
