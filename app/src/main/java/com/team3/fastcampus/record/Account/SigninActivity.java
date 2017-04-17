@@ -85,7 +85,6 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         initListener();
         settingFacebook();
         settingGoogle();
-        //settingVideoView();
     }
 
 
@@ -97,7 +96,6 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         btn_Google = (SignInButton) findViewById(R.id.btn_google);
         btn_Facebook = (LoginButton) findViewById(R.id.btn_facebook);
         progress = (ProgressBar) findViewById(R.id.progress);
-        //videoView = (VideoView) findViewById(R.id.activity_login_video);
     }
 
     private void initListener() {
