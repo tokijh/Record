@@ -206,7 +206,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                     public void success() {
                         new android.support.v7.app.AlertDialog.Builder(AccountActivity.this)
                                 .setMessage("Select Action")
-                                .setCancelable(false)
+                                .setCancelable(true)
                                 .setPositiveButton("Camera",
                                         (dialog, which) -> {
                                             actionCamera();
