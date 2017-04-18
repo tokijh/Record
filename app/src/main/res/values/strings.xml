@@ -16,5 +16,5 @@
     <string name="server_changeprofile">user/changeprofile/</string>
     <string name="server_validtoken">user/token/</string>
     <string name="server_logout">user/logout/</string>
-    <string name="server_diary">api/diary/diary/</string>
+    <string name="server_diary">api/diary/diary</string>
 </resources>

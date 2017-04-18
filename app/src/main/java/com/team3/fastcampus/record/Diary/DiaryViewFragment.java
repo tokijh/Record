@@ -160,15 +160,16 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
         RealmDatabaseManager realmDatabaseManager = RealmDatabaseManager.getInstance();
         for (Diary diary : diaries) {
             Diary isSaved = realmDatabaseManager.get(Diary.class)
-                    .equalTo("username", PreferenceManager.getInstance().getString("username", null))
                     .equalTo("pk", diary.pk)
                     .findFirst();
             if (isSaved == null) {
                 realmDatabaseManager.create(Diary.class, (realm, realmObject) -> {
                     realmObject.pk = diary.pk;
-                    realmObject.username = PreferenceManager.getInstance().getString("username", null);
                     realmObject.title = diary.title;
-                    realmObject.created_date = diary.created_date;
+                    realmObject.start_date = diary.start_date;
+                    realmObject.end_date = diary.end_date;
+                    realmObject.post_count = diary.post_count;
+                    realmObject.cover_image = diary.cover_image;
                 });
             }
         }
@@ -179,12 +180,6 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
         List<Diary> diaries = realmDatabaseManager.get(Diary.class)
                 .equalTo("username", PreferenceManager.getInstance().getString("username", null))
                 .findAll();
-        List<Diary> diaries1 = realmDatabaseManager.getAll(Diary.class);
-        Logger.e(TAG, PreferenceManager.getInstance().getString("username", null));
-        Logger.e(TAG, diaries.size() + " " + diaries1.size());
-        for (Diary diary : diaries1) {
-            Logger.e(TAG, diary.username + " " + diary.title + " " + diary.pk);
-        }
         diaryViewRecyclerAdapter.set(diaries);
         progressDisable();
     }

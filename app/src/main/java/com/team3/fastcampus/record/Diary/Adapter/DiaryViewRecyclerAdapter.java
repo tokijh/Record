@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.team3.fastcampus.record.Diary.DiaryManageActivity;
 import com.team3.fastcampus.record.Diary.Model.Diary;
 import com.team3.fastcampus.record.R;
@@ -77,9 +78,11 @@ public class DiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         Diary diary = diaries.get(position).diary;
         diaryViewHolder.position = position;
         diaryViewHolder.tv_title.setText(diary.title);
-        diaryViewHolder.tv_date.setText(diary.created_date);
-
-        // TODO iv_image에 cover image보여주기
+        diaryViewHolder.tv_date.setText(diary.start_date + " ~ " + diary.end_date);
+        Glide.with(context)
+                .load(diary.cover_image)
+                .placeholder(R.drawable.night)
+                .into(diaryViewHolder.iv_image);
     }
 
     private void setCardAdd(RecyclerView.ViewHolder holder, int position) {

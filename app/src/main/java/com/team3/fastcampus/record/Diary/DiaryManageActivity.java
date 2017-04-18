@@ -22,7 +22,10 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.team3.fastcampus.record.Diary.Model.Diary;
 import com.team3.fastcampus.record.R;
 import com.team3.fastcampus.record.Util.LocationPicker;
+import com.team3.fastcampus.record.Util.Logger;
+import com.team3.fastcampus.record.Util.NetworkController;
 import com.team3.fastcampus.record.Util.Permission.PermissionController;
+import com.team3.fastcampus.record.Util.PreferenceManager;
 import com.team3.fastcampus.record.Util.RealmDatabaseManager;
 
 import java.util.Calendar;
@@ -181,6 +184,28 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
 
     private void saveDiary() {
 
+    }
+
+    private void createDiary() {
+        NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_diary))
+                .setMethod(NetworkController.POST)
+                .headerAdd("Authorization", "Token " + PreferenceManager.getInstance().getString("token", null))
+                .paramsAdd("title", ed_title.getText().toString())
+                .paramsAdd("start_date", tv_date.getText().toString().replaceAll("/", "-"))
+                .paramsAdd("end_date", tv_endDate.getText().toString().replaceAll("/", "-"))
+                .addCallback(new NetworkController.StatusCallback() {
+                    @Override
+                    public void onError(Throwable error) {
+                        Logger.e(TAG, error.getMessage());
+                    }
+
+                    @Override
+                    public void onSuccess(NetworkController.ResponseData responseData) {
+                        Logger.e(TAG, new String(responseData.body));
+
+                    }
+                })
+                .execute();
     }
 
     private void updateDateText() {
