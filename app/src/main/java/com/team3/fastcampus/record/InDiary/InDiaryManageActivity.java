@@ -109,16 +109,6 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
 
             case R.id.indiary_list_detail_tv_diary_locataion:
                 break;
-
-            case R.id.fab_add:
-
-                break;
-            case R.id.fab_update:
-
-                break;
-            case R.id.fab_delete:
-
-                break;
         }
     }
 }
