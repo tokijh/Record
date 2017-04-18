@@ -10,7 +10,7 @@
     <string name="google_map_api_key">AIzaSyAn1DRkl8pDIpkpQaSr81WnLwFa6at9QyM</string>
 
     <string name="server_url">https://studydev.kr/</string>
-    <string name="server_signup">api/users/</string>
+    <string name="server_signup">api/users</string>
     <string name="server_signin">user/login/</string>
     <string name="server_changepassword">user/changepassword/</string>
     <string name="server_changeprofile">user/changeprofile/</string>
