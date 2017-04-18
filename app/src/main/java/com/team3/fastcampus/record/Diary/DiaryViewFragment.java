@@ -164,6 +164,7 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
                     .findFirst();
             if (isSaved == null) {
                 realmDatabaseManager.create(Diary.class, (realm, realmObject) -> {
+                    realmObject.username = PreferenceManager.getInstance().getString("username", null);
                     realmObject.pk = diary.pk;
                     realmObject.title = diary.title;
                     realmObject.start_date = diary.start_date;
@@ -225,6 +226,12 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
         super.onDetach();
         diaryViewInterface = null;
         RealmDatabaseManager.destroy();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getData(position);
     }
 
     @Override

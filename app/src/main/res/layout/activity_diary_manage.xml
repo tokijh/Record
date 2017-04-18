@@ -155,33 +155,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="2"
-                    android:src="@android:drawable/ic_menu_mylocation" />
-
-                <TextView
-                    android:id="@+id/diary_list_detail_tv_diary_locataion"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:gravity="center_vertical"
-                    android:layout_weight="8"
-                    android:hint="Location"
-                    android:textSize="13dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:weightSum="10">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="2"
                     android:src="@android:drawable/ic_menu_today" />
 
                 <TextView

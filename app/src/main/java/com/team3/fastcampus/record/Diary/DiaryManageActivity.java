@@ -21,7 +21,6 @@ import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.team3.fastcampus.record.Diary.Model.Diary;
 import com.team3.fastcampus.record.R;
-import com.team3.fastcampus.record.Util.LocationPicker;
 import com.team3.fastcampus.record.Util.Logger;
 import com.team3.fastcampus.record.Util.NetworkController;
 import com.team3.fastcampus.record.Util.Permission.PermissionController;
@@ -49,7 +48,7 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
 
     Uri fileUri = null;
 
-    TextView tv_date, tv_endDate, tv_location;
+    TextView tv_date, tv_endDate;
     EditText ed_title;
     FloatingActionMenu fab_view;
     FloatingActionButton fab_view_btn_update, fab_view_btn_delete;
@@ -86,7 +85,6 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
     private void initView() {
         tv_date = (TextView) findViewById(R.id.diary_list_detail_tv_diary_date);
         tv_endDate = (TextView) findViewById(R.id.diary_list_detail_tv_diary_end_date);
-        tv_location = (TextView) findViewById(R.id.diary_list_detail_tv_diary_locataion);
         ed_title = (EditText) findViewById(R.id.diary_list_detail_et_diary_title);
         fab_view = (FloatingActionMenu) findViewById(R.id.fab_view);
         fab_view_btn_update = (FloatingActionButton) findViewById(R.id.fab_view_update);
@@ -100,7 +98,6 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
     private void initListener() {
         tv_date.setOnClickListener(this);
         tv_endDate.setOnClickListener(this);
-        tv_location.setOnClickListener(this);
         fab_view_btn_update.setOnClickListener(this);
         fab_view_btn_delete.setOnClickListener(this);
         fab_edit_btn_save.setOnClickListener(this);
@@ -147,9 +144,8 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
                 .findFirst();
 
         // TODO 시작, 종료날짜, Location Text 표시
-//        tv_date.setText();
-//        tv_endDate.setText();
-//        tv_location.setText();
+        tv_date.setText(diary.start_date);
+        tv_endDate.setText(diary.end_date);
         ed_title.setText(diary.title);
         ed_title.setEnabled(false);
     }
@@ -182,17 +178,13 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
         realmDatabaseManager.delete(Diary.class, realmResults -> realmResults.equalTo("pk", PK).findAll());
     }
 
-    private void saveDiary() {
-
-    }
-
     private void createDiary() {
         NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_diary))
                 .setMethod(NetworkController.POST)
                 .headerAdd("Authorization", "Token " + PreferenceManager.getInstance().getString("token", null))
                 .paramsAdd("title", ed_title.getText().toString())
-                .paramsAdd("start_date", tv_date.getText().toString().replaceAll("/", "-"))
-                .paramsAdd("end_date", tv_endDate.getText().toString().replaceAll("/", "-"))
+                .paramsAdd("start_date", tv_date.getText().toString())
+                .paramsAdd("end_date", tv_endDate.getText().toString())
                 .addCallback(new NetworkController.StatusCallback() {
                     @Override
                     public void onError(Throwable error) {
@@ -202,7 +194,15 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
                     @Override
                     public void onSuccess(NetworkController.ResponseData responseData) {
                         Logger.e(TAG, new String(responseData.body));
-
+                        Diary diary = NetworkController.decode(Diary.class, new String(responseData.body));
+                        RealmDatabaseManager.getInstance().create(Diary.class, (realm, realmObject) -> {
+                            realmObject.pk = diary.pk;
+                            realmObject.cover_image = diary.cover_image;
+                            realmObject.post_count = diary.post_count;
+                            realmObject.title = diary.title;
+                            realmObject.start_date = diary.start_date;
+                            realmObject.end_date = diary.end_date;
+                        });
                     }
                 })
                 .execute();
@@ -210,12 +210,12 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
 
     private void updateDateText() {
         // TODO diary에 시작날자 저장 mYear, mMonth, mDay...
-        tv_date.setText(String.format("%d/%d/%d", mYear, mMonth + 1, mDay));
+        tv_date.setText(String.format("%04d-%02d-%02d", mYear, mMonth + 1, mDay));
     }
 
     private void upEndDateDateText() {
         // TODO diary에 종료날자 저장 mEndYear, mEndMonth, mEndDay...
-        tv_endDate.setText(String.format("%d/%d/%d", mEndYear, mEndMonth + 1, mEndDay));
+        tv_endDate.setText(String.format("%04d-%02d-%02d", mEndYear, mEndMonth + 1, mEndDay));
     }
 
     private void showDatePicker() {
@@ -224,15 +224,6 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
 
     private void showEndDatePicker() {
         new DatePickerDialog(this, mEndDateSetListener, mYear, mMonth, mDay).show();
-    }
-
-    private void showLocationPicker() {
-        new LocationPicker(this).show((address, location) -> {
-            String addressStr = address.getCountryName() + " " + address.getFeatureName();
-            tv_location.setText(addressStr);
-            // TODO diary에 위치 저장
-            // diary.location = location;
-        });
     }
 
     private void actionPhoto() {
@@ -293,14 +284,11 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
             case R.id.diary_list_detail_tv_diary_end_date:
                 showEndDatePicker();
                 break;
-            case R.id.diary_list_detail_tv_diary_locataion:
-                showLocationPicker();
-                break;
             case R.id.diary_list_detail_image:
                 actionPhotoSelect();
                 break;
             case R.id.fab_edit_save:
-                saveDiary();
+                createDiary();
                 break;
         }
     }

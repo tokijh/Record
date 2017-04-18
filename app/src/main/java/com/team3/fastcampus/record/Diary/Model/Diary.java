@@ -7,6 +7,9 @@ import io.realm.RealmObject;
  */
 
 public class Diary extends RealmObject {
+    // 계정을 구별 하기 위한 username
+    public String username;
+
     public long pk;
     public String title;
     public String post_count;
