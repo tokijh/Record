@@ -208,6 +208,10 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
                 .execute();
     }
 
+    public void cancelCreateDiary() {
+        finish();
+    }
+
     private void updateDateText() {
         // TODO diary에 시작날자 저장 mYear, mMonth, mDay...
         tv_date.setText(String.format("%04d-%02d-%02d", mYear, mMonth + 1, mDay));
@@ -289,6 +293,9 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
                 break;
             case R.id.fab_edit_save:
                 createDiary();
+                break;
+            case R.id.fab_edit_cancel:
+                cancelCreateDiary();
                 break;
         }
     }
