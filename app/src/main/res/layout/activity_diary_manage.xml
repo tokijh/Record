@@ -20,13 +20,95 @@
         android:textColor="#666666"
         android:textSize="12dp" />
 
+    <TextView
+        android:id="@+id/diary_list_detail_tv_photo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/diary_input_area"
+        android:layout_marginTop="15dp"
+        android:text="add your picture"
+        android:textAlignment="center"
+        android:textColor="#666666"
+        android:textSize="12dp" />
+
+    <ImageView
+        android:id="@+id/diary_list_detail_image"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@+id/diary_list_detail_tv_photo"
+        android:layout_marginTop="10dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/no_photo" />
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/fab_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="15dp"
+        fab:menu_colorNormal="#1565C0"
+        fab:menu_colorPressed="#2272CD"
+        fab:menu_colorRipple="#62B2FF">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_view_delete"
+            style="@style/MenuButtonsSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:src="@android:drawable/ic_menu_delete" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_view_update"
+            style="@style/MenuButtonsSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:src="@android:drawable/ic_menu_edit" />
+
+    </com.github.clans.fab.FloatingActionMenu>
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/fab_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="15dp"
+        fab:menu_colorNormal="#1565C0"
+        fab:menu_colorPressed="#2272CD"
+        fab:menu_colorRipple="#62B2FF">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_edit_save"
+            style="@style/MenuButtonsSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:src="@android:drawable/ic_menu_save" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_edit_cancel"
+            style="@style/MenuButtonsSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:src="@android:drawable/ic_menu_close_clear_cancel" />
+
+    </com.github.clans.fab.FloatingActionMenu>
+
     <RelativeLayout
         android:id="@+id/diary_input_area"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#FFFFFF"
         android:layout_below="@+id/diary_list_detail_tv_diary_title"
-        android:layout_marginTop="10dp"
-        android:background="#FFFFFF">
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -75,12 +157,13 @@
                     android:layout_weight="2"
                     android:src="@android:drawable/ic_menu_mylocation" />
 
-                <EditText
-                    android:id="@+id/diary_list_detail_et_diary_locataion"
+                <TextView
+                    android:id="@+id/diary_list_detail_tv_diary_locataion"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
+                    android:gravity="center_vertical"
                     android:layout_weight="8"
                     android:hint="Location"
                     android:textSize="13dp" />
@@ -149,66 +232,6 @@
 
 
     </RelativeLayout>
-
-    <TextView
-        android:id="@+id/diary_list_detail_tv_photo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/diary_input_area"
-        android:layout_marginTop="15dp"
-        android:text="add your picture"
-        android:textAlignment="center"
-        android:textColor="#666666"
-        android:textSize="12dp" />
-
-    <ImageView
-        android:id="@+id/diary_list_detail_image"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_below="@+id/diary_list_detail_tv_photo"
-        android:layout_marginTop="10dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/no_photo" />
-
-    <com.github.clans.fab.FloatingActionMenu
-        android:id="@+id/fab_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginRight="15dp"
-        fab:menu_colorNormal="#1565C0"
-        fab:menu_colorPressed="#2272CD"
-        fab:menu_colorRipple="#62B2FF">
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_delete"
-            style="@style/MenuButtonsSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:src="@android:drawable/ic_menu_delete" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_update"
-            style="@style/MenuButtonsSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:src="@android:drawable/ic_menu_edit" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_add"
-            style="@style/MenuButtonsSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:src="@drawable/ic_collapse_00008" />
-
-
-    </com.github.clans.fab.FloatingActionMenu>
 
 
 </RelativeLayout>
