@@ -167,13 +167,11 @@ public class DiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         popup.setOnMenuItemClickListener(item -> {
             Intent intent;
             switch (item.getItemId()) {
-                case R.id.nav_edit:
+                case R.id.nav_delete:
                     intent = new Intent(context, DiaryManageActivity.class);
                     intent.putExtra("PK", diaries.get(position).diary.pk);
-                    intent.putExtra("MODE", DiaryManageActivity.MODE_EDIT);
+                    intent.putExtra("MODE", DiaryManageActivity.MODE_DELETE);
                     context.startActivity(intent);
-                    break;
-                case R.id.nav_delete:
                     break;
             }
             return false;

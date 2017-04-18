@@ -229,12 +229,6 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        getData(position);
-    }
-
-    @Override
     public void onItemClick(Diary diary) {
         diaryViewInterface.showInDiary(diary);
     }

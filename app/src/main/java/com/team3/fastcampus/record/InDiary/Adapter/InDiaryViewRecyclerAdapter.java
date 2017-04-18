@@ -154,7 +154,7 @@ public class InDiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
 
     private void cardInDiaryMenuCreate(View v, int position) {
         PopupMenu popup = new PopupMenu(v.getContext(), v);
-        popup.inflate(R.menu.diary_list_item_option);
+        popup.inflate(R.menu.indiary_list_item_option);
         popup.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.nav_edit:

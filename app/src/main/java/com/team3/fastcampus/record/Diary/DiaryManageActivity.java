@@ -34,24 +34,19 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
 
     public static final String TAG = "DiaryManageActivity";
 
-    public static final int MODE_VIEW = 0;
     public static final int MODE_CREATE = 1;
-    public static final int MODE_EDIT = 2;
-    public static final int MODE_DELETE = 3;
+    public static final int MODE_DELETE = 2;
 
     private final int REQ_CAMERA = 101; //카메라요청코드
     private final int REQ_GALLERY = 102; //갤러리요청코드
 
-    private int MODE = MODE_VIEW;
+    private int MODE = MODE_CREATE;
     private long PK = -1;
-    private Diary diary;
 
     Uri fileUri = null;
 
     TextView tv_date, tv_endDate;
     EditText ed_title;
-    FloatingActionMenu fab_view;
-    FloatingActionButton fab_view_btn_update, fab_view_btn_delete;
     FloatingActionMenu fab_edit;
     FloatingActionButton fab_edit_btn_save, fab_edit_btn_cancel;
     int mYear, mMonth, mDay, mHour, mMinute;
@@ -86,9 +81,6 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
         tv_date = (TextView) findViewById(R.id.diary_list_detail_tv_diary_date);
         tv_endDate = (TextView) findViewById(R.id.diary_list_detail_tv_diary_end_date);
         ed_title = (EditText) findViewById(R.id.diary_list_detail_et_diary_title);
-        fab_view = (FloatingActionMenu) findViewById(R.id.fab_view);
-        fab_view_btn_update = (FloatingActionButton) findViewById(R.id.fab_view_update);
-        fab_view_btn_delete = (FloatingActionButton) findViewById(R.id.fab_view_delete);
         fab_edit = (FloatingActionMenu) findViewById(R.id.fab_edit);
         fab_edit_btn_save = (FloatingActionButton) findViewById(R.id.fab_edit_save);
         fab_edit_btn_cancel = (FloatingActionButton) findViewById(R.id.fab_edit_cancel);
@@ -98,8 +90,6 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
     private void initListener() {
         tv_date.setOnClickListener(this);
         tv_endDate.setOnClickListener(this);
-        fab_view_btn_update.setOnClickListener(this);
-        fab_view_btn_delete.setOnClickListener(this);
         fab_edit_btn_save.setOnClickListener(this);
         fab_edit_btn_cancel.setOnClickListener(this);
         imageView.setOnClickListener(this);
@@ -120,14 +110,8 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
 
     private void initByMode() {
         switch (MODE) {
-            case MODE_VIEW:
-                modeView();
-                break;
             case MODE_CREATE:
                 modeCreate();
-                break;
-            case MODE_EDIT:
-                modeEdit();
                 break;
             case MODE_DELETE:
                 modeDelete();
@@ -135,36 +119,14 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-    private void modeView() {
-        fab_view.setVisibility(View.VISIBLE);
-        fab_edit.setVisibility(View.GONE);
-        RealmDatabaseManager realmDatabaseManager = RealmDatabaseManager.getInstance();
-        diary = realmDatabaseManager.get(Diary.class)
-                .equalTo("pk", PK)
-                .findFirst();
-
-        // TODO 시작, 종료날짜, Location Text 표시
-        tv_date.setText(diary.start_date);
-        tv_endDate.setText(diary.end_date);
-        ed_title.setText(diary.title);
-        ed_title.setEnabled(false);
-    }
-
     private void modeCreate() {
-        fab_view.setVisibility(View.GONE);
-        fab_edit.setVisibility(View.VISIBLE);
-    }
 
-    private void modeEdit() {
-        fab_view.setVisibility(View.GONE);
-        fab_edit.setVisibility(View.VISIBLE);
-        modeView();
-        ed_title.setEnabled(true);
     }
 
     private void modeDelete() {
         new AlertDialog.Builder(DiaryManageActivity.this)
                 .setMessage("정말로 삭제 하겠습니까?")
+                .setCancelable(false)
                 .setPositiveButton("확인",
                         (dialog, which) -> deleteDiary())
                 .setNegativeButton("취소",
@@ -174,8 +136,26 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void deleteDiary() {
-        RealmDatabaseManager realmDatabaseManager = RealmDatabaseManager.getInstance();
-        realmDatabaseManager.delete(Diary.class, realmResults -> realmResults.equalTo("pk", PK).findAll());
+        NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_diary) + "/" + PK)
+                .setMethod(NetworkController.DELETE)
+                .headerAdd("Authorization", "Token " + PreferenceManager.getInstance().getString("token", null))
+                .addCallback(new NetworkController.StatusCallback() {
+                    @Override
+                    public void onError(Throwable error) {
+                        Logger.e(TAG, error.getMessage());
+                        Toast.makeText(DiaryManageActivity.this, "삭제 되지 않았습니다.", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onSuccess(NetworkController.ResponseData responseData) {
+                        Logger.e(TAG, new String(responseData.body));
+                        RealmDatabaseManager realmDatabaseManager = RealmDatabaseManager.getInstance();
+                        realmDatabaseManager.delete(Diary.class, realmResults -> realmResults.equalTo("pk", PK).findAll());
+                        Toast.makeText(DiaryManageActivity.this, "삭제 되었습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .execute();
+        finish();
     }
 
     private void createDiary() {
@@ -189,6 +169,7 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
                     @Override
                     public void onError(Throwable error) {
                         Logger.e(TAG, error.getMessage());
+                        Toast.makeText(DiaryManageActivity.this, "다이어리 생성에 실패 했습니다.", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -203,6 +184,7 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
                             realmObject.start_date = diary.start_date;
                             realmObject.end_date = diary.end_date;
                         });
+                        Toast.makeText(DiaryManageActivity.this, "다이어리 생성을 완료 했습니다.", Toast.LENGTH_SHORT).show();
                         finish();
                     }
                 })
