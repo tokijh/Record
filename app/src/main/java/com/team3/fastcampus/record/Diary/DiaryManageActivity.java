@@ -203,6 +203,7 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
                             realmObject.start_date = diary.start_date;
                             realmObject.end_date = diary.end_date;
                         });
+                        finish();
                     }
                 })
                 .execute();
