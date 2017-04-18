@@ -1,4 +1,4 @@
-package com.team3.fastcampus.record.InDiary;
+package com.team3.fastcampus.record.InDiary.Adapter;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
  * Created by kimkyuwan on 2017. 4. 18..
  */
 
-public class InDiaryRecyclerAdapter extends RecyclerView.Adapter<InDiaryRecyclerAdapter.RecyclerViewHolder> {
+public class InDiaryManageRecyclerAdapter extends RecyclerView.Adapter<InDiaryManageRecyclerAdapter.RecyclerViewHolder> {
 
     private final int REQ_CAMERA = 101; //카메라요청코드
     private final int REQ_GALLERY = 102; //갤러리요청코드
@@ -37,7 +37,7 @@ public class InDiaryRecyclerAdapter extends RecyclerView.Adapter<InDiaryRecycler
     Context context;
     ImageView imageView;
 
-    public InDiaryRecyclerAdapter(ArrayList<InDiary> datas, int itemLayout, Context context) {
+    public InDiaryManageRecyclerAdapter(ArrayList<InDiary> datas, int itemLayout, Context context) {
         this.itemLayout = itemLayout;
         this.context = context;
         this.datas = datas;
