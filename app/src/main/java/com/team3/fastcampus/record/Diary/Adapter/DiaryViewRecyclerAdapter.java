@@ -5,6 +5,7 @@ package com.team3.fastcampus.record.Diary.Adapter;
  */
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,9 +14,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.team3.fastcampus.record.Diary.DiaryManageActivity;
 import com.team3.fastcampus.record.Diary.Model.Diary;
 import com.team3.fastcampus.record.R;
+import com.team3.fastcampus.record.Util.NetworkController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,9 +80,11 @@ public class DiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         Diary diary = diaries.get(position).diary;
         diaryViewHolder.position = position;
         diaryViewHolder.tv_title.setText(diary.title);
-        diaryViewHolder.tv_date.setText(diary.created_date);
-
-        // TODO iv_image에 cover image보여주기
+        diaryViewHolder.tv_date.setText(diary.start_date + " ~ " + diary.end_date);
+        Glide.with(context)
+                .load(diary.cover_image)
+                .placeholder(R.drawable.night)
+                .into(diaryViewHolder.iv_image);
     }
 
     private void setCardAdd(RecyclerView.ViewHolder holder, int position) {
@@ -160,10 +167,17 @@ public class DiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         PopupMenu popup = new PopupMenu(v.getContext(), v);
         popup.inflate(R.menu.diary_list_item_option);
         popup.setOnMenuItemClickListener(item -> {
+            Intent intent;
             switch (item.getItemId()) {
-                case R.id.nav_edit:
-                    break;
                 case R.id.nav_delete:
+                    if (!NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(context))) {
+                        Toast.makeText(context, "이 작업은 인터넷 연결이 필요 합니다.", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                    intent = new Intent(context, DiaryManageActivity.class);
+                    intent.putExtra("PK", diaries.get(position).diary.pk);
+                    intent.putExtra("MODE", DiaryManageActivity.MODE_DELETE);
+                    context.startActivity(intent);
                     break;
             }
             return false;
@@ -175,7 +189,19 @@ public class DiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
         public CardAddHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(cardAddHolderOnClickListener);
         }
+
+        View.OnClickListener cardAddHolderOnClickListener = v -> {
+            if (!NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(context))) {
+                Toast.makeText(context, "이 작업은 인터넷 연결이 필요 합니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Intent intent = new Intent(context, DiaryManageActivity.class);
+            intent.putExtra("PK", -1l);
+            intent.putExtra("MODE", DiaryManageActivity.MODE_CREATE);
+            context.startActivity(intent);
+        };
     }
 
     class DiaryExtend {

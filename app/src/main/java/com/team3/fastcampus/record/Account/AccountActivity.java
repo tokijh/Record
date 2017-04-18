@@ -25,6 +25,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.team3.fastcampus.record.Model.User;
 import com.team3.fastcampus.record.R;
@@ -98,10 +103,33 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void logOut() {
+        facebookLogout();
+        googleLogout();
+
         PreferenceManager.getInstance().putString("token", "");
         new User().save();
         Toast.makeText(this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
         finish();
+    }
+
+    private void facebookLogout() {
+        AccessToken faceBookaccessToken = AccessToken.getCurrentAccessToken();
+        if (faceBookaccessToken != null && !faceBookaccessToken.isExpired()) { // 로그인 되어 있음
+            LoginManager.getInstance().logOut();
+        }
+    }
+
+    private void googleLogout() {
+        GoogleApiClient googleApiClient = new GoogleApiClient
+                .Builder(this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API,
+                        new GoogleSignInOptions
+                                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                .requestEmail()
+                                .build())
+                .build();
+        if (googleApiClient.isConnected())
+            Auth.GoogleSignInApi.signOut(googleApiClient);
     }
 
     private void initView_password(View view) {
