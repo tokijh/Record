@@ -66,9 +66,9 @@ public class InDiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
         CardInDiaryHolder inDiaryViewHolder = (CardInDiaryHolder) holder;
         InDiary inDiary = inDiaries.get(position).inDiary;
         inDiaryViewHolder.position = position;
-//        inDiaryViewHolder.tv_title.setText(inDiary.title);
+        inDiaryViewHolder.tv_title.setText(inDiary.title);
         inDiaryViewHolder.tv_date.setText(inDiary.created_date);
-//        inDiaryViewHolder.tv_content.setText(inDiary.content);
+        inDiaryViewHolder.tv_content.setText(inDiary.content);
         inDiaryViewHolder.inDiaryListImageViewPagerAdapter.set(inDiaries.get(position).inDiary.photo_list);
     }
 

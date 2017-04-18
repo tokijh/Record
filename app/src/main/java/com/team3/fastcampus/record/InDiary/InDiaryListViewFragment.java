@@ -113,7 +113,7 @@ public class InDiaryListViewFragment extends Fragment {
     }
 
     private void loadFromServer(int position) {
-        NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_diary))
+        NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_indiary) + inDiaryListCallback.getDiary().pk + getString(R.string.server_indiary_end))
                 .setMethod(NetworkController.GET)
                 .headerAdd("Authorization", "Token " + PreferenceManager.getInstance().getString("token", null))
                 .addCallback(new NetworkController.StatusCallback() {
@@ -124,27 +124,17 @@ public class InDiaryListViewFragment extends Fragment {
 
                     @Override
                     public void onSuccess(NetworkController.ResponseData responseData) {
-                        try {
-                            Logger.e(TAG, new String(responseData.body));
-                            if (responseData.response.code() == 200) {
-                                JSONArray root = NetworkController.decodeArray(new String(responseData.body));
-                                for (int i = 0; i < root.length(); i++) {
-                                    JSONObject jsonDiary = root.getJSONObject(i);
-                                    if (jsonDiary.getLong("pk") == inDiaryListCallback.getDiary().pk) {
-                                        JSONArray jsonPost = jsonDiary.getJSONArray("post");
-                                        List<InDiary> diaries = NetworkController.decode(new TypeToken<List<InDiary>>() {
-                                        }.getType(), jsonPost.toString());
-                                        inDiaryViewRecyclerAdapter.set(diaries);
-                                        saveToDB(diaries);
-                                    }
-                                }
+                        Logger.e(TAG, new String(responseData.body));
+                        if (responseData.response.code() == 200) {
+                            List<InDiary> inDiaries = NetworkController.decode(new TypeToken<List<InDiary>>() {
+                            }.getType(), new String(responseData.body));
+                            for (InDiary inDiary : inDiaries) {
+                                inDiary.title = inDiaryListCallback.getDiary().title;
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } finally {
-                            responseData.response.close();
-                            progressDisable();
+                            inDiaryViewRecyclerAdapter.set(inDiaries);
+                            saveToDB(inDiaries);
                         }
+                        progressDisable();
                     }
                 })
                 .execute();
@@ -162,6 +152,7 @@ public class InDiaryListViewFragment extends Fragment {
                     realmObject.pk = inDiary.pk;
                     realmObject.username = PreferenceManager.getInstance().getString("username", null);
                     realmObject.diary = inDiary.diary;
+                    realmObject.title = inDiary.title;
                     for (Image image : inDiary.photo_list) {
                         Image forsave = realmDatabaseManager.create(Image.class);
                         forsave.photo = image.photo;
@@ -183,12 +174,6 @@ public class InDiaryListViewFragment extends Fragment {
                 .equalTo("username", PreferenceManager.getInstance().getString("username", null))
                 .equalTo("diary", inDiaryListCallback.getDiary().pk)
                 .findAll();
-        List<InDiary> inDiaries1 = realmDatabaseManager.getAll(InDiary.class);
-        Logger.e(TAG, PreferenceManager.getInstance().getString("username", null));
-        Logger.e(TAG, inDiaries.size() + " " + inDiaries1.size());
-        for (InDiary inDiary : inDiaries1) {
-            Logger.e(TAG, inDiary.username + " " + inDiary.diary + " " + inDiary.pk + " " + inDiary.photo_list.size() + " " + ((inDiary.photo_list.size() > 0) ? inDiary.photo_list.get(0) + " :: " + inDiary.photo_list.get(0).photo: "NULL"));
-        }
         inDiaryViewRecyclerAdapter.set(inDiaries);
         progressDisable();
     }
