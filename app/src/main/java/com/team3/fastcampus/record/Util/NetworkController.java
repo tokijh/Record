@@ -396,8 +396,9 @@ public class NetworkController {
                 break;
             case DELETE:
                 buildDELETE(requestBuilder);
+                break;
             default:
-                throw new RuntimeException("NetworkController is support GET or POST only");
+                throw new RuntimeException("NetworkController is support GET, POST or DELETE only");
         }
 
         return requestBuilder.build();
