@@ -32,4 +32,15 @@ public class User {
                 .putString("profile_img", profile_img)
                 .putString("introduction", introduction);
     }
+
+    public static User load() {
+        User user = new User();
+        user.username = PreferenceManager.getInstance().getString("username", "");
+        user.nickname = PreferenceManager.getInstance().getString("nickname", "");
+        user.user_type = PreferenceManager.getInstance().getString("user_type", "");
+        user.profile_img = PreferenceManager.getInstance().getString("profile_img", "");
+        user.introduction = PreferenceManager.getInstance().getString("introduction", "");
+
+        return user;
+    }
 }
