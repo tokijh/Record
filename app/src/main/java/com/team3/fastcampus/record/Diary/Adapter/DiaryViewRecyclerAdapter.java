@@ -5,6 +5,7 @@ package com.team3.fastcampus.record.Diary.Adapter;
  */
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import com.team3.fastcampus.record.Diary.DiaryManageActivity;
 import com.team3.fastcampus.record.Diary.Model.Diary;
 import com.team3.fastcampus.record.R;
 
@@ -160,8 +162,13 @@ public class DiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         PopupMenu popup = new PopupMenu(v.getContext(), v);
         popup.inflate(R.menu.diary_list_item_option);
         popup.setOnMenuItemClickListener(item -> {
+            Intent intent;
             switch (item.getItemId()) {
                 case R.id.nav_edit:
+                    intent = new Intent(context, DiaryManageActivity.class);
+                    intent.putExtra("PK", diaries.get(position).diary.pk);
+                    intent.putExtra("MODE", DiaryManageActivity.MODE_EDIT);
+                    context.startActivity(intent);
                     break;
                 case R.id.nav_delete:
                     break;
@@ -175,7 +182,15 @@ public class DiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
         public CardAddHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(cardAddHolderOnClickListener);
         }
+
+        View.OnClickListener cardAddHolderOnClickListener = v -> {
+            Intent intent = new Intent(context, DiaryManageActivity.class);
+            intent.putExtra("PK", -1l);
+            intent.putExtra("MODE", DiaryManageActivity.MODE_CREATE);
+            context.startActivity(intent);
+        };
     }
 
     class DiaryExtend {
