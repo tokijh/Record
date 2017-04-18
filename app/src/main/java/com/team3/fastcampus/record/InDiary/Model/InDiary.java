@@ -13,4 +13,5 @@ public class InDiary extends RealmObject {
     public long diary;
     public RealmList<Image> photo_list;
     public String created_date;
+    public String content;
 }
