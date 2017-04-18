@@ -55,7 +55,8 @@ public class InDiaryRecyclerAdapter extends RecyclerView.Adapter<InDiaryRecycler
     public void onBindViewHolder(RecyclerViewHolder holder, int position) {
 
 
-        holder.et.setText(datas.get(position).content.toString());
+        holder.et.setText(datas.get(position).toString());
+
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
