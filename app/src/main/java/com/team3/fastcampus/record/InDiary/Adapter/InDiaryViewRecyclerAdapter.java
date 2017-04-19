@@ -25,11 +25,13 @@ public class InDiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
     public static final int CARD_ADD = 1;
 
     private Context context;
+    private InDiaryListCallback inDiaryListCallback;
 
     private List<InDiaryExtend> inDiaries;
 
-    public InDiaryViewRecyclerAdapter(Context context) {
+    public InDiaryViewRecyclerAdapter(Context context, InDiaryListCallback inDiaryListCallback) {
         this.context = context;
+        this.inDiaryListCallback = inDiaryListCallback;
         inDiaries = new ArrayList<>();
         addInDiaryAdd();
     }
@@ -74,6 +76,7 @@ public class InDiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
 
     private void setCardAdd(RecyclerView.ViewHolder holder, int position) {
         CardAddHolder cardAddHolder = (CardAddHolder) holder;
+        cardAddHolder.position = position;
     }
 
     @Override
@@ -149,19 +152,26 @@ public class InDiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
     private void cardInDiaryClicked(int position) {
-
+        inDiaryListCallback.onItemClick(inDiaries.get(position).inDiary.pk);
     }
 
     private void cardInDiaryMenuCreate(View v, int position) {
         PopupMenu popup = new PopupMenu(v.getContext(), v);
         popup.inflate(R.menu.indiary_list_item_option);
         popup.setOnMenuItemClickListener(item -> {
+            // TODO mode를 Manage의 번호로 지정
+            int mode = 0;
             switch (item.getItemId()) {
                 case R.id.nav_edit:
+                    // TODO mode를 Manage의 번호로 지정
+                    mode = 1;
                     break;
                 case R.id.nav_delete:
+                    // TODO mode를 Manage의 번호로 지정
+                    mode = 2;
                     break;
             }
+            inDiaryListCallback.onInDiaryManage(inDiaries.get(position).inDiary.pk, mode, inDiaries.get(position).inDiary.created_date);
             return false;
         });
         popup.show();
@@ -169,9 +179,31 @@ public class InDiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
 
     public class CardAddHolder extends RecyclerView.ViewHolder {
 
+        View view;
+
+        int position;
+
         public CardAddHolder(View itemView) {
             super(itemView);
+
+            view = itemView;
+            view.setOnClickListener(cardAddHolderOnClickListener);
         }
+
+        View.OnClickListener cardAddHolderOnClickListener = v -> {
+            // TODO mode를 Manage의 번호로 지정
+            String created_date = "";
+            if (inDiaries.size() > 2) {
+                if (position == 0) {
+                    created_date = inDiaries.get(position + 1).inDiary.created_date;
+                } else {
+                    created_date = inDiaries.get(position - 1).inDiary.created_date;
+                }
+            } else {
+                created_date = InDiary.getCurrentTime();
+            }
+            inDiaryListCallback.onInDiaryManage(-1l, 0, created_date);
+        };
     }
 
     class InDiaryExtend {
@@ -181,5 +213,11 @@ public class InDiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
             this.type = type;
             this.inDiary = inDiary;
         }
+    }
+
+    public interface InDiaryListCallback {
+        void onItemClick(long pk);
+
+        void onInDiaryManage(long pk, int mode, String date);
     }
 }

@@ -1,5 +1,9 @@
 package com.team3.fastcampus.record.InDiary.Model;
 
+import android.text.format.DateFormat;
+
+import java.util.Date;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
 
@@ -19,4 +23,9 @@ public class InDiary extends RealmObject {
     public String content;
     public RealmList<Image> photo_list;
     public String created_date;
+
+    public static String getCurrentTime() {
+        Date date = new Date();
+        return DateFormat.format("yyyy-MM-dd HH:mm:ss", date.getTime()).toString();
+    }
 }
