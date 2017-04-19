@@ -380,6 +380,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     protected void onDestroy() {
+        setResult(RESULT_OK);
         super.onDestroy();
         if (compositeDisposable != null)
             compositeDisposable.dispose();
