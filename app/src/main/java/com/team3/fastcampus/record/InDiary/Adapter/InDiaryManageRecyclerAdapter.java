@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.team3.fastcampus.record.R;
 
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ public class InDiaryManageRecyclerAdapter extends RecyclerView.Adapter<InDiaryMa
 
     public void uriAdd(Uri uri){
         url.add(uri.toString());
+        this.notifyDataSetChanged();
     }
 
     public InDiaryManageRecyclerAdapter(Context context, int itemLayout) {
@@ -54,7 +56,7 @@ public class InDiaryManageRecyclerAdapter extends RecyclerView.Adapter<InDiaryMa
     @Override
     public void onBindViewHolder(InDiaryManageRecyclerViewHolder holder, int position) {
 
-        holder.imageView.setImageURI(Uri.parse(url.get(position)));
+        Glide.with(context).load(url.get(position)).into(holder.imageView);
 
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
