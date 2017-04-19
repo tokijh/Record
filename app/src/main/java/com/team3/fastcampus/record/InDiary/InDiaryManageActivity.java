@@ -124,6 +124,10 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
         saveProfile(fileUri);
     }
 
+    private void saveProfile(Uri uri) {
+
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
