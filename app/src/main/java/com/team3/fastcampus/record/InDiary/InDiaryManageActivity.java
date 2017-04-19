@@ -15,10 +15,8 @@ import android.widget.TextView;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.team3.fastcampus.record.InDiary.Adapter.InDiaryManageRecyclerAdapter;
-import com.team3.fastcampus.record.InDiary.Model.InDiary;
 import com.team3.fastcampus.record.R;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -30,7 +28,6 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
     int mYear, mMonth, mDay, mHour, mMinute;
     FloatingActionButton btn_add, btn_update, btn_delete;
 
-    ArrayList<InDiary> datas;
     EditText et_indiary_title;
     TextView tv_date, tv_location;
     RecyclerView rv;
@@ -46,8 +43,7 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
         initListener();
         initDateValue();
 
-        ra = new InDiaryManageRecyclerAdapter
-                (datas, R.layout.activity_in_diary_manage_item, this);
+        ra = new InDiaryManageRecyclerAdapter(this,R.layout.activity_in_diary_manage_item);
         rv.setAdapter(ra);
         rv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
 

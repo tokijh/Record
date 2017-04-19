@@ -6,6 +6,7 @@
 
     <RelativeLayout
         android:id="@+id/in_diary_item"
+        android:layout_marginLeft="5dp"
         android:layout_width="match_parent"
         android:layout_height="110dp"
         android:layout_centerVertical="true"
@@ -43,6 +44,10 @@
 
                 <EditText
                     android:id="@+id/in_diary_manage_item_et"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="3dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
