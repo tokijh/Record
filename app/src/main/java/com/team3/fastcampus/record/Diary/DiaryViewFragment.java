@@ -225,7 +225,7 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
     private View.OnClickListener onClickListener = (v) -> {
         switch (v.getId()) {
             case R.id.fragment_diary_view_fab_add:
-                onAddListener(-1l, DiaryManageActivity.MODE_CREATE);
+                onDiaryManage(-1l, DiaryManageActivity.MODE_CREATE);
                 break;
         }
     };
@@ -254,7 +254,7 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
     }
 
     @Override
-    public void onAddListener(long pk, int mode) {
+    public void onDiaryManage(long pk, int mode) {
         if (!NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(getContext()))) {
             Toast.makeText(getContext(), "이 작업은 인터넷 연결이 필요 합니다.", Toast.LENGTH_SHORT).show();
             return;

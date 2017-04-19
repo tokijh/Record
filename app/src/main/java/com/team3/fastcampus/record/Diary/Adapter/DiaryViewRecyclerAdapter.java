@@ -169,7 +169,7 @@ public class DiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         popup.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.nav_delete:
-                    diaryListCallback.onAddListener(diaries.get(position).diary.pk, DiaryManageActivity.MODE_DELETE);
+                    diaryListCallback.onDiaryManage(diaries.get(position).diary.pk, DiaryManageActivity.MODE_DELETE);
                     break;
             }
             return false;
@@ -185,7 +185,7 @@ public class DiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         }
 
         View.OnClickListener cardAddHolderOnClickListener = v -> {
-            diaryListCallback.onAddListener(-1l, DiaryManageActivity.MODE_CREATE);
+            diaryListCallback.onDiaryManage(-1l, DiaryManageActivity.MODE_CREATE);
         };
     }
 
@@ -201,6 +201,6 @@ public class DiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
     public interface DiaryListCallback {
         void onItemClick(Diary diary);
 
-        void onAddListener(long pk, int mode);
+        void onDiaryManage(long pk, int mode);
     }
 }
