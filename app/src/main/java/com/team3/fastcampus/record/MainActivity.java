@@ -184,9 +184,9 @@ public class MainActivity extends AppCompatActivity
             if (showing_fragment != diaryViewFragment) {
                 manager.popBackStackImmediate();
                 manager.beginTransaction().commit();
-            } else {
-                finish();
+                return;
             }
+            finish();
         }
     }
 
