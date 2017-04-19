@@ -5,6 +5,7 @@ package com.team3.fastcampus.record.Diary;
  */
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,7 +20,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.team3.fastcampus.record.*;
@@ -44,6 +47,8 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
     private EditText ed_search;
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
+
+    private FloatingActionButton fab_add;
 
     private DiaryViewRecyclerAdapter diaryViewRecyclerAdapter;
 
@@ -100,12 +105,14 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
         ed_search = (EditText) view.findViewById(R.id.fragment_diary_view_search);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fragment_diary_view_swipeRefresh);
         recyclerView = (RecyclerView) view.findViewById(R.id.fragment_diary_view_recyclerview);
+        fab_add = (FloatingActionButton) view.findViewById(R.id.fragment_diary_view_fab_add);
     }
 
     private void initAdapter() {
         diaryViewRecyclerAdapter = new DiaryViewRecyclerAdapter(this);
         recyclerView.setAdapter(diaryViewRecyclerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        fab_add.setOnClickListener(onClickListener);
     }
 
     private void initListener() {
@@ -215,6 +222,14 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
         getData(position);
     };
 
+    private View.OnClickListener onClickListener = (v) -> {
+        switch (v.getId()) {
+            case R.id.fragment_diary_view_fab_add:
+                onAddListener(-1l, DiaryManageActivity.MODE_CREATE);
+                break;
+        }
+    };
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -236,6 +251,18 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
     @Override
     public void onItemClick(Diary diary) {
         diaryViewInterface.showInDiary(diary);
+    }
+
+    @Override
+    public void onAddListener(long pk, int mode) {
+        if (!NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(getContext()))) {
+            Toast.makeText(getContext(), "이 작업은 인터넷 연결이 필요 합니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Intent intent = new Intent(getContext(), DiaryManageActivity.class);
+        intent.putExtra("PK", pk);
+        intent.putExtra("MODE", mode);
+        getContext().startActivity(intent);
     }
 
     public interface DiaryViewInterface {
