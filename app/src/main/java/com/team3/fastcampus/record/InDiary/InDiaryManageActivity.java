@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.github.clans.fab.FloatingActionButton;
+import com.team3.fastcampus.record.InDiary.Adapter.InDiaryManageRecyclerAdapter;
 import com.team3.fastcampus.record.InDiary.Model.InDiary;
 import com.team3.fastcampus.record.R;
 
@@ -33,7 +34,7 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
     EditText et_indiary_title;
     TextView tv_date, tv_location;
     RecyclerView rv;
-    InDiaryRecyclerAdapter ra;
+    InDiaryManageRecyclerAdapter ra;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +46,8 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
         initListener();
         initDateValue();
 
-        ra = new InDiaryRecyclerAdapter(datas, R.layout.activity_in_diary_manage_item, this);
+        ra = new InDiaryManageRecyclerAdapter
+                (datas, R.layout.activity_in_diary_manage_item, this);
         rv.setAdapter(ra);
 
         rv.setLayoutManager(new LinearLayoutManager(this));
