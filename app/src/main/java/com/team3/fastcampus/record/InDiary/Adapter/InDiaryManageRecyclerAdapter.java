@@ -109,7 +109,6 @@ public class InDiaryManageRecyclerAdapter extends RecyclerView.Adapter<InDiaryMa
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setType("image/*"); // 외부저장소에있는 이미지만 가져오기위한 필터링
 
-        //startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQ_GALLERY);
         Activity activity = (Activity) context;
         activity.startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQ_GALLERY);
 
@@ -121,7 +120,6 @@ public class InDiaryManageRecyclerAdapter extends RecyclerView.Adapter<InDiaryMa
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        // --- 카메라 촬영 후 미디어 컨텐트 uri 를 생성해서 외부저장소에 저장한다 ---
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             ContentValues values = new ContentValues(1);
             values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg");
@@ -130,7 +128,6 @@ public class InDiaryManageRecyclerAdapter extends RecyclerView.Adapter<InDiaryMa
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         }
 
-        //startActivityForResult(intent, REQ_CAMERA);
         Activity activity = (Activity) context;
         activity.startActivityForResult(intent, REQ_CAMERA);
 

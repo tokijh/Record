@@ -128,10 +128,6 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
 
         ra.uriAdd(uri);
 
-//        Glide.with(this)
-//                .load(uri)
-//                .placeholder(R.drawable.no_photo)
-//                .into(imageView);
     }
 
     @Override
