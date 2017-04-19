@@ -1,8 +1,13 @@
 package com.team3.fastcampus.record.InDiary.Adapter;
 
+import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
+import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -79,13 +84,13 @@ public class InDiaryManageRecyclerAdapter extends RecyclerView.Adapter<InDiaryMa
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //actionPhoto();
+                        actionPhoto();
                     }
                 }).setNegativeButton("gallery",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //actionGallery();
+                        actionGallery();
                         return;
                     }
                 });
@@ -93,6 +98,37 @@ public class InDiaryManageRecyclerAdapter extends RecyclerView.Adapter<InDiaryMa
         alert.show();
     }
 
+    private void actionGallery() {
+
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*"); // 외부저장소에있는 이미지만 가져오기위한 필터링
+
+        //startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQ_GALLERY);
+        Activity activity = (Activity) context;
+        activity.startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQ_GALLERY);
+
+    }
+
+
+
+    private void actionPhoto() {
+
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        // --- 카메라 촬영 후 미디어 컨텐트 uri 를 생성해서 외부저장소에 저장한다 ---
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            ContentValues values = new ContentValues(1);
+            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg");
+            fileUri = context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        }
+
+        //startActivityForResult(intent, REQ_CAMERA);
+        Activity activity = (Activity) context;
+        activity.startActivityForResult(intent, REQ_CAMERA);
+
+    }
 
 
 

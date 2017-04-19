@@ -131,7 +131,7 @@
 
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="302dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/in_diary_input_area"
                 android:layout_marginTop="10dp"
                 android:background="#EEEEEE">
@@ -139,7 +139,7 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/in_diary_recyclerview"
                     android:layout_width="match_parent"
-                    android:layout_height="300dp"
+                    android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:background="#FFFFFF"
                     tools:listitem="@layout/activity_in_diary_manage_item" />

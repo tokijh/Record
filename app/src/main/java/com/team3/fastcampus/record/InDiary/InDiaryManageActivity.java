@@ -5,14 +5,18 @@ package com.team3.fastcampus.record.InDiary;
  */
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.github.clans.fab.FloatingActionButton;
 import com.team3.fastcampus.record.InDiary.Adapter.InDiaryManageRecyclerAdapter;
 import com.team3.fastcampus.record.R;
@@ -24,6 +28,11 @@ import java.util.GregorianCalendar;
  * InDiary 관리(추가 및 수정) Activity
  */
 public class InDiaryManageActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private final int REQ_CAMERA = 101; //카메라요청코드
+    private final int REQ_GALLERY = 102; //갤러리요청코드
+    Uri fileUri = null;
+    ImageView imageView;
 
     int mYear, mMonth, mDay, mHour, mMinute;
     FloatingActionButton btn_add, btn_update, btn_delete;
@@ -66,6 +75,7 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
         btn_update = (FloatingActionButton) findViewById(R.id.in_diary_fab_update);
         btn_delete = (FloatingActionButton) findViewById(R.id.in_diary_fab_delete);
         rv = (RecyclerView) findViewById(R.id.in_diary_recyclerview);
+        imageView = (ImageView) findViewById(R.id.in_diary_manage_item_image);
     }
 
     private void initDateValue() {
@@ -118,4 +128,26 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
                 break;
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case REQ_CAMERA:
+
+                    imageView.setImageURI(fileUri);
+                    break;
+                case REQ_GALLERY:
+                    if (data.getData() != null) {
+                        fileUri = data.getData();
+                        Glide.with(this).load(fileUri)
+                                .into(imageView);
+
+                    }
+                    break;
+            }
+        }
+    }
+
 }
