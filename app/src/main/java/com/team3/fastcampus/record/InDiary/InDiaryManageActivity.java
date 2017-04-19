@@ -33,7 +33,6 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
     private final int REQ_CAMERA = 101; //카메라요청코드
     private final int REQ_GALLERY = 102; //갤러리요청코드
     Uri fileUri = null;
-    ImageView imageView;
 
     int mYear, mMonth, mDay, mHour, mMinute;
     FloatingActionButton btn_add, btn_update, btn_delete;
@@ -41,6 +40,7 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
     EditText et_indiary_title;
     TextView tv_date, tv_location;
     RecyclerView rv;
+    ImageView imageView;
     InDiaryManageRecyclerAdapter ra;
 
     @Override
@@ -126,6 +126,12 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
 
     private void saveProfile(Uri uri) {
 
+        ra.uriAdd(uri);
+
+//        Glide.with(this)
+//                .load(uri)
+//                .placeholder(R.drawable.no_photo)
+//                .into(imageView);
     }
 
     @Override

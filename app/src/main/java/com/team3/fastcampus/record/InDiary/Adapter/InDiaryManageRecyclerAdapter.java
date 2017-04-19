@@ -34,11 +34,15 @@ public class InDiaryManageRecyclerAdapter extends RecyclerView.Adapter<InDiaryMa
     Context context;
     int itemLayout;
 
+    public void uriAdd(Uri uri){
+        url.add(uri.toString());
+    }
+
     public InDiaryManageRecyclerAdapter(Context context, int itemLayout) {
         this.context = context;
         this.itemLayout = itemLayout;
+        url = new ArrayList<>();
     }
-
     @Override
     public InDiaryManageRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(itemLayout, parent, false);
@@ -50,6 +54,7 @@ public class InDiaryManageRecyclerAdapter extends RecyclerView.Adapter<InDiaryMa
     @Override
     public void onBindViewHolder(InDiaryManageRecyclerViewHolder holder, int position) {
 
+        holder.imageView.setImageURI(Uri.parse(url.get(position)));
 
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
