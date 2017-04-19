@@ -7,12 +7,12 @@ package com.team3.fastcampus.record.InDiary;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import com.google.gson.reflect.TypeToken;
 import com.team3.fastcampus.record.Diary.Model.Diary;
@@ -24,10 +24,6 @@ import com.team3.fastcampus.record.Util.Logger;
 import com.team3.fastcampus.record.Util.NetworkController;
 import com.team3.fastcampus.record.Util.PreferenceManager;
 import com.team3.fastcampus.record.Util.RealmDatabaseManager;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -41,7 +37,7 @@ public class InDiaryListViewFragment extends Fragment {
     private View view;
 
     private RecyclerView recyclerView;
-    private ProgressBar progress;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private InDiaryViewRecyclerAdapter inDiaryViewRecyclerAdapter;
 
@@ -68,6 +64,8 @@ public class InDiaryListViewFragment extends Fragment {
 
         initView();
 
+        initListener();
+
         initAdapter();
 
         return view;
@@ -93,8 +91,12 @@ public class InDiaryListViewFragment extends Fragment {
     }
 
     private void initView() {
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fragment_in_diary_view_swipeRefresh);
         recyclerView = (RecyclerView) view.findViewById(R.id.fragment_in_diary_view_recyclerview);
-        progress = (ProgressBar) view.findViewById(R.id.progress);
+    }
+
+    private void initListener() {
+        swipeRefreshLayout.setOnRefreshListener(swipeRefreshOnRefreshListener);
     }
 
     private void initAdapter() {
@@ -179,12 +181,16 @@ public class InDiaryListViewFragment extends Fragment {
     }
 
     private void progressEnable() {
-        progress.setVisibility(View.VISIBLE);
+        swipeRefreshLayout.setRefreshing(true);
     }
 
     private void progressDisable() {
-        progress.setVisibility(View.GONE);
+        swipeRefreshLayout.setRefreshing(false);
     }
+
+    private SwipeRefreshLayout.OnRefreshListener swipeRefreshOnRefreshListener = () -> {
+        getData(position);
+    };
 
     interface InDiaryListCallback {
         Diary getDiary();
