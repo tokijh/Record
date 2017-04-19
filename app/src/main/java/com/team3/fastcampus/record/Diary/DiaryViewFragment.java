@@ -5,9 +5,11 @@ package com.team3.fastcampus.record.Diary;
  */
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,8 +20,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.team3.fastcampus.record.*;
@@ -42,8 +45,10 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
     private View view;
 
     private EditText ed_search;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
-    private ProgressBar progress;
+
+    private FloatingActionButton fab_add;
 
     private DiaryViewRecyclerAdapter diaryViewRecyclerAdapter;
 
@@ -98,18 +103,21 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ed_search = (EditText) view.findViewById(R.id.fragment_diary_view_search);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fragment_diary_view_swipeRefresh);
         recyclerView = (RecyclerView) view.findViewById(R.id.fragment_diary_view_recyclerview);
-        progress = (ProgressBar) view.findViewById(R.id.progress);
+        fab_add = (FloatingActionButton) view.findViewById(R.id.fragment_diary_view_fab_add);
     }
 
     private void initAdapter() {
         diaryViewRecyclerAdapter = new DiaryViewRecyclerAdapter(this);
         recyclerView.setAdapter(diaryViewRecyclerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        fab_add.setOnClickListener(onClickListener);
     }
 
     private void initListener() {
         ed_search.addTextChangedListener(searchWatcher);
+        swipeRefreshLayout.setOnRefreshListener(swipeRefreshOnRefreshListener);
     }
 
     private void getData(int position) {
@@ -186,11 +194,11 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
     }
 
     private void progressEnable() {
-        progress.setVisibility(View.VISIBLE);
+        swipeRefreshLayout.setRefreshing(true);
     }
 
     private void progressDisable() {
-        progress.setVisibility(View.GONE);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     private TextWatcher searchWatcher = new TextWatcher() {
@@ -207,6 +215,18 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
         @Override
         public void afterTextChanged(Editable s) {
 
+        }
+    };
+
+    private SwipeRefreshLayout.OnRefreshListener swipeRefreshOnRefreshListener = () -> {
+        getData(position);
+    };
+
+    private View.OnClickListener onClickListener = (v) -> {
+        switch (v.getId()) {
+            case R.id.fragment_diary_view_fab_add:
+                onDiaryManage(-1l, DiaryManageActivity.MODE_CREATE);
+                break;
         }
     };
 
@@ -231,6 +251,17 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
     @Override
     public void onItemClick(Diary diary) {
         diaryViewInterface.showInDiary(diary);
+    }
+
+    @Override
+    public void onDiaryManage(long pk, int mode) {
+        if (!NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(getContext()))) {
+            Toast.makeText(getContext(), "이 작업은 인터넷 연결이 필요 합니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        getContext().startActivity(new Intent(getContext(), DiaryManageActivity.class)
+                .putExtra("PK", pk)
+                .putExtra("MODE", mode));
     }
 
     public interface DiaryViewInterface {

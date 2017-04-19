@@ -4,16 +4,18 @@ package com.team3.fastcampus.record.InDiary;
  * Created by yoonjoonghyun on 2017. 3. 25..
  */
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.google.gson.reflect.TypeToken;
 import com.team3.fastcampus.record.Diary.Model.Diary;
 import com.team3.fastcampus.record.InDiary.Adapter.InDiaryViewRecyclerAdapter;
@@ -25,23 +27,21 @@ import com.team3.fastcampus.record.Util.NetworkController;
 import com.team3.fastcampus.record.Util.PreferenceManager;
 import com.team3.fastcampus.record.Util.RealmDatabaseManager;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.List;
 
 /**
  * InDiary의 리스트를 보여주기 위한 Fragment
  */
-public class InDiaryListViewFragment extends Fragment {
+public class InDiaryListViewFragment extends Fragment implements InDiaryViewRecyclerAdapter.InDiaryListCallback {
 
     public static final String TAG = "InDiaryListViewFragment";
 
     private View view;
 
     private RecyclerView recyclerView;
-    private ProgressBar progress;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
+    private FloatingActionButton fab_add;
 
     private InDiaryViewRecyclerAdapter inDiaryViewRecyclerAdapter;
 
@@ -68,6 +68,8 @@ public class InDiaryListViewFragment extends Fragment {
 
         initView();
 
+        initListener();
+
         initAdapter();
 
         return view;
@@ -93,12 +95,18 @@ public class InDiaryListViewFragment extends Fragment {
     }
 
     private void initView() {
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fragment_in_diary_view_swipeRefresh);
         recyclerView = (RecyclerView) view.findViewById(R.id.fragment_in_diary_view_recyclerview);
-        progress = (ProgressBar) view.findViewById(R.id.progress);
+        fab_add = (FloatingActionButton) view.findViewById(R.id.fragment_in_diary_view_fab_add);
+    }
+
+    private void initListener() {
+        swipeRefreshLayout.setOnRefreshListener(swipeRefreshOnRefreshListener);
+        fab_add.setOnClickListener(onClickListener);
     }
 
     private void initAdapter() {
-        inDiaryViewRecyclerAdapter = new InDiaryViewRecyclerAdapter(getContext());
+        inDiaryViewRecyclerAdapter = new InDiaryViewRecyclerAdapter(getContext(), this);
         recyclerView.setAdapter(inDiaryViewRecyclerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
@@ -179,11 +187,37 @@ public class InDiaryListViewFragment extends Fragment {
     }
 
     private void progressEnable() {
-        progress.setVisibility(View.VISIBLE);
+        swipeRefreshLayout.setRefreshing(true);
     }
 
     private void progressDisable() {
-        progress.setVisibility(View.GONE);
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
+    private SwipeRefreshLayout.OnRefreshListener swipeRefreshOnRefreshListener = () -> {
+        getData(position);
+    };
+
+    private View.OnClickListener onClickListener = (v) -> {
+        switch (v.getId()) {
+            case R.id.fragment_in_diary_view_fab_add:
+                // TODO mode를 Manage의 번호로 지정
+                onInDiaryManage(-1l, 0, InDiary.getCurrentTime());
+                break;
+        }
+    };
+
+    @Override
+    public void onItemClick(long pk) {
+        // TODO InDiaryDetailActivity 호출
+    }
+
+    @Override
+    public void onInDiaryManage(long pk, int mode, String date) {
+        startActivity(new Intent(getContext(), InDiaryManageActivity.class)
+                .putExtra("PK", pk)
+                .putExtra("MODE", mode)
+                .putExtra("DATE", date));
     }
 
     interface InDiaryListCallback {

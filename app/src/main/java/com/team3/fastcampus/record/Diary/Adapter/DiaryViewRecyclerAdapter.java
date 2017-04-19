@@ -167,17 +167,9 @@ public class DiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         PopupMenu popup = new PopupMenu(v.getContext(), v);
         popup.inflate(R.menu.diary_list_item_option);
         popup.setOnMenuItemClickListener(item -> {
-            Intent intent;
             switch (item.getItemId()) {
                 case R.id.nav_delete:
-                    if (!NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(context))) {
-                        Toast.makeText(context, "이 작업은 인터넷 연결이 필요 합니다.", Toast.LENGTH_SHORT).show();
-                        break;
-                    }
-                    intent = new Intent(context, DiaryManageActivity.class);
-                    intent.putExtra("PK", diaries.get(position).diary.pk);
-                    intent.putExtra("MODE", DiaryManageActivity.MODE_DELETE);
-                    context.startActivity(intent);
+                    diaryListCallback.onDiaryManage(diaries.get(position).diary.pk, DiaryManageActivity.MODE_DELETE);
                     break;
             }
             return false;
@@ -193,14 +185,7 @@ public class DiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         }
 
         View.OnClickListener cardAddHolderOnClickListener = v -> {
-            if (!NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(context))) {
-                Toast.makeText(context, "이 작업은 인터넷 연결이 필요 합니다.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            Intent intent = new Intent(context, DiaryManageActivity.class);
-            intent.putExtra("PK", -1l);
-            intent.putExtra("MODE", DiaryManageActivity.MODE_CREATE);
-            context.startActivity(intent);
+            diaryListCallback.onDiaryManage(-1l, DiaryManageActivity.MODE_CREATE);
         };
     }
 
@@ -215,5 +200,7 @@ public class DiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
     public interface DiaryListCallback {
         void onItemClick(Diary diary);
+
+        void onDiaryManage(long pk, int mode);
     }
 }

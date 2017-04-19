@@ -27,13 +27,17 @@ import com.team3.fastcampus.record.Diary.DiaryViewFragment;
 import com.team3.fastcampus.record.Diary.Model.Diary;
 import com.team3.fastcampus.record.InDiary.InDiaryViewFragment;
 import com.team3.fastcampus.record.Model.User;
+import com.team3.fastcampus.record.Util.Logger;
 import com.team3.fastcampus.record.Util.NetworkController;
 import com.team3.fastcampus.record.Util.PreferenceManager;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, DiaryViewFragment.DiaryViewInterface, View.OnClickListener {
 
+    public static final String TAG = "MainActivity";
+
     private static final int REQ_LOGIN = 54;
+    private static final int REQ_ACCOUNT = 52;
 
     private boolean isViewReady = false;
 
@@ -146,12 +150,14 @@ public class MainActivity extends AppCompatActivity
                 .addCallback(new NetworkController.StatusCallback() {
                     @Override
                     public void onError(Throwable error) {
+                        Logger.e(TAG, error.getMessage());
                         Toast.makeText(MainActivity.this, "로그인이 만료되어 다시 로그인 해주세요.", Toast.LENGTH_SHORT).show();
                         toSignUp();
                     }
 
                     @Override
                     public void onSuccess(NetworkController.ResponseData responseData) {
+                        Logger.e(TAG, new String(responseData.body));
                         if (responseData.response.code() == 200) {
                             init();
                         } else {
@@ -161,6 +167,28 @@ public class MainActivity extends AppCompatActivity
                     }
                 })
                 .execute();
+    }
+
+    private void resultSignIn(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            Bundle bundle = data.getExtras();
+            if (bundle.containsKey("token")) {
+                String token = bundle.getString("token");
+                if (token != null) {
+                    successSignIn(token);
+                    return;
+                }
+            }
+        } else {
+            Toast.makeText(this, "로그인을 해야 이용 할 수 있습니다.", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+    }
+
+    private void resultAccount() {
+        initHeadView();
+
+        loginCheck();
     }
 
     /**
@@ -184,9 +212,9 @@ public class MainActivity extends AppCompatActivity
             if (showing_fragment != diaryViewFragment) {
                 manager.popBackStackImmediate();
                 manager.beginTransaction().commit();
-            } else {
-                finish();
+                return;
             }
+            finish();
         }
     }
 
@@ -209,7 +237,8 @@ public class MainActivity extends AppCompatActivity
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.nav_head_layout:
-                startActivity(new Intent(MainActivity.this, AccountActivity.class));
+                startActivityForResult(new Intent(MainActivity.this, AccountActivity.class), REQ_ACCOUNT);
+                drawer.closeDrawer(GravityCompat.START);
                 break;
         }
     }
@@ -222,33 +251,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (isViewReady) {
-            loginCheck();
-
-            initHeadView();
-        }
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQ_LOGIN) {
-            if (resultCode == RESULT_OK) {
-                Bundle bundle = data.getExtras();
-                if (bundle.containsKey("token")) {
-                    String token = bundle.getString("token");
-                    if (token != null) {
-                        successSignIn(token);
-                        return;
-                    }
-                }
-            } else {
-                Toast.makeText(this, "로그인을 해야 이용 할 수 있습니다.", Toast.LENGTH_SHORT).show();
-                finish();
-            }
+
+        switch (requestCode) {
+            case REQ_LOGIN:
+                resultSignIn(resultCode, data);
+                break;
+            case REQ_ACCOUNT:
+                resultAccount();
+                break;
         }
     }
 }
