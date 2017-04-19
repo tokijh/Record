@@ -8,6 +8,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +19,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
@@ -42,8 +42,8 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
     private View view;
 
     private EditText ed_search;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
-    private ProgressBar progress;
 
     private DiaryViewRecyclerAdapter diaryViewRecyclerAdapter;
 
@@ -98,8 +98,8 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ed_search = (EditText) view.findViewById(R.id.fragment_diary_view_search);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fragment_diary_view_swipeRefresh);
         recyclerView = (RecyclerView) view.findViewById(R.id.fragment_diary_view_recyclerview);
-        progress = (ProgressBar) view.findViewById(R.id.progress);
     }
 
     private void initAdapter() {
@@ -110,6 +110,7 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
 
     private void initListener() {
         ed_search.addTextChangedListener(searchWatcher);
+        swipeRefreshLayout.setOnRefreshListener(swipeRefreshOnRefreshListener);
     }
 
     private void getData(int position) {
@@ -186,11 +187,11 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
     }
 
     private void progressEnable() {
-        progress.setVisibility(View.VISIBLE);
+        swipeRefreshLayout.setRefreshing(true);
     }
 
     private void progressDisable() {
-        progress.setVisibility(View.GONE);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     private TextWatcher searchWatcher = new TextWatcher() {
@@ -208,6 +209,10 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
         public void afterTextChanged(Editable s) {
 
         }
+    };
+
+    private SwipeRefreshLayout.OnRefreshListener swipeRefreshOnRefreshListener = () -> {
+        getData(position);
     };
 
     @Override
