@@ -13,10 +13,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.team3.fastcampus.record.R;
+
+import java.util.ArrayList;
 
 /**
  * Created by kimkyuwan on 2017. 4. 18..
@@ -28,7 +29,8 @@ public class InDiaryManageRecyclerAdapter extends RecyclerView.Adapter<InDiaryMa
     private final int REQ_GALLERY = 102; //갤러리요청코드
     Uri fileUri = null;
 
-    String content = "test";
+    ArrayList<String> url;
+
     Context context;
     int itemLayout;
 
@@ -48,7 +50,6 @@ public class InDiaryManageRecyclerAdapter extends RecyclerView.Adapter<InDiaryMa
     @Override
     public void onBindViewHolder(InDiaryManageRecyclerViewHolder holder, int position) {
 
-        holder.et.setText(content);
 
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,18 +62,16 @@ public class InDiaryManageRecyclerAdapter extends RecyclerView.Adapter<InDiaryMa
 
     @Override
     public int getItemCount() {
-        return 2;
+        return url.size();
     }
 
     public class InDiaryManageRecyclerViewHolder extends RecyclerView.ViewHolder {
 
-        EditText et;
         ImageView imageView;
 
         public InDiaryManageRecyclerViewHolder(View itemView) {
             super(itemView);
 
-            et = (EditText) itemView.findViewById(R.id.in_diary_manage_item_et);
             imageView = (ImageView) itemView.findViewById(R.id.in_diary_manage_item_image);
 
         }

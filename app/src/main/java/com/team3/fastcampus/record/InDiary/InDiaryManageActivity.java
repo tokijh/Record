@@ -7,6 +7,7 @@ package com.team3.fastcampus.record.InDiary;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,8 +16,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.github.clans.fab.FloatingActionButton;
 import com.team3.fastcampus.record.InDiary.Adapter.InDiaryManageRecyclerAdapter;
 import com.team3.fastcampus.record.R;
@@ -106,6 +107,23 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
         updateDateText();
     };
 
+    private void returnCamera(Intent intent) {
+        // 롤리팝 체크
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            fileUri = intent.getData();
+        }
+        if (fileUri != null) {
+            saveProfile(fileUri);
+        } else {
+            Toast.makeText(this, "사진파일을 못받아 왔습니다.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void returnGallery(Intent intent) {
+        fileUri = intent.getData();
+        saveProfile(fileUri);
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -136,15 +154,13 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
             switch (requestCode) {
                 case REQ_CAMERA:
 
-                    imageView.setImageURI(fileUri);
+                    returnCamera(data);
+
                     break;
                 case REQ_GALLERY:
-                    if (data.getData() != null) {
-                        fileUri = data.getData();
-                        Glide.with(this).load(fileUri)
-                                .into(imageView);
 
-                    }
+                    returnGallery(data);
+
                     break;
             }
         }
