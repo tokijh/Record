@@ -49,8 +49,7 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
         ra = new InDiaryManageRecyclerAdapter
                 (datas, R.layout.activity_in_diary_manage_item, this);
         rv.setAdapter(ra);
-
-        rv.setLayoutManager(new LinearLayoutManager(this));
+        rv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
 
 
     }
