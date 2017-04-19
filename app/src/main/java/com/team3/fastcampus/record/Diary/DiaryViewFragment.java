@@ -259,10 +259,9 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
             Toast.makeText(getContext(), "이 작업은 인터넷 연결이 필요 합니다.", Toast.LENGTH_SHORT).show();
             return;
         }
-        Intent intent = new Intent(getContext(), DiaryManageActivity.class);
-        intent.putExtra("PK", pk);
-        intent.putExtra("MODE", mode);
-        getContext().startActivity(intent);
+        getContext().startActivity(new Intent(getContext(), DiaryManageActivity.class)
+                .putExtra("PK", pk)
+                .putExtra("MODE", mode));
     }
 
     public interface DiaryViewInterface {
