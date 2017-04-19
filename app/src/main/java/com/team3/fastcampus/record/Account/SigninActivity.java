@@ -77,8 +77,6 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         init();
 
         signinCheck();
-
-
     }
 
     private void init() {
@@ -159,9 +157,9 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
 
     private void googleSignInCheck() {
         // Google로그인 체크
-//        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) { // 로그인 되어 있음
-//            mGoogleApiClient.reconnect();
-//        }
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) { // 로그인 되어 있음
+            Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
+        }
     }
 
     private void faceBookSiginInCheck() {
@@ -169,7 +167,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         AccessToken faceBookaccessToken = AccessToken.getCurrentAccessToken();
         if (faceBookaccessToken != null && !faceBookaccessToken.isExpired()) { // 로그인 되어 있음
             Logger.e(TAG, faceBookaccessToken.getToken());
-            successSignIn(new SignInData(faceBookaccessToken.getToken()));
+            successSignIn(new SignInData(faceBookaccessToken.getToken(), User.load()));
         }
     }
 

@@ -66,9 +66,9 @@ public class InDiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
         CardInDiaryHolder inDiaryViewHolder = (CardInDiaryHolder) holder;
         InDiary inDiary = inDiaries.get(position).inDiary;
         inDiaryViewHolder.position = position;
-//        inDiaryViewHolder.tv_title.setText(inDiary.title);
+        inDiaryViewHolder.tv_title.setText(inDiary.title);
         inDiaryViewHolder.tv_date.setText(inDiary.created_date);
-//        inDiaryViewHolder.tv_content.setText(inDiary.content);
+        inDiaryViewHolder.tv_content.setText(inDiary.content);
         inDiaryViewHolder.inDiaryListImageViewPagerAdapter.set(inDiaries.get(position).inDiary.photo_list);
     }
 
@@ -154,7 +154,7 @@ public class InDiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
 
     private void cardInDiaryMenuCreate(View v, int position) {
         PopupMenu popup = new PopupMenu(v.getContext(), v);
-        popup.inflate(R.menu.diary_list_item_option);
+        popup.inflate(R.menu.indiary_list_item_option);
         popup.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.nav_edit:

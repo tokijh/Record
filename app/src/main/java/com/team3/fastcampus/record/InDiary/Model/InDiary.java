@@ -8,9 +8,15 @@ import io.realm.RealmObject;
  */
 
 public class InDiary extends RealmObject {
+    // 계정을 구별 하기 위한 username
     public String username;
+
+    // Diary이름
+    public String title;
+
     public long pk;
     public long diary;
+    public String content;
     public RealmList<Image> photo_list;
     public String created_date;
     public String content;
