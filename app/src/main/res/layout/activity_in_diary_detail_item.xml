@@ -7,15 +7,13 @@
 
     <ImageView
         android:id="@+id/in_diary_detail_item_imageview"
-        android:src="@drawable/night"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/in_diary_detail_content_area">
+        android:layout_gravity="center"
+        android:scaleType="centerInside"
+        android:src="@drawable/night">
 
     </ImageView>
-
-
-
 
 
 </LinearLayout>
