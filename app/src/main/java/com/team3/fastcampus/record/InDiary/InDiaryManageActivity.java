@@ -293,6 +293,10 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
         inDiaryManageRecyclerAdapter.add(image);
     }
 
+    private void actionCancel() {
+        finish();
+    }
+
     private DatePickerDialog.OnDateSetListener mDateSetListener = (view, year, month, dayOfMonth) -> {
         mYear = year;
         mMonth = month;
@@ -319,6 +323,7 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
             case R.id.fab_edit_save:
                 break;
             case R.id.fab_edit_cancel:
+                actionCancel();
                 break;
         }
         fab_edit.close(true);
