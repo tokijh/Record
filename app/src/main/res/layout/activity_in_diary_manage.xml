@@ -15,75 +15,39 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <LinearLayout
-                android:id="@+id/layout_input"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="10dp"
+                android:id="@+id/layout_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="#FFFFFF">
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_alignParentTop="true"
+                android:orientation="horizontal"
+                android:weightSum="10">
 
-                <LinearLayout
-                    android:id="@+id/layout_title"
-                    android:layout_width="match_parent"
+                <ImageView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal"
-                    android:weightSum="10">
+                    android:layout_gravity="center"
+                    android:layout_weight="2"
+                    android:src="@android:drawable/ic_menu_today" />
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_weight="2"
-                        android:src="@android:drawable/ic_menu_info_details" />
-
-                    <EditText
-                        android:id="@+id/ed_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="8"
-                        android:background="@null"
-                        android:hint="InDiary name"
-                        android:textSize="13dp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layout_date"
-                    android:layout_below="@+id/layout_location"
+                <TextView
+                    android:id="@+id/tv_date"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal"
-                    android:weightSum="10">
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="8"
+                    android:gravity="center_vertical"
+                    android:hint="Date"
+                    android:textSize="13dp" />
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_weight="2"
-                        android:src="@android:drawable/ic_menu_today" />
-
-                    <TextView
-                        android:id="@+id/tv_date"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="8"
-                        android:gravity="center_vertical"
-                        android:hint="Date"
-                        android:textSize="13dp" />
-
-                </LinearLayout>
             </LinearLayout>
 
             <EditText
-                android:layout_below="@+id/layout_input"
+                android:layout_below="@+id/layout_date"
                 android:background="#FFFFFF"
                 android:id="@+id/ed_content"
                 android:layout_width="match_parent"

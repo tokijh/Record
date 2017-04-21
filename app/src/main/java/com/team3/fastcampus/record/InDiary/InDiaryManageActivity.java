@@ -6,6 +6,7 @@ package com.team3.fastcampus.record.InDiary;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
@@ -42,7 +43,7 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
 
     int mYear, mMonth, mDay, mHour, mMinute;
 
-    private EditText ed_title, ed_content;
+    private EditText ed_content;
     private TextView tv_date;
     private RecyclerView recyclerView;
 
@@ -77,7 +78,6 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
     }
 
     private void initView() {
-        ed_title = (EditText) findViewById(R.id.ed_title);
         ed_content = (EditText) findViewById(R.id.ed_content);
         tv_date = (TextView) findViewById(R.id.tv_date);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
@@ -109,11 +109,15 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
     }
 
     private void updateDateText() {
-        tv_date.setText(String.format("%04d-%02d-%02d", mYear, mMonth + 1, mDay));
+        tv_date.setText(String.format("%04d-%02d-%02d %02d:%02d", mYear, mMonth + 1, mDay, mHour, mMinute));
     }
 
     private void showDatePicker() {
         new DatePickerDialog(this, mDateSetListener, mYear, mMonth, mDay).show();
+    }
+
+    private void showTimePicker() {
+        new TimePickerDialog(this, mTimeSetListener, mHour, mMinute, false).show();
     }
 
     private void actionPhotoSelect() {
@@ -195,6 +199,12 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
         mYear = year;
         mMonth = month;
         mDay = dayOfMonth;
+        showTimePicker();
+    };
+
+    private TimePickerDialog.OnTimeSetListener mTimeSetListener = (timePicker, hourOfDay, minute) -> {
+        mHour = hourOfDay;
+        mMinute = minute;
         updateDateText();
     };
 
