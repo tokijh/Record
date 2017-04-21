@@ -49,6 +49,8 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
     private long PK;
     private String DATE;
 
+    private InDiary inDiary;
+
     private Uri fileUri = null;
 
     private int mYear, mMonth, mDay, mHour, mMinute;
@@ -141,16 +143,7 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
     private void modeEdit() {
         ed_content.setEnabled(true);
 
-        InDiary inDiary = RealmDatabaseManager
-                .getInstance()
-                .get(InDiary.class)
-                .equalTo("pk", PK)
-                .findFirst();
-
-        if (inDiary == null) {
-            Toast.makeText(this, "데이터를 읽어 오는데 문제가 생겼습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
-            finish();
-        }
+        getInDiary();
 
         ed_content.setText(inDiary.content);
         inDiaryManageRecyclerAdapter.set(inDiary.photo_list);
@@ -160,6 +153,19 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
 
     private void modeDelete() {
 
+    }
+
+    private void getInDiary() {
+        inDiary = RealmDatabaseManager
+                .getInstance()
+                .get(InDiary.class)
+                .equalTo("pk", PK)
+                .findFirst();
+
+        if (inDiary == null) {
+            Toast.makeText(this, "데이터를 읽어 오는데 문제가 생겼습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+            finish();
+        }
     }
 
     private void setDate() {

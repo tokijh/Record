@@ -138,6 +138,10 @@ public class InDiaryListViewFragment extends Fragment implements InDiaryViewRecy
                             }.getType(), new String(responseData.body));
                             for (InDiary inDiary : inDiaries) {
                                 inDiary.title = inDiaryListCallback.getDiary().title;
+                                // TODO 서버에서 수정 완료시 삭제
+                                inDiary.created_date = inDiary.created_date.replace("T", " ");
+                                // TODO 서버에서 수정 완료시 삭제
+                                inDiary.created_date = inDiary.created_date.replace("Z", " ");
                             }
                             inDiaryViewRecyclerAdapter.set(inDiaries);
                             saveToDB(inDiaries);
@@ -161,6 +165,7 @@ public class InDiaryListViewFragment extends Fragment implements InDiaryViewRecy
                     realmObject.username = PreferenceManager.getInstance().getString("username", null);
                     realmObject.diary = inDiary.diary;
                     realmObject.title = inDiary.title;
+                    realmObject.content = inDiary.content;
                     for (Image image : inDiary.photo_list) {
                         Image forsave = realmDatabaseManager.create(Image.class);
                         forsave.photo = image.photo;
