@@ -25,8 +25,10 @@ import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.team3.fastcampus.record.InDiary.Adapter.InDiaryManageRecyclerAdapter;
 import com.team3.fastcampus.record.InDiary.Model.Image;
+import com.team3.fastcampus.record.InDiary.Model.InDiary;
 import com.team3.fastcampus.record.R;
 import com.team3.fastcampus.record.Util.Permission.PermissionController;
+import com.team3.fastcampus.record.Util.RealmDatabaseManager;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -36,24 +38,29 @@ import java.util.GregorianCalendar;
  */
 public class InDiaryManageActivity extends AppCompatActivity implements View.OnClickListener, InDiaryManageRecyclerAdapter.InDiaryManageListCallback {
 
+    public static final int MODE_EDIT = 0;
+    public static final int MODE_CREATE = 1;
+    public static final int MODE_DELETE = 2;
+
     private final int REQ_CAMERA = 101; //카메라요청코드
     private final int REQ_GALLERY = 102; //갤러리요청코드
 
-    Uri fileUri = null;
+    private int MODE;
+    private long PK;
+    private String DATE;
 
-    int mYear, mMonth, mDay, mHour, mMinute;
+    private Uri fileUri = null;
+
+    private int mYear, mMonth, mDay, mHour, mMinute;
 
     private EditText ed_content;
     private TextView tv_date;
     private RecyclerView recyclerView;
 
-    private FloatingActionMenu fab_view;
-    private FloatingActionButton fab_view_delete, fab_view_update;
-
     private FloatingActionMenu fab_edit;
-    private FloatingActionButton fab_edit_save, fab_edit_cancel;
+    private FloatingActionButton fab_edit_delete, fab_edit_save, fab_edit_cancel;
 
-    InDiaryManageRecyclerAdapter inDiaryManageRecyclerAdapter;
+    private InDiaryManageRecyclerAdapter inDiaryManageRecyclerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,32 +71,123 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
 
         initListener();
 
-        initDateValue();
-
         initAdapter();
+
+        initIntentValue();
+
+        modeSetting();
     }
 
-    private void initListener() {
-        tv_date.setOnClickListener(this);
-        fab_view_delete.setOnClickListener(this);
-        fab_view_update.setOnClickListener(this);
-        fab_edit_save.setOnClickListener(this);
-        fab_edit_cancel.setOnClickListener(this);
+    private void initIntentValue() {
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            if (bundle.containsKey("MODE")
+                    && bundle.containsKey("PK")
+                    && bundle.containsKey("DATE")) {
+                MODE = bundle.getInt("MODE");
+                PK = bundle.getLong("PK");
+                DATE = bundle.getString("DATE");
+            }
+        }
     }
 
     private void initView() {
         ed_content = (EditText) findViewById(R.id.ed_content);
         tv_date = (TextView) findViewById(R.id.tv_date);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
-        fab_view = (FloatingActionMenu) findViewById(R.id.fab_view);
         fab_edit = (FloatingActionMenu) findViewById(R.id.fab_edit);
-        fab_view_delete = (FloatingActionButton) findViewById(R.id.fab_view_delete);
-        fab_view_update = (FloatingActionButton) findViewById(R.id.fab_view_update);
+        fab_edit_delete = (FloatingActionButton) findViewById(R.id.fab_edit_delete);
         fab_edit_save = (FloatingActionButton) findViewById(R.id.fab_edit_save);
         fab_edit_cancel = (FloatingActionButton) findViewById(R.id.fab_edit_cancel);
     }
 
-    private void initDateValue() {
+    private void initListener() {
+        tv_date.setOnClickListener(this);
+        fab_edit_delete.setOnClickListener(this);
+        fab_edit_save.setOnClickListener(this);
+        fab_edit_cancel.setOnClickListener(this);
+    }
+
+    private void initAdapter() {
+        inDiaryManageRecyclerAdapter = new InDiaryManageRecyclerAdapter(this, this);
+        recyclerView.setAdapter(inDiaryManageRecyclerAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
+    }
+
+    private void modeSetting() {
+        switch (MODE) {
+            case MODE_CREATE:
+                modeCreate();
+                break;
+            case MODE_EDIT:
+                modeEdit();
+                break;
+            case MODE_DELETE:
+                modeDelete();
+                break;
+            default:
+                throw new RuntimeException("There is no match MODE");
+        }
+    }
+
+    private void modeCreate() {
+        ed_content.setEnabled(true);
+
+        setDate();
+        updateDateText();
+    }
+
+    private void modeEdit() {
+        ed_content.setEnabled(true);
+
+        InDiary inDiary = RealmDatabaseManager
+                .getInstance()
+                .get(InDiary.class)
+                .equalTo("pk", PK)
+                .findFirst();
+
+        if (inDiary == null) {
+            Toast.makeText(this, "데이터를 읽어 오는데 문제가 생겼습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
+        ed_content.setText(inDiary.content);
+        inDiaryManageRecyclerAdapter.set(inDiary.photo_list);
+        setDate(inDiary.created_date);
+        updateDateText();
+    }
+
+    private void modeDelete() {
+
+    }
+
+    private void setDate() {
+        setDate(DATE);
+    }
+
+    private void setDate(String Date) {
+        if (Date != null && !"".equals(Date)) {
+            String splits[] = Date.split(" ");
+            if (splits.length > 1) {
+                // Date
+                String splits_date[] = splits[0].split("-");
+                if (splits_date.length > 2) {
+                    mYear = Integer.parseInt(splits_date[0]);
+                    mMonth = Integer.parseInt(splits_date[1]);
+                    mDay = Integer.parseInt(splits_date[2]);
+                }
+                // Time
+                String splits_time[] = splits[1].split(":");
+                if (splits_time.length > 1) {
+                    mHour = Integer.parseInt(splits_time[0]);
+                    mMinute = Integer.parseInt(splits_time[1]);
+                }
+            }
+        }
+    }
+
+    private void setCurrentDate() {
         // 날자, 시간 가져오기
         Calendar cal = new GregorianCalendar();
         mYear = cal.get(Calendar.YEAR);
@@ -100,12 +198,6 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
 
         // date TextView 업데이트
         updateDateText();
-    }
-
-    private void initAdapter() {
-        inDiaryManageRecyclerAdapter = new InDiaryManageRecyclerAdapter(this, this);
-        recyclerView.setAdapter(inDiaryManageRecyclerAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
     }
 
     private void updateDateText() {
@@ -214,15 +306,16 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
             case R.id.tv_date:
                 showDatePicker();
                 break;
-            case R.id.fab_view_delete:
-                break;
-            case R.id.fab_view_update:
+            case R.id.fab_edit_delete:
+                MODE = MODE_DELETE;
+                modeSetting();
                 break;
             case R.id.fab_edit_save:
                 break;
             case R.id.fab_edit_cancel:
                 break;
         }
+        fab_edit.close(true);
     }
 
     @Override

@@ -48,6 +48,14 @@ public class InDiaryManageRecyclerAdapter extends RecyclerView.Adapter<RecyclerV
         this.notifyDataSetChanged();
     }
 
+    public void set(List<Image> images) {
+        datas.clear();
+        addImageAdd();
+        for (Image image : images) {
+            add(image);
+        }
+    }
+
     public void removeItem(int position) {
         datas.remove(position);
         if (datas.size() == 0) {

@@ -201,8 +201,7 @@ public class InDiaryListViewFragment extends Fragment implements InDiaryViewRecy
     private View.OnClickListener onClickListener = (v) -> {
         switch (v.getId()) {
             case R.id.fragment_in_diary_view_fab_add:
-                // TODO mode를 Manage의 번호로 지정
-                onInDiaryManage(-1l, 0, InDiary.getCurrentTime());
+                onInDiaryManage(-1l, InDiaryManageActivity.MODE_CREATE, InDiary.getCurrentTime());
                 break;
         }
     };

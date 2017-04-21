@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import com.team3.fastcampus.record.InDiary.InDiaryManageActivity;
 import com.team3.fastcampus.record.InDiary.Model.InDiary;
 import com.team3.fastcampus.record.R;
 
@@ -159,16 +160,13 @@ public class InDiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
         PopupMenu popup = new PopupMenu(v.getContext(), v);
         popup.inflate(R.menu.indiary_list_item_option);
         popup.setOnMenuItemClickListener(item -> {
-            // TODO mode를 Manage의 번호로 지정
-            int mode = 0;
+            int mode = InDiaryManageActivity.MODE_CREATE;
             switch (item.getItemId()) {
                 case R.id.nav_edit:
-                    // TODO mode를 Manage의 번호로 지정
-                    mode = 1;
+                    mode = InDiaryManageActivity.MODE_EDIT;
                     break;
                 case R.id.nav_delete:
-                    // TODO mode를 Manage의 번호로 지정
-                    mode = 2;
+                    mode = InDiaryManageActivity.MODE_DELETE;
                     break;
             }
             inDiaryListCallback.onInDiaryManage(inDiaries.get(position).inDiary.pk, mode, inDiaries.get(position).inDiary.created_date);
@@ -191,7 +189,6 @@ public class InDiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         View.OnClickListener cardAddHolderOnClickListener = v -> {
-            // TODO mode를 Manage의 번호로 지정
             String created_date = "";
             if (inDiaries.size() > 2) {
                 if (position == 0) {
@@ -202,7 +199,7 @@ public class InDiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
             } else {
                 created_date = InDiary.getCurrentTime();
             }
-            inDiaryListCallback.onInDiaryManage(-1l, 0, created_date);
+            inDiaryListCallback.onInDiaryManage(-1l, InDiaryManageActivity.MODE_CREATE, created_date);
         };
     }
 
