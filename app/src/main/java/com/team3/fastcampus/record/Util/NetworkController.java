@@ -42,6 +42,7 @@ public class NetworkController {
     public static final int GET = 0;
     public static final int POST = 1;
     public static final int DELETE = 2;
+    public static final int PUT = 3;
 
     public static final int NETWORK_DISABLE = 0x00;
     public static final int NETWORK_ENABLE = 0x08;
@@ -104,8 +105,10 @@ public class NetworkController {
                 break;
             case DELETE:
                 break;
+            case PUT:
+                break;
             default:
-                throw new RuntimeException("NetworkController is support GET, POST or DELETE only");
+                throw new RuntimeException("NetworkController is support GET, POST, DELETE or PUT only");
         }
         this.method = method;
 
@@ -376,6 +379,22 @@ public class NetworkController {
     }
 
     /**
+     * PUT Type에 맞도록 Build한다.
+     *
+     * @param requestBuilder
+     * @return
+     */
+    private Request.Builder buildPUT(Request.Builder requestBuilder) {
+        FormBody.Builder formBuilder = new FormBody.Builder();
+        if (params != null) {
+            for (String key : params.keySet()) {
+                formBuilder.addEncoded(key, params.get(key).toString());
+            }
+        }
+        return requestBuilder.put(formBuilder.build());
+    }
+
+    /**
      * Request를 만들어 낸다.
      *
      * @return
@@ -397,8 +416,11 @@ public class NetworkController {
             case DELETE:
                 buildDELETE(requestBuilder);
                 break;
+            case PUT:
+                buildPUT(requestBuilder);
+                break;
             default:
-                throw new RuntimeException("NetworkController is support GET, POST or DELETE only");
+                throw new RuntimeException("NetworkController is support GET, POST, DELETE or PUT only");
         }
 
         return requestBuilder.build();
