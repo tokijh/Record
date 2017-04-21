@@ -1,19 +1,14 @@
 package com.team3.fastcampus.record.InDiary.Adapter;
 
 import android.content.Context;
-import android.location.Address;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.maps.model.LatLng;
 import com.team3.fastcampus.record.InDiary.Model.Image;
 import com.team3.fastcampus.record.R;
 import com.team3.fastcampus.record.Util.LocationPicker;
