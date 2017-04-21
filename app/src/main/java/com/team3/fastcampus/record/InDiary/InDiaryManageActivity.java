@@ -24,7 +24,6 @@ import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
-import com.team3.fastcampus.record.Diary.DiaryManageActivity;
 import com.team3.fastcampus.record.InDiary.Adapter.InDiaryManageRecyclerAdapter;
 import com.team3.fastcampus.record.InDiary.Model.Image;
 import com.team3.fastcampus.record.InDiary.Model.InDiary;
@@ -54,6 +53,7 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
 
     private int MODE;
     private long PK;
+    private long DIARY;
     private String DATE;
 
     private InDiary inDiary;
@@ -93,9 +93,11 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
         if (bundle != null) {
             if (bundle.containsKey("MODE")
                     && bundle.containsKey("PK")
+                    && bundle.containsKey("DIARY")
                     && bundle.containsKey("DATE")) {
                 MODE = bundle.getInt("MODE");
                 PK = bundle.getLong("PK");
+                DIARY = bundle.getLong("DIARY");
                 DATE = bundle.getString("DATE");
             }
         }
@@ -141,6 +143,11 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
     }
 
     private void modeCreate() {
+        fab_edit_delete.setVisibility(View.GONE);
+        if (DIARY == -1l) {
+            Toast.makeText(this, "데이터를 읽어 오는데 문제가 생겼습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+            finish();
+        }
         setDate();
         updateDateText();
     }
@@ -168,7 +175,7 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
     }
 
     private void deleteInDiary() {
-        NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_indiary) + inDiary.diary + getString(R.string.server_indiary_end) + "/" + inDiary.pk)
+        NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_indiary) + DIARY + getString(R.string.server_indiary_end) + "/" + inDiary.pk)
                 .setMethod(NetworkController.DELETE)
                 .headerAdd("Authorization", "Token " + PreferenceManager.getInstance().getString("token", null))
                 .addCallback(new NetworkController.StatusCallback() {
@@ -349,11 +356,39 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
         RealmDatabaseManager.getInstance().delete(InDiary.class, realmResults -> realmResults.equalTo("pk", PK).findAll());
     }
 
+    private void actionCreate() {
+        NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_indiary) + DIARY + getString(R.string.server_indiary_end))
+                .setMethod(NetworkController.POST)
+                .headerAdd("Authorization", "Token " + PreferenceManager.getInstance().getString("token", null))
+                .paramsAdd("diary", DIARY)
+                .paramsAdd("created_date", tv_date.getText().toString())
+                .paramsAdd("content", ed_content.getText().toString())
+                .addCallback(new NetworkController.StatusCallback() {
+                    @Override
+                    public void onError(Throwable error) {
+                        Logger.e(TAG, error.getMessage());
+                        Toast.makeText(InDiaryManageActivity.this, "내용 생성에 실패 했습니다. 다시 시도 해주세요.", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onSuccess(NetworkController.ResponseData responseData) {
+                        Logger.e(TAG, new String(responseData.body));
+                        if (responseData.response.code() == 201) {
+                            Toast.makeText(InDiaryManageActivity.this, "내용 생성에 성공 했습니다.", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Toast.makeText(InDiaryManageActivity.this, "내용 생성에 실패 했습니다. 다시 시도 해주세요.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .execute();
+    }
+
     private void actionUpdate() {
-        NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_indiary) + inDiary.diary + getString(R.string.server_indiary_end) + "/" + inDiary.pk)
+        NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_indiary) + DIARY + getString(R.string.server_indiary_end) + "/" + inDiary.pk)
                 .setMethod(NetworkController.PUT)
                 .headerAdd("Authorization", "Token " + PreferenceManager.getInstance().getString("token", null))
-                .paramsAdd("diary", inDiary.diary)
+                .paramsAdd("diary", DIARY)
                 .paramsAdd("created_date", inDiary.created_date)
                 .paramsAdd("content", ed_content.getText().toString())
                 .addCallback(new NetworkController.StatusCallback() {
@@ -406,7 +441,11 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
                 modeSetting();
                 break;
             case R.id.fab_edit_save:
-                actionUpdate();
+                if (MODE == MODE_CREATE) {
+                    actionCreate();
+                } else if (MODE == MODE_EDIT) {
+                    actionUpdate();
+                }
                 break;
             case R.id.fab_edit_cancel:
                 actionCancel();

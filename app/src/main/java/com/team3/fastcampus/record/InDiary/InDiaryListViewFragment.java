@@ -220,6 +220,7 @@ public class InDiaryListViewFragment extends Fragment implements InDiaryViewRecy
     public void onInDiaryManage(long pk, int mode, String date) {
         startActivity(new Intent(getContext(), InDiaryManageActivity.class)
                 .putExtra("PK", pk)
+                .putExtra("DIARY", inDiaryListCallback.getDiary().pk)
                 .putExtra("MODE", mode)
                 .putExtra("DATE", date));
     }
