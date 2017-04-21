@@ -27,7 +27,10 @@ import com.team3.fastcampus.record.InDiary.Adapter.InDiaryManageRecyclerAdapter;
 import com.team3.fastcampus.record.InDiary.Model.Image;
 import com.team3.fastcampus.record.InDiary.Model.InDiary;
 import com.team3.fastcampus.record.R;
+import com.team3.fastcampus.record.Util.Logger;
+import com.team3.fastcampus.record.Util.NetworkController;
 import com.team3.fastcampus.record.Util.Permission.PermissionController;
+import com.team3.fastcampus.record.Util.PreferenceManager;
 import com.team3.fastcampus.record.Util.RealmDatabaseManager;
 
 import java.util.Calendar;
@@ -37,6 +40,8 @@ import java.util.GregorianCalendar;
  * InDiary 관리(추가 및 수정) Activity
  */
 public class InDiaryManageActivity extends AppCompatActivity implements View.OnClickListener, InDiaryManageRecyclerAdapter.InDiaryManageListCallback {
+
+    public static final String TAG = "InDiaryManageActivity";
 
     public static final int MODE_EDIT = 0;
     public static final int MODE_CREATE = 1;
@@ -293,6 +298,47 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
         inDiaryManageRecyclerAdapter.add(image);
     }
 
+    private void saveDB() {
+        InDiary inDiary = RealmDatabaseManager
+                .getInstance()
+                .get(InDiary.class)
+                .equalTo("pk", PK)
+                .findFirst();
+        RealmDatabaseManager.getInstance().update(() -> {
+            inDiary.content = ed_content.getText().toString();
+            inDiary.created_date = tv_date.getText().toString();
+        });
+    }
+
+    private void actionUpdate() {
+        NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_indiary) + inDiary.diary + getString(R.string.server_indiary_end) + "/" + inDiary.pk)
+                .setMethod(NetworkController.PUT)
+                .headerAdd("Authorization", "Token " + PreferenceManager.getInstance().getString("token", null))
+                .paramsAdd("diary", inDiary.diary)
+                .paramsAdd("created_date", inDiary.created_date)
+                .paramsAdd("content", ed_content.getText().toString())
+                .addCallback(new NetworkController.StatusCallback() {
+                    @Override
+                    public void onError(Throwable error) {
+                        Logger.e(TAG, error.getMessage());
+                        Toast.makeText(InDiaryManageActivity.this, "내용 수정에 실패 했습니다. 다시 시도 해주세요.", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onSuccess(NetworkController.ResponseData responseData) {
+                        Logger.e(TAG, new String(responseData.body));
+                        if (responseData.response.code() == 200) {
+                            saveDB();
+                            Toast.makeText(InDiaryManageActivity.this, "내용 수정에 성공 했습니다.", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Toast.makeText(InDiaryManageActivity.this, "내용 수정에 실패 했습니다. 다시 시도 해주세요.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .execute();
+    }
+
     private void actionCancel() {
         finish();
     }
@@ -321,6 +367,7 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
                 modeSetting();
                 break;
             case R.id.fab_edit_save:
+                actionUpdate();
                 break;
             case R.id.fab_edit_cancel:
                 actionCancel();
