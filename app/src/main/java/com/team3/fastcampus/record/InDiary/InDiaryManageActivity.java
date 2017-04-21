@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.team3.fastcampus.record.Diary.DiaryManageActivity;
 import com.team3.fastcampus.record.InDiary.Adapter.InDiaryManageRecyclerAdapter;
 import com.team3.fastcampus.record.InDiary.Model.Image;
 import com.team3.fastcampus.record.InDiary.Model.InDiary;
@@ -139,15 +141,11 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
     }
 
     private void modeCreate() {
-        ed_content.setEnabled(true);
-
         setDate();
         updateDateText();
     }
 
     private void modeEdit() {
-        ed_content.setEnabled(true);
-
         getInDiary();
 
         ed_content.setText(inDiary.content);
@@ -157,7 +155,44 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
     }
 
     private void modeDelete() {
+        getInDiary();
+        new AlertDialog.Builder(InDiaryManageActivity.this)
+                .setMessage("정말로 삭제 하겠습니까?")
+                .setCancelable(false)
+                .setPositiveButton("확인",
+                        (dialog, which) -> deleteInDiary())
+                .setNegativeButton("취소",
+                        (dialog, which) -> finish())
+                .create()
+                .show();
+    }
 
+    private void deleteInDiary() {
+        NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_indiary) + inDiary.diary + getString(R.string.server_indiary_end) + "/" + inDiary.pk)
+                .setMethod(NetworkController.DELETE)
+                .headerAdd("Authorization", "Token " + PreferenceManager.getInstance().getString("token", null))
+                .addCallback(new NetworkController.StatusCallback() {
+                    @Override
+                    public void onError(Throwable error) {
+                        Logger.e(TAG, error.getMessage());
+                        Toast.makeText(InDiaryManageActivity.this, "내용 삭제에 실패 했습니다. 다시 시도 해주세요.", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+
+                    @Override
+                    public void onSuccess(NetworkController.ResponseData responseData) {
+                        Logger.e(TAG, new String(responseData.body));
+                        if (responseData.response.code() == 204) {
+                            deleteDB();
+                            Toast.makeText(InDiaryManageActivity.this, "내용 삭제에 성공 했습니다.", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Toast.makeText(InDiaryManageActivity.this, "내용 삭제에 실패 했습니다. 다시 시도 해주세요.", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    }
+                })
+                .execute();
     }
 
     private void getInDiary() {
@@ -308,6 +343,10 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
             inDiary.content = ed_content.getText().toString();
             inDiary.created_date = tv_date.getText().toString();
         });
+    }
+
+    private void deleteDB() {
+        RealmDatabaseManager.getInstance().delete(InDiary.class, realmResults -> realmResults.equalTo("pk", PK).findAll());
     }
 
     private void actionUpdate() {
