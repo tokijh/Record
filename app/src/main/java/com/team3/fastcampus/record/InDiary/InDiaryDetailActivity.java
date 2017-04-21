@@ -26,9 +26,9 @@ public class InDiaryDetailActivity extends AppCompatActivity {
 
 
         tv_content = (TextView) findViewById(R.id.in_diary_detail_content_textview);
-        viewPager = (ViewPager) findViewById(R.id.viewPager);
+        viewPager = (ViewPager) findViewById(R.id.in_diary_list_view_viewPager);
         adapter = new InDiaryDetailAdapter(InDiaryDetailActivity.this);
-        //viewPager.setAdapter(adapter);
+        viewPager.setAdapter(adapter);
 
         tv_content.setText("Test");
     }

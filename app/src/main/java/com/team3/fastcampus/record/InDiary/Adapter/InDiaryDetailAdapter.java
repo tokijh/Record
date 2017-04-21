@@ -44,9 +44,9 @@ public class InDiaryDetailAdapter extends PagerAdapter {
 
         View view = inflater.inflate(R.layout.activity_in_diary_detail_item, null);
         ImageView imageView = (ImageView)view.findViewById(R.id.in_diary_detail_item_imageview);
-        Image image = datas.get(position);
 
-        Glide.with(context).load(image.photo).placeholder(R.drawable.no_photo).into(imageView);
+
+        Glide.with(context).load("null").placeholder(R.drawable.no_photo).into(imageView);
 
         container.addView(view);
         return view;
