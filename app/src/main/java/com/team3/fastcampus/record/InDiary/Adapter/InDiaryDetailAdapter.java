@@ -23,6 +23,7 @@ public class InDiaryDetailAdapter extends PagerAdapter {
     Context context;
     LayoutInflater inflater;
 
+
     public InDiaryDetailAdapter(Context context) {
         this.context = context;
         inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -30,7 +31,7 @@ public class InDiaryDetailAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return 1;
+        return 5;
     }
 
     @Override
