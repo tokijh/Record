@@ -115,11 +115,12 @@ public class InDiaryListViewFragment extends Fragment implements InDiaryViewRecy
 
     private void getData(int position) {
         progressEnable();
-        if (NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(getContext()))) {
-            loadFromServer(position);
-        } else {
+        // TODO 테스트용 코드
+//        if (NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(getContext()))) {
+//            loadFromServer(position);
+//        } else {
             loadFromDB(position);
-        }
+//        }
     }
 
     private void loadFromServer(int position) {
