@@ -40,7 +40,9 @@
         <activity
             android:name=".Account.SignupActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <activity android:name=".InDiary.InDiaryDetailActivity" />
+        <activity
+            android:name=".InDiary.InDiaryDetailActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity android:name=".InDiary.InDiaryManageActivity" />
         <activity android:name=".Diary.DiaryManageActivity" />
         <activity android:name=".Account.AccountActivity" />
