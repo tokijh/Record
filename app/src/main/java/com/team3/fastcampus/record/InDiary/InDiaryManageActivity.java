@@ -177,11 +177,12 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
     }
 
     private void deleteInDiary() {
-        if (NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(this))) {
-            deleteInDiary_online();
-        } else {
+        // TODO 테스트용 코드
+//        if (NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(this))) {
+//            deleteInDiary_online();
+//        } else {
             deleteInDiary_offline();
-        }
+//        }
     }
 
     private void deleteInDiary_online() {
@@ -380,6 +381,7 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
     }
 
     private void actionCreate() {
+        // TODO 테스트용 코드
 //        if (NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(this))) {
 //            actionCreate_online();
 //        } else {
@@ -447,11 +449,12 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
     }
 
     private void actionUpdate() {
-        if (NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(this))) {
-            actionUpdate_online();
-        } else {
+        // TODO 테스트용 코드
+//        if (NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(this))) {
+//            actionUpdate_online();
+//        } else {
             actionUpdate_offline();
-        }
+//        }
     }
 
     private void actionUpdate_online() {
