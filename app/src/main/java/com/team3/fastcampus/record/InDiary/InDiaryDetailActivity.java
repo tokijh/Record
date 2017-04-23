@@ -1,5 +1,6 @@
 package com.team3.fastcampus.record.InDiary;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +17,12 @@ public class InDiaryDetailActivity extends AppCompatActivity {
     ViewPager viewPager;
     InDiaryDetailAdapter adapter;
     TextView tv_content;
+    Intent intent;
+    String flag ="INVISIBLE";
     RelativeLayout layout;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,26 +34,34 @@ public class InDiaryDetailActivity extends AppCompatActivity {
         adapter = new InDiaryDetailAdapter(InDiaryDetailActivity.this);
         viewPager.setAdapter(adapter);
 
-        layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(InDiaryDetailActivity.this, "Touch Layout", Toast.LENGTH_SHORT).show();
+        tv_content.setText("TEST");
 
-            }
-        });
+       // layout.setVisibility(View.INVISIBLE);
+        intent = getIntent();
+        if(flag!="INVISIBLE"){
+            flag = intent.getExtras().getString("flag");
+        }
 
 
-        tv_content.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(InDiaryDetailActivity.this, "Touch TextView", Toast.LENGTH_SHORT).show();
+        switch (flag)
+        {
+            case "INVISIBLE":
+                tv_content.setVisibility(View.INVISIBLE);
+                Toast.makeText(this, "INVISIBLE 실행", Toast.LENGTH_SHORT).show();
+                layout.setVisibility(View.INVISIBLE);
+                flag = "VISIBLE";
+                break;
 
-            }
-        });
+            case "VISIBLE":
+                tv_content.setVisibility(View.VISIBLE);
+                Toast.makeText(this, "VISIBLE 실행", Toast.LENGTH_SHORT).show();
+                layout.setVisibility(View.VISIBLE);
+                flag = "INVISIBLE";
+
+                break;
+
+        }
 
     }
-
-
-
 
 }
