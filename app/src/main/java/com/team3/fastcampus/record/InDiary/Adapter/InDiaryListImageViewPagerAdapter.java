@@ -43,7 +43,11 @@ public class InDiaryListImageViewPagerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return images.size();
+        try {
+            return images.size();
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     @Override
@@ -54,7 +58,6 @@ public class InDiaryListImageViewPagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         ImageView imageView = new ImageView(context);
-        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         Glide.with(context)
                 .load(images.get(position).photo)
                 .placeholder(R.drawable.night)

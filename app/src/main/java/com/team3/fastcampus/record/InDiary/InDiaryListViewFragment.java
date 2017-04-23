@@ -36,6 +36,8 @@ public class InDiaryListViewFragment extends Fragment implements InDiaryViewRecy
 
     public static final String TAG = "InDiaryListViewFragment";
 
+    private static final int REQ_MANAGE = 103;
+
     private View view;
 
     private RecyclerView recyclerView;
@@ -113,11 +115,12 @@ public class InDiaryListViewFragment extends Fragment implements InDiaryViewRecy
 
     private void getData(int position) {
         progressEnable();
-        if (NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(getContext()))) {
-            loadFromServer(position);
-        } else {
+        // TODO 테스트용 코드
+//        if (NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(getContext()))) {
+//            loadFromServer(position);
+//        } else {
             loadFromDB(position);
-        }
+//        }
     }
 
     private void loadFromServer(int position) {
@@ -138,6 +141,10 @@ public class InDiaryListViewFragment extends Fragment implements InDiaryViewRecy
                             }.getType(), new String(responseData.body));
                             for (InDiary inDiary : inDiaries) {
                                 inDiary.title = inDiaryListCallback.getDiary().title;
+                                // TODO 서버에서 수정 완료시 삭제
+                                inDiary.created_date = inDiary.created_date.replace("T", " ");
+                                // TODO 서버에서 수정 완료시 삭제
+                                inDiary.created_date = inDiary.created_date.replace("Z", " ");
                             }
                             inDiaryViewRecyclerAdapter.set(inDiaries);
                             saveToDB(inDiaries);
@@ -161,6 +168,7 @@ public class InDiaryListViewFragment extends Fragment implements InDiaryViewRecy
                     realmObject.username = PreferenceManager.getInstance().getString("username", null);
                     realmObject.diary = inDiary.diary;
                     realmObject.title = inDiary.title;
+                    realmObject.content = inDiary.content;
                     for (Image image : inDiary.photo_list) {
                         Image forsave = realmDatabaseManager.create(Image.class);
                         forsave.photo = image.photo;
@@ -182,7 +190,9 @@ public class InDiaryListViewFragment extends Fragment implements InDiaryViewRecy
                 .equalTo("username", PreferenceManager.getInstance().getString("username", null))
                 .equalTo("diary", inDiaryListCallback.getDiary().pk)
                 .findAll();
-        inDiaryViewRecyclerAdapter.set(inDiaries);
+        if (inDiaries != null) {
+            inDiaryViewRecyclerAdapter.set(inDiaries);
+        }
         progressDisable();
     }
 
@@ -201,8 +211,7 @@ public class InDiaryListViewFragment extends Fragment implements InDiaryViewRecy
     private View.OnClickListener onClickListener = (v) -> {
         switch (v.getId()) {
             case R.id.fragment_in_diary_view_fab_add:
-                // TODO mode를 Manage의 번호로 지정
-                onInDiaryManage(-1l, 0, InDiary.getCurrentTime());
+                onInDiaryManage(-1l, InDiaryManageActivity.MODE_CREATE, InDiary.getCurrentTime());
                 break;
         }
     };
@@ -214,10 +223,20 @@ public class InDiaryListViewFragment extends Fragment implements InDiaryViewRecy
 
     @Override
     public void onInDiaryManage(long pk, int mode, String date) {
-        startActivity(new Intent(getContext(), InDiaryManageActivity.class)
-                .putExtra("PK", pk)
-                .putExtra("MODE", mode)
-                .putExtra("DATE", date));
+        startActivityForResult(new Intent(getContext(), InDiaryManageActivity.class)
+                        .putExtra("PK", pk)
+                        .putExtra("DIARY", inDiaryListCallback.getDiary().pk)
+                        .putExtra("MODE", mode)
+                        .putExtra("DATE", date)
+                , REQ_MANAGE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQ_MANAGE) {
+            inDiaryViewRecyclerAdapter.notifyDataSetChanged();
+        }
     }
 
     interface InDiaryListCallback {
