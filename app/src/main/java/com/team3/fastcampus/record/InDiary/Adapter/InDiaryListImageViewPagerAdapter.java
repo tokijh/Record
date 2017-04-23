@@ -58,7 +58,6 @@ public class InDiaryListImageViewPagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         ImageView imageView = new ImageView(context);
-        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         Glide.with(context)
                 .load(images.get(position).photo)
                 .placeholder(R.drawable.night)

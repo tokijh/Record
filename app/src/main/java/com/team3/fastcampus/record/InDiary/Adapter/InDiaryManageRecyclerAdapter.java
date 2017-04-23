@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.team3.fastcampus.record.InDiary.Model.Image;
 import com.team3.fastcampus.record.R;
 import com.team3.fastcampus.record.Util.LocationPicker;
+import com.team3.fastcampus.record.Util.RealmDatabaseManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +76,8 @@ public class InDiaryManageRecyclerAdapter extends RecyclerView.Adapter<RecyclerV
         CardImageHolder cardImageHolder = (CardImageHolder) holder;
 
         cardImageHolder.position = position;
+        String location = datas.get(position).image.location;
+        cardImageHolder.tv_location.setText((location == null || "".equals(location)) ? "장소 선택" : location);
         Glide.with(context)
                 .load(datas.get(position).image.photo)
                 .placeholder(R.drawable.no_photo)
@@ -90,12 +93,16 @@ public class InDiaryManageRecyclerAdapter extends RecyclerView.Adapter<RecyclerV
     private void setLocation(TextView tv_location, int position) {
         new LocationPicker(context).show(
                 (address, location) -> {
+                    String locationStr = address.getCountryName() + " " + address.getAdminArea() + " " + address.getLocality() + " " + address.getFeatureName();
                     Image image = datas.get(position).image;
                     if (image != null) {
-                        image.gpsLatitude = String.valueOf(location.latitude);
-                        image.gpsLongitude = String.valueOf(location.longitude);
+                        RealmDatabaseManager.getInstance().update(() -> {
+                            image.gpsLatitude = String.valueOf(location.latitude);
+                            image.gpsLongitude = String.valueOf(location.longitude);
+                            image.location = locationStr;
+                        });
                     }
-                    tv_location.setText(address.getCountryName() + " " + address.getFeatureName());
+                    tv_location.setText("".equals(locationStr) ? "장소 선택" : locationStr);
                 }
         );
     }

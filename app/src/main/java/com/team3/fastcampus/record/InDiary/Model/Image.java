@@ -14,6 +14,7 @@ public class Image extends RealmObject {
     public String photo;
     public String gpsLatitude;
     public String gpsLongitude;
+    public String location;
 
     public static long getNxtPK() {
         long pk = PreferenceManager.getInstance().getLong("ImagePK", 0);
