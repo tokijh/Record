@@ -36,6 +36,8 @@ public class InDiaryListViewFragment extends Fragment implements InDiaryViewRecy
 
     public static final String TAG = "InDiaryListViewFragment";
 
+    private static final int REQ_MANAGE = 103;
+
     private View view;
 
     private RecyclerView recyclerView;
@@ -187,7 +189,9 @@ public class InDiaryListViewFragment extends Fragment implements InDiaryViewRecy
                 .equalTo("username", PreferenceManager.getInstance().getString("username", null))
                 .equalTo("diary", inDiaryListCallback.getDiary().pk)
                 .findAll();
-        inDiaryViewRecyclerAdapter.set(inDiaries);
+        if (inDiaries != null) {
+            inDiaryViewRecyclerAdapter.set(inDiaries);
+        }
         progressDisable();
     }
 
@@ -218,11 +222,20 @@ public class InDiaryListViewFragment extends Fragment implements InDiaryViewRecy
 
     @Override
     public void onInDiaryManage(long pk, int mode, String date) {
-        startActivity(new Intent(getContext(), InDiaryManageActivity.class)
-                .putExtra("PK", pk)
-                .putExtra("DIARY", inDiaryListCallback.getDiary().pk)
-                .putExtra("MODE", mode)
-                .putExtra("DATE", date));
+        startActivityForResult(new Intent(getContext(), InDiaryManageActivity.class)
+                        .putExtra("PK", pk)
+                        .putExtra("DIARY", inDiaryListCallback.getDiary().pk)
+                        .putExtra("MODE", mode)
+                        .putExtra("DATE", date)
+                , REQ_MANAGE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQ_MANAGE) {
+            inDiaryViewRecyclerAdapter.notifyDataSetChanged();
+        }
     }
 
     interface InDiaryListCallback {

@@ -37,6 +37,8 @@ import com.team3.fastcampus.record.Util.RealmDatabaseManager;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import io.realm.RealmList;
+
 /**
  * InDiary 관리(추가 및 수정) Activity
  */
@@ -175,6 +177,14 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
     }
 
     private void deleteInDiary() {
+        if (NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(this))) {
+            deleteInDiary_online();
+        } else {
+            deleteInDiary_offline();
+        }
+    }
+
+    private void deleteInDiary_online() {
         NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_indiary) + DIARY + getString(R.string.server_indiary_end) + "/" + inDiary.pk)
                 .setMethod(NetworkController.DELETE)
                 .headerAdd("Authorization", "Token " + PreferenceManager.getInstance().getString("token", null))
@@ -200,6 +210,19 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
                     }
                 })
                 .execute();
+    }
+
+    private void deleteInDiary_offline() {
+        RealmDatabaseManager
+                .getInstance()
+                .delete(InDiary.class,
+                        realmResults ->
+                                realmResults
+                                        .equalTo("pk", inDiary.pk)
+                                        .findAll()
+                );
+        Toast.makeText(InDiaryManageActivity.this, "내용 삭제에 성공 했습니다.", Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     private void getInDiary() {
@@ -357,6 +380,14 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
     }
 
     private void actionCreate() {
+//        if (NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(this))) {
+//            actionCreate_online();
+//        } else {
+            actionCreate_offline();
+//        }
+    }
+
+    private void actionCreate_online() {
         NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_indiary) + DIARY + getString(R.string.server_indiary_end))
                 .setMethod(NetworkController.POST)
                 .headerAdd("Authorization", "Token " + PreferenceManager.getInstance().getString("token", null))
@@ -384,7 +415,46 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
                 .execute();
     }
 
+    private void actionCreate_offline() {
+        RealmDatabaseManager
+                .getInstance()
+                .create(InDiary.class, (realm, inDiary) -> {
+                    inDiary.pk = InDiary.getNxtPK();
+                    inDiary.username = PreferenceManager.getInstance().getString("username", null);
+                    inDiary.created_date = tv_date.getText().toString();
+                    inDiary.diary = DIARY;
+                    inDiary.content = ed_content.getText().toString();
+                    inDiary.photo_list = new RealmList<>();
+                    for (int i = 0; i < inDiaryManageRecyclerAdapter.getItemCount(); i++) {
+                        Image image = inDiaryManageRecyclerAdapter.get(i);
+                        if (image != null) {
+                            Image saveImage = RealmDatabaseManager
+                                    .getInstance()
+                                    .create(Image.class);
+
+                            saveImage.pk = Image.getNxtPK();
+                            saveImage.photo = image.photo;
+                            saveImage.gpsLatitude = image.gpsLatitude;
+                            saveImage.gpsLongitude = image.gpsLongitude;
+                            saveImage.post = inDiary.pk;
+                            inDiary.photo_list.add(saveImage);
+                        }
+                    }
+
+                    Toast.makeText(InDiaryManageActivity.this, "내용 생성에 성공 했습니다.", Toast.LENGTH_SHORT).show();
+                    finish();
+                });
+    }
+
     private void actionUpdate() {
+        if (NetworkController.isNetworkStatusENABLE(NetworkController.checkNetworkStatus(this))) {
+            actionUpdate_online();
+        } else {
+            actionUpdate_offline();
+        }
+    }
+
+    private void actionUpdate_online() {
         NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_indiary) + DIARY + getString(R.string.server_indiary_end) + "/" + inDiary.pk)
                 .setMethod(NetworkController.PUT)
                 .headerAdd("Authorization", "Token " + PreferenceManager.getInstance().getString("token", null))
@@ -411,6 +481,45 @@ public class InDiaryManageActivity extends AppCompatActivity implements View.OnC
                     }
                 })
                 .execute();
+    }
+
+    private void actionUpdate_offline() {
+        InDiary inDiary = RealmDatabaseManager
+                .getInstance()
+                .get(InDiary.class)
+                .equalTo("pk", this.inDiary.pk)
+                .findFirst();
+
+        RealmDatabaseManager
+                .getInstance()
+                .update(() -> {
+                    inDiary.content = ed_content.getText().toString();
+                    inDiary.created_date = this.inDiary.created_date;
+                    inDiary.photo_list.clear();
+
+                    for (int i = 0; i < inDiaryManageRecyclerAdapter.getItemCount(); i++) {
+                        Image image = inDiaryManageRecyclerAdapter.get(i);
+                        if (image != null) {
+                            if (image.pk == -1l) {
+                                Image saveImage = RealmDatabaseManager
+                                        .getInstance()
+                                        .create(Image.class);
+
+                                saveImage.pk = Image.getNxtPK();
+                                saveImage.photo = image.photo;
+                                saveImage.gpsLatitude = image.gpsLatitude;
+                                saveImage.gpsLongitude = image.gpsLongitude;
+                                saveImage.post = inDiary.pk;
+                                inDiary.photo_list.add(saveImage);
+                            } else {
+                                inDiary.photo_list.add(image);
+                            }
+                        }
+                    }
+
+                    Toast.makeText(InDiaryManageActivity.this, "내용 수정에 성공 했습니다.", Toast.LENGTH_SHORT).show();
+                    finish();
+                });
     }
 
     private void actionCancel() {

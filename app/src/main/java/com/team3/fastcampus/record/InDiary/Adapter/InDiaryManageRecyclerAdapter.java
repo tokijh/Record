@@ -38,6 +38,13 @@ public class InDiaryManageRecyclerAdapter extends RecyclerView.Adapter<RecyclerV
         addImageAdd();
     }
 
+    public Image get(int postion) {
+        if (datas.get(postion).type == CARD_IMAGE) {
+            return datas.get(postion).image;
+        }
+        return null;
+    }
+
     public void add(Image image) {
         datas.add(datas.size() - 1, new ImageExtend(CARD_IMAGE, image));
         this.notifyDataSetChanged();

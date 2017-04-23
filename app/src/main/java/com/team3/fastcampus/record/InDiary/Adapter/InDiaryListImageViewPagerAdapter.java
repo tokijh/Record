@@ -43,7 +43,11 @@ public class InDiaryListImageViewPagerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return images.size();
+        try {
+            return images.size();
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     @Override
