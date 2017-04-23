@@ -16,11 +16,14 @@ import android.widget.TextView;
 import com.team3.fastcampus.record.InDiary.InDiaryManageActivity;
 import com.team3.fastcampus.record.InDiary.Model.InDiary;
 import com.team3.fastcampus.record.R;
+import com.team3.fastcampus.record.Util.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class InDiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    public static final String TAG = "InDiaryViewRecyclerAdapter";
 
     public static final int CARD_INDIARY = 0;
     public static final int CARD_ADD = 1;
@@ -66,13 +69,18 @@ public class InDiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
     private void setCardDiary(RecyclerView.ViewHolder holder, int position) {
-        CardInDiaryHolder inDiaryViewHolder = (CardInDiaryHolder) holder;
-        InDiary inDiary = inDiaries.get(position).inDiary;
-        inDiaryViewHolder.position = position;
-        inDiaryViewHolder.tv_title.setText(inDiary.title);
-        inDiaryViewHolder.tv_date.setText(inDiary.created_date);
-        inDiaryViewHolder.tv_content.setText(inDiary.content);
-        inDiaryViewHolder.inDiaryListImageViewPagerAdapter.set(inDiaries.get(position).inDiary.photo_list);
+        // TODO 테스트 코드
+        try {
+            CardInDiaryHolder inDiaryViewHolder = (CardInDiaryHolder) holder;
+            InDiary inDiary = inDiaries.get(position).inDiary;
+            inDiaryViewHolder.position = position;
+            inDiaryViewHolder.tv_title.setText(inDiary.title);
+            inDiaryViewHolder.tv_date.setText(inDiary.created_date);
+            inDiaryViewHolder.tv_content.setText(inDiary.content);
+            inDiaryViewHolder.inDiaryListImageViewPagerAdapter.set(inDiaries.get(position).inDiary.photo_list);
+        } catch (Exception e) {
+            Logger.e(TAG, e.getMessage());
+        }
     }
 
     private void setCardAdd(RecyclerView.ViewHolder holder, int position) {
