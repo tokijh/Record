@@ -18,9 +18,8 @@ public class InDiaryDetailActivity extends AppCompatActivity {
     InDiaryDetailAdapter adapter;
     TextView tv_content;
     Intent intent;
-    String flag ="INVISIBLE";
+    String flag = "INVISIBLE";
     RelativeLayout layout;
-
 
 
     @Override
@@ -36,15 +35,14 @@ public class InDiaryDetailActivity extends AppCompatActivity {
 
         tv_content.setText("TEST");
 
-       // layout.setVisibility(View.INVISIBLE);
+        // layout.setVisibility(View.INVISIBLE);
         intent = getIntent();
-        if(flag!="INVISIBLE"){
+        if (flag != "INVISIBLE") {
             flag = intent.getExtras().getString("flag");
         }
 
 
-        switch (flag)
-        {
+        switch (flag) {
             case "INVISIBLE":
                 tv_content.setVisibility(View.INVISIBLE);
                 Toast.makeText(this, "INVISIBLE 실행", Toast.LENGTH_SHORT).show();
@@ -64,4 +62,20 @@ public class InDiaryDetailActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode) {
+        super.startActivityForResult(intent, requestCode);
+
+        switch (requestCode) {
+
+            case View.VISIBLE:
+                layout.setVisibility(View.VISIBLE);
+                break;
+
+            case View.INVISIBLE:
+                layout.setVisibility(View.INVISIBLE);
+                break;
+
+        }
+    }
 }

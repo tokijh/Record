@@ -1,5 +1,6 @@
 package com.team3.fastcampus.record.InDiary.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.view.PagerAdapter;
@@ -59,21 +60,15 @@ public class InDiaryDetailAdapter extends PagerAdapter {
                 switch (flag) {
                     case "INVISIBLE":
                         intent = new Intent(context, InDiaryDetailActivity.class);
-                        intent.putExtra("flag", "VISIBLE");
-                        context.startActivity(intent);
                         Toast.makeText(context, "INVISIBLE", Toast.LENGTH_SHORT).show();
-
-                        flag = "VISIBLE";
+                        startActivityForResult(intent, view.VISIBLE);
 
                         break;
 
                     case "VISIBLE":
                         intent = new Intent(context, InDiaryDetailActivity.class);
-                        intent.putExtra("flag", "INVISIBLE");
-                        context.startActivity(intent);
                         Toast.makeText(context, "VISIBLE", Toast.LENGTH_SHORT).show();
-
-                        flag = "INVISIBLE";
+                        startActivityForResult(intent, view.INVISIBLE);
 
                         break;
 
@@ -88,9 +83,16 @@ public class InDiaryDetailAdapter extends PagerAdapter {
         return view;
     }
 
+    private void startActivityForResult(Intent intent, int requestCode) {
+        Activity activity = null;
+        activity.startActivityForResult(intent,requestCode);
+    }
+
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
         //super.destroyItem(container, position, object);
         container.removeView((View) object);
     }
+
+
 }
