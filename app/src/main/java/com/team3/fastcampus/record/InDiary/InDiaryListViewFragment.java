@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.clans.fab.FloatingActionButton;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.reflect.TypeToken;
 import com.team3.fastcampus.record.Diary.Model.Diary;
 import com.team3.fastcampus.record.InDiary.Adapter.InDiaryViewRecyclerAdapter;
@@ -27,7 +28,15 @@ import com.team3.fastcampus.record.Util.NetworkController;
 import com.team3.fastcampus.record.Util.PreferenceManager;
 import com.team3.fastcampus.record.Util.RealmDatabaseManager;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+
+import io.realm.Sort;
 
 /**
  * InDiary의 리스트를 보여주기 위한 Fragment
@@ -105,6 +114,12 @@ public class InDiaryListViewFragment extends Fragment implements InDiaryViewRecy
     private void initListener() {
         swipeRefreshLayout.setOnRefreshListener(swipeRefreshOnRefreshListener);
         fab_add.setOnClickListener(onClickListener);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
     }
 
     private void initAdapter() {
@@ -146,7 +161,19 @@ public class InDiaryListViewFragment extends Fragment implements InDiaryViewRecy
                                 // TODO 서버에서 수정 완료시 삭제
                                 inDiary.created_date = inDiary.created_date.replace("Z", " ");
                             }
+                            Collections.sort(inDiaries, (o1, o2) -> {
+                                try {
+                                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                    Date date1 = simpleDateFormat.parse(o1.created_date);
+                                    Date date2 = simpleDateFormat.parse(o2.created_date);
+                                    return date1.compareTo(date2);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                                return 0;
+                            });
                             inDiaryViewRecyclerAdapter.set(inDiaries);
+                            setLocation(inDiaries);
                             saveToDB(inDiaries);
                         }
                         progressDisable();
@@ -189,11 +216,29 @@ public class InDiaryListViewFragment extends Fragment implements InDiaryViewRecy
         List<InDiary> inDiaries = realmDatabaseManager.get(InDiary.class)
                 .equalTo("username", PreferenceManager.getInstance().getString("username", null))
                 .equalTo("diary", inDiaryListCallback.getDiary().pk)
-                .findAll();
+                .findAllSorted("created_date", Sort.ASCENDING);
         if (inDiaries != null) {
             inDiaryViewRecyclerAdapter.set(inDiaries);
+            setLocation(inDiaries);
         }
         progressDisable();
+    }
+
+    private void setLocation(List<InDiary> inDiaries) {
+        List<LatLng> locations = new ArrayList<>();
+        for (InDiary inDiary : inDiaries) {
+            if (inDiary.photo_list != null && inDiary.photo_list.size() > 0) {
+                Image image = inDiary.photo_list.get(0);
+                if (image.gpsLatitude != null && image.gpsLongitude != null) {
+                    try {
+                        locations.add(new LatLng(Double.parseDouble(image.gpsLatitude), Double.parseDouble(image.gpsLongitude)));
+                    } catch (Exception e) {
+                        Logger.e(TAG, e.getMessage());
+                    }
+                }
+            }
+        }
+        inDiaryListCallback.setLocations(locations);
     }
 
     private void progressEnable() {
@@ -241,5 +286,7 @@ public class InDiaryListViewFragment extends Fragment implements InDiaryViewRecy
 
     interface InDiaryListCallback {
         Diary getDiary();
+
+        void setLocations(List<LatLng> locations);
     }
 }

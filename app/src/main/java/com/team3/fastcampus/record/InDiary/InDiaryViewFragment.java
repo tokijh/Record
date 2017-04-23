@@ -15,8 +15,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.team3.fastcampus.record.Diary.Model.Diary;
 import com.team3.fastcampus.record.R;
+
+import java.util.List;
 
 /**
  * InDiary를 보여주기 위한 메인뷰
@@ -104,6 +107,11 @@ public class InDiaryViewFragment extends Fragment implements InDiaryListViewFrag
     @Override
     public Diary getDiary() {
         return diary;
+    }
+
+    @Override
+    public void setLocations(List<LatLng> locations) {
+        inDiaryMapViewFragment.set(locations);
     }
 
     class InDiaryViewPagerAdapter extends FragmentStatePagerAdapter {
