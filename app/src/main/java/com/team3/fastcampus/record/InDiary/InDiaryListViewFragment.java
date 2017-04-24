@@ -114,12 +114,7 @@ public class InDiaryListViewFragment extends Fragment implements InDiaryViewRecy
     private void initListener() {
         swipeRefreshLayout.setOnRefreshListener(swipeRefreshOnRefreshListener);
         fab_add.setOnClickListener(onClickListener);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-        });
+        recyclerView.addOnScrollListener(onScrollListener);
     }
 
     private void initAdapter() {
@@ -227,16 +222,19 @@ public class InDiaryListViewFragment extends Fragment implements InDiaryViewRecy
     private void setLocation(List<InDiary> inDiaries) {
         List<LatLng> locations = new ArrayList<>();
         for (InDiary inDiary : inDiaries) {
+            locations.add(null);
             if (inDiary.photo_list != null && inDiary.photo_list.size() > 0) {
                 Image image = inDiary.photo_list.get(0);
                 if (image.gpsLatitude != null && image.gpsLongitude != null) {
                     try {
                         locations.add(new LatLng(Double.parseDouble(image.gpsLatitude), Double.parseDouble(image.gpsLongitude)));
+                        continue;
                     } catch (Exception e) {
                         Logger.e(TAG, e.getMessage());
                     }
                 }
             }
+            locations.add(null);
         }
         inDiaryListCallback.setLocations(locations);
     }
@@ -258,6 +256,17 @@ public class InDiaryListViewFragment extends Fragment implements InDiaryViewRecy
             case R.id.fragment_in_diary_view_fab_add:
                 onInDiaryManage(-1l, InDiaryManageActivity.MODE_CREATE, InDiary.getCurrentTime());
                 break;
+        }
+    };
+
+    private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+
+            LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+            int position = layoutManager.findFirstVisibleItemPosition();
+            inDiaryListCallback.pinPosition(position);
         }
     };
 
@@ -288,5 +297,7 @@ public class InDiaryListViewFragment extends Fragment implements InDiaryViewRecy
         Diary getDiary();
 
         void setLocations(List<LatLng> locations);
+
+        void pinPosition(int position);
     }
 }

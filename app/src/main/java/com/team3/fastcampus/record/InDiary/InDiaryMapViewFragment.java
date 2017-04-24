@@ -36,6 +36,8 @@ public class InDiaryMapViewFragment extends Fragment implements OnMapReadyCallba
 
     private View view;
 
+    private int position;
+
     private GoogleMap googleMap;
     private MapView mapView;
 
@@ -87,13 +89,6 @@ public class InDiaryMapViewFragment extends Fragment implements OnMapReadyCallba
         }
     }
 
-    public void add(LatLng latLng) {
-        locations.add(latLng);
-        this.googleMap.addMarker(new MarkerOptions().position(latLng));
-        this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-        updateRoute();
-    }
-
     public void set(List<LatLng> locations) {
         this.locations.clear();
         if (this.googleMap != null) {
@@ -101,8 +96,10 @@ public class InDiaryMapViewFragment extends Fragment implements OnMapReadyCallba
         }
         for (LatLng latLng : locations) {
             this.locations.add(latLng);
-            if (this.googleMap != null) {
-                this.googleMap.addMarker(new MarkerOptions().position(latLng));
+            if (latLng != null) {
+                if (this.googleMap != null) {
+                    this.googleMap.addMarker(new MarkerOptions().position(latLng));
+                }
             }
         }
         if (this.googleMap != null) {
@@ -112,29 +109,49 @@ public class InDiaryMapViewFragment extends Fragment implements OnMapReadyCallba
 
     public void pin(int position) {
         if (locations.size() > position) {
-            LatLng latLng = locations.get(position);
-            this.googleMap.addMarker(new MarkerOptions().position(latLng));
-            this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+            this.position = position;
+            if (googleMap != null) {
+                LatLng latLng = locations.get(position);
+                if (latLng != null) {
+                    this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                }
+            }
         }
     }
 
     private void updateRoute() {
-        LatLng[] latLngs = new LatLng[locations.size()];
-        locations.toArray(latLngs);
+        int size = 0;
+        for (LatLng latLng : locations) {
+            if (latLng != null) {
+                size++;
+            }
+        }
+        LatLng[] latLngs = new LatLng[size];
+        int count = 0;
+        for (LatLng latLng : locations) {
+            if (latLng != null) {
+                latLngs[count++] = latLng;
+            }
+        }
         this.googleMap.addPolyline((new PolylineOptions())
                 .add(latLngs)
                 .width(6)
                 .color(Color.RED)
                 .visible(true));
+        if (locations.size() > position + 1) {
+            LatLng latLng = locations.get((position % 2 == 0) ? position + 1 : position);
+            if (latLng != null)
+                this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+        }
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
-        if (locations.size() > 0)
-            this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locations.get(0), 15));
-        for (int i = 0; i < locations.size(); i++) {
-            this.googleMap.addMarker(new MarkerOptions().position(locations.get(i)));
+        for (LatLng latLng : locations) {
+            if (latLng != null) {
+                this.googleMap.addMarker(new MarkerOptions().position(latLng));
+            }
         }
         updateRoute();
     }

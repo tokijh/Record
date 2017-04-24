@@ -114,6 +114,11 @@ public class InDiaryViewFragment extends Fragment implements InDiaryListViewFrag
         inDiaryMapViewFragment.set(locations);
     }
 
+    @Override
+    public void pinPosition(int position) {
+        inDiaryMapViewFragment.pin(position);
+    }
+
     class InDiaryViewPagerAdapter extends FragmentStatePagerAdapter {
 
         public static final int TAB_COUNT = 2;
