@@ -123,6 +123,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                     @Override
                     public void onSuccess(NetworkController.ResponseData responseData) {
                         try {
+                            Logger.e(TAG, new String(responseData.body));
                             if (responseData.response.code() == 201) {
                                 SignUpData signUpData = NetworkController.decode(SignUpData.class, new String(responseData.body));
                                 Toast.makeText(SignupActivity.this, "회원 가입 성공", Toast.LENGTH_SHORT).show();

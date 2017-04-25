@@ -249,6 +249,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         Map<String, Object> postData = new HashMap<>();
         postData.put("username", et_email.getText().toString());
         postData.put("password", et_password.getText().toString());
+        postData.put("user_type", "NORMAL");
         NetworkController.newInstance(getString(R.string.server_url) + getString(R.string.server_signin))
                 .setMethod(NetworkController.POST)
                 .paramsSet(postData)
