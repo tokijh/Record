@@ -148,12 +148,14 @@ public class DiaryViewFragment extends Fragment implements DiaryViewRecyclerAdap
                                 List<Diary> diaries = NetworkController.decode(new TypeToken<List<Diary>>() {
                                 }.getType(), new String(responseData.body));
                                 for (Diary diary : diaries) {
-                                    diary.cover_image = RealmDatabaseManager
+                                    Diary imageDiary = RealmDatabaseManager
                                             .getInstance()
                                             .get(Diary.class)
                                             .equalTo("pk", diary.pk)
-                                            .findFirst()
-                                            .cover_image;
+                                            .findFirst();
+                                    if (imageDiary != null) {
+                                        diary.cover_image = imageDiary.cover_image;
+                                    }
                                 }
                                 diaryViewRecyclerAdapter.set(diaries);
                                 saveToDB(diaries);
