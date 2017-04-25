@@ -5,7 +5,7 @@ package com.team3.fastcampus.record.Diary.Adapter;
  */
 
 import android.content.Context;
-import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,13 +14,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.team3.fastcampus.record.Diary.DiaryManageActivity;
 import com.team3.fastcampus.record.Diary.Model.Diary;
 import com.team3.fastcampus.record.R;
-import com.team3.fastcampus.record.Util.NetworkController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,10 +79,12 @@ public class DiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         diaryViewHolder.position = position;
         diaryViewHolder.tv_title.setText(diary.title);
         diaryViewHolder.tv_date.setText(diary.start_date + " ~ " + diary.end_date);
-        Glide.with(context)
-                .load(diary.cover_image)
-                .placeholder(R.drawable.night)
-                .into(diaryViewHolder.iv_image);
+        if (diary.cover_image != null) {
+            Glide.with(context)
+                    .load(Uri.parse(diary.cover_image))
+                    .placeholder(R.drawable.night)
+                    .into(diaryViewHolder.iv_image);
+        }
     }
 
     private void setCardAdd(RecyclerView.ViewHolder holder, int position) {

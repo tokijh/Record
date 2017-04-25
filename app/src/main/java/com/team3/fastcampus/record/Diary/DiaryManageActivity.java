@@ -178,7 +178,7 @@ public class DiaryManageActivity extends AppCompatActivity implements View.OnCli
                         Diary diary = NetworkController.decode(Diary.class, new String(responseData.body));
                         RealmDatabaseManager.getInstance().create(Diary.class, (realm, realmObject) -> {
                             realmObject.pk = diary.pk;
-                            realmObject.cover_image = diary.cover_image;
+                            realmObject.cover_image = fileUri.toString();
                             realmObject.post_count = diary.post_count;
                             realmObject.title = diary.title;
                             realmObject.start_date = diary.start_date;
