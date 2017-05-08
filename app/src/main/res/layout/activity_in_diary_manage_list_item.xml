@@ -5,7 +5,6 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
     app:cardElevation="5dp"
     app:cardCornerRadius="20dp">
 
@@ -17,6 +16,7 @@
         <ImageView
             android:id="@+id/imageView"
             android:src="@drawable/no_photo"
+            android:scaleType="fitCenter"
             android:layout_width="match_parent"
             android:layout_height="300dp" />
 

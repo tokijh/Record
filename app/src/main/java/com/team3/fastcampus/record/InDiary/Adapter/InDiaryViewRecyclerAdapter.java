@@ -78,6 +78,7 @@ public class InDiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
             inDiaryViewHolder.tv_date.setText(inDiary.created_date);
             inDiaryViewHolder.tv_content.setText(inDiary.content);
             inDiaryViewHolder.inDiaryListImageViewPagerAdapter.set(inDiaries.get(position).inDiary.photo_list);
+
         } catch (Exception e) {
             Logger.e(TAG, e.getMessage());
         }
@@ -140,10 +141,8 @@ public class InDiaryViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerVie
             tv_date = (TextView) itemView.findViewById(R.id.in_diary_list_view_date);
             tv_content = (TextView) itemView.findViewById(R.id.in_diary_list_view_content);
             ViewPager imageViewPager = (ViewPager) itemView.findViewById(R.id.in_diary_list_view_imageViewPager);
-
             inDiaryListImageViewPagerAdapter = new InDiaryListImageViewPagerAdapter(context);
             imageViewPager.setAdapter(inDiaryListImageViewPagerAdapter);
-
             itemView.setOnClickListener(cardDiaryHolderOnClickListener);
             tv_more.setOnClickListener(cardDiaryHolderOnClickListener);
         }

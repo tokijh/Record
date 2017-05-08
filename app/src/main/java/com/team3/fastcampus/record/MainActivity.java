@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity
         PreferenceManager.create(this);
 
         loginCheck();
+
     }
 
     private void loginCheck() {

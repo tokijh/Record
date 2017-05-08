@@ -16,6 +16,7 @@
         android:layout_alignParentLeft="true"
         android:layout_marginTop="15dp"
         android:text="make diary"
+        android:layout_marginBottom="3dp"
         android:textAlignment="center"
         android:textColor="#666666"
         android:textSize="12dp" />

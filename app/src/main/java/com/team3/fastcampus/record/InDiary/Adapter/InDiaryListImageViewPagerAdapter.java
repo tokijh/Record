@@ -8,7 +8,6 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.team3.fastcampus.record.InDiary.Model.Image;
-import com.team3.fastcampus.record.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +59,7 @@ public class InDiaryListImageViewPagerAdapter extends PagerAdapter {
         ImageView imageView = new ImageView(context);
         Glide.with(context)
                 .load(images.get(position).photo)
-                .placeholder(R.drawable.night)
+                .fitCenter()
                 .into(imageView);
         container.addView(imageView);
         return imageView;
